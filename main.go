@@ -10,10 +10,17 @@ import (
 )
 
 var db *gorm.DB
+var err error
 
 func main() {
-	var err error
-	db, err = models.ConnectionDB()  // Connection to database
+	// Connection to database
+	db, err = models.Connection_DB() 
+	if err != nil {
+		log.Fatalf("failed to connect to database: %v", err)
+	}
+
+	// Initialize database
+	err = models.Init_DB(db)
 	if err != nil {
 		log.Fatalf("failed to connect to database: %v", err)
 	}
