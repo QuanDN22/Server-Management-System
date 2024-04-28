@@ -3,7 +3,6 @@ package models
 import (
 	"fmt"
 	"log"
-	"strconv"
 
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
@@ -12,13 +11,12 @@ import (
 
 // connect to database
 func Connection_DB() *gorm.DB {
-	err := godotenv.Load(".env")
-	if err != nil {
+	if err := godotenv.Load(".env"); err != nil {
 		log.Fatal("Error loading .env file")
 	}
 
 	var varEnv map[string]string
-	varEnv, err = godotenv.Read()
+	varEnv, err := godotenv.Read()
 	if err != nil {
 		log.Fatal("Error reading .env file")
 	}
@@ -31,15 +29,8 @@ func Connection_DB() *gorm.DB {
 		port     = varEnv["PG_DATABASE_PORT"]
 	)
 
-	portInt, err := strconv.Atoi(port)
-	if err != nil {
-		// Handle conversion error (e.g., invalid port format)
-		panic(err)
-	}
-
-	// dsn :=  "host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Shanghai"
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable",
-		host, user, password, dbname, portInt)
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Shanghai",
+		host, user, password, dbname, port)
 
 	fmt.Println(dsn)
 
