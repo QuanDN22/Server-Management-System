@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 
-	"github.com/QuanDN22/Server-Management-System/data"
 	"github.com/QuanDN22/Server-Management-System/models"
 )
 
@@ -15,7 +14,7 @@ func main() {
 	models.Init_DB(db)
 
 	// add_data into database
-	data.AddData_Init(db)
+	models.AddData_Init(db)
 
 	var servers []models.Server
 	result := db.Find(&servers)

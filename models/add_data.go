@@ -1,4 +1,4 @@
-package data
+package models
 
 // =IF(SORTBY(SEQUENCE(10000),RANDARRAY(10000))<4500,"True","False")
 
@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/QuanDN22/Server-Management-System/models"
 	"github.com/xuri/excelize/v2"
 	"gorm.io/gorm"
 )
@@ -50,7 +49,7 @@ func AddData_Init(db *gorm.DB) {
 			fmt.Println(err)
 			continue
 		}
-		result := db.Create(&models.Server{
+		result := db.Create(&Server{
 			Server_Name:   row[0],
 			Server_IPv4:   row[1],
 			Server_Status: status,
