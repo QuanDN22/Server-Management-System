@@ -3,6 +3,7 @@ module github.com/QuanDN22/Server-Management-System
 go 1.22.1
 
 require (
+	github.com/joho/godotenv v1.5.1
 	github.com/xuri/excelize/v2 v2.8.1
 	gorm.io/driver/postgres v1.5.7
 	gorm.io/gorm v1.25.10
