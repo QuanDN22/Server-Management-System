@@ -4,6 +4,7 @@ package models
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 
 	"github.com/xuri/excelize/v2"
@@ -14,13 +15,13 @@ func AddData_Init(db *gorm.DB) {
 	// read excel document
 	f, err := excelize.OpenFile("./data/data_server_1.xlsx")
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return
 	}
 	defer func() {
 		// Close the spreadsheet.
 		if err := f.Close(); err != nil {
-			fmt.Println(err)
+			log.Println(err)
 		}
 	}()
 
@@ -35,7 +36,7 @@ func AddData_Init(db *gorm.DB) {
 	// Get all the rows in the Sheet1.
 	rows, err := f.GetRows("Sheet1")
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return
 	}
 
@@ -46,7 +47,7 @@ func AddData_Init(db *gorm.DB) {
 	for _, row := range rows {
 		status, err := strconv.ParseBool(row[2])
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			continue
 		}
 		result := db.Create(&Server{
@@ -55,5 +56,6 @@ func AddData_Init(db *gorm.DB) {
 			Server_Status: status,
 		})
 		fmt.Println(result.RowsAffected, result.Error)
+		log.Printf("created server: %s", row)
 	}
 }

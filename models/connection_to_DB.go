@@ -13,12 +13,16 @@ import (
 func Connection_DB() *gorm.DB {
 	if err := godotenv.Load(".env"); err != nil {
 		log.Fatal("Error loading .env file")
+	} else {
+		log.Println("Loading .env file successfully")
 	}
 
 	var varEnv map[string]string
 	varEnv, err := godotenv.Read()
 	if err != nil {
 		log.Fatal("Error reading .env file")
+	} else {
+		log.Println("Reading .env file successfully")
 	}
 
 	var (
@@ -37,6 +41,8 @@ func Connection_DB() *gorm.DB {
 
 	if err != nil {
 		log.Fatalf("failed to connect to database: %v", err)
+	} else {
+		log.Println("database connected")
 	}
 
 	return db

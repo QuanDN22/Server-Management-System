@@ -22,6 +22,8 @@ func ExportData_Example(db *gorm.DB) {
 	index, err := f.NewSheet("Sheet1")
 	if err != nil {
 		log.Fatalf("Error creating sheet file %v", err)
+	} else {
+		log.Println("Sheet created")
 	}
 
 	// Set value of a row
@@ -35,6 +37,8 @@ func ExportData_Example(db *gorm.DB) {
 	})
 	if err != nil {
 		log.Fatalf("Error setting value of a row %v", err)
+	} else {
+		log.Println("Setting value of raw succesfully")
 	}
 
 	var servers []Server

@@ -1,10 +1,15 @@
 package main
 
 import (
+	"github.com/QuanDN22/Server-Management-System/logger"
 	"github.com/QuanDN22/Server-Management-System/models"
 )
 
 func main() {
+	// run log
+	logFile := logger.LogFile()
+	defer logFile.Close()
+
 	// Connection to database
 	db := models.Connection_DB()
 
