@@ -1,0 +1,14 @@
+project-layout: https://github.com/golang-standards/project-layout
+
+database: postgres - "gorm.io/driver/postgres"
+	      gorm - "gorm.io/gorm"
+
+jwt-go: https://github.com/golang-jwt/jwt
+
+excel: github.com/xuri/excelize
+
+logger: zap - https://github.com/uber-go/zap
+
+config: godotenv - https://github.com/joho/godotenv
+        viper - https://github.com/spf13/viper
+

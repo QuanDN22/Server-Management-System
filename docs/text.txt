@@ -1,1 +1,0 @@
-directory to store project's documentation, such as swagger static files.
