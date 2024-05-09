@@ -1,0 +1,228 @@
+openapi: '3.0.2'
+info:
+  title: Server Management System API
+  description: description
+  version: '0.1.9'
+
+tags:
+  - name: user
+    description: user login and sign up
+  - name: server
+    description: server operation
+
+paths: 
+  /user/login:
+    post:
+      tags:
+        - user
+      summary: Logs user into the system
+      description: Allows a user to login with their credentials
+      operationId: loginUser
+      requestBody:
+        description: The login credentials payload.
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/User'
+            examples:
+              user:
+                summary: Login credentials example
+                value:
+                  username: valid.user@server.com
+                  password: testpass
+      responses:
+        '200':
+          description: successful operation
+          content:
+            'application/json':
+              example:
+                token: "{aa83349f-72e7-4b32-aa4d-e7c9b9353e8e}"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /user/siginup:
+    post:
+      tags: 
+        - user
+      requestBody:
+        description: Sign up a new user
+        content: 
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: User created successfully
+        '400':
+          description: Bad request. Username or email may already exist
+        
+      
+  /servers:
+    get:
+      tags: 
+        - server
+      summary: Gets a list of servers
+      description: get all servers in the database
+      responses:
+        '200':
+          description: successful
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Server'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'    
+    post:
+      tags:
+        - server
+      summary: Create a server
+      description: creates a new server
+      requestBody:
+        description: A JSON object containing server information
+        required: true
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/Server'
+      responses:
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '201':
+          description: Server created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Server'
+        '400':
+          description: Bad request. Invalid server information
+
+  /servers/{serverID}:
+    parameters:
+      - $ref: '#/components/parameters/idServerParam'
+    get:
+      tags:
+        - server
+      summary: get a server
+      description: Get infofmation server by server ID
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Server'
+        '404': 
+          description: Server not found the specified ID
+    put:
+      tags:
+        - server
+      summary: Update Server
+      description: Updates an existing server
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Server'
+      responses:
+        '200':
+          description: Server updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Server'
+        '400':
+          description: Bad request. Invalid server information or update data.
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Server not found the specified ID
+    delete:
+      tags:
+        - server
+      summary: Delete Server
+      description: Deleting an existing server
+      responses:
+        '204':
+          description: Server deleted successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Server not found the specified ID
+
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          # Used in POST/PUT/PATCH, not returned by GET
+          type: string
+          format: password
+          writeOnly: true
+
+    Server:
+      type: object
+      properties:
+        Server_ID:
+          # Returned by GET, not used in POST/PUT/PATCH
+          description: ID of the server
+          type: integer
+          format: uint
+          readOnly: true
+        Server_Name:
+          description: name of the server
+          type: string
+        Server_Status:
+          description: status of the server
+          type: boolean
+        Server_IPv4:
+          description: ipv4 address of the server
+          type: string
+          format: ipv4
+        Server_CreatedAt:
+          description: time when the server created
+          type: string
+          format: date-time
+        Server_UpdatedAt:
+          description: time when the server last updated
+          type: string
+          format: date-time
+
+      required:
+        - Server_Name
+        - Server_Status
+        - Server_IPv4
+    
+    
+      
+  parameters:
+    idServerParam:  
+      name: serverID
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: uint
+      description: Numeric ID of the server
+
+  responses:
+    UnauthorizedError:
+      description: Unauthorized. Access token is missing or invalid
+
+  securitySchemes:         # Define the security scheme type (HTTP bearer)
+    bearerAuth:            # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT    # optional, arbitrary value for documentation purposes
+
+# Apply the security globally to all operations
+security:
+  - bearerAuth: []         # use the same name as above
