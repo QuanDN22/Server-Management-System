@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package auth.service;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+// import "google/protobuf/empty.proto";
+
+option go_package = "github.com/QuanDN22/Server-Management-System/proto/auth";
+
+service AuthService {
+    // login
+    rpc Login(LoginRequest) returns (LoginResponse) {
+        option (google.api.http) = {
+            post: "/v1/api/login"
+            body: "*"
+        };
+    };
+
+    // signup
+    rpc Signup(SignupRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            post: "/v1/api/signup"
+            body: "*"
+        };
+    };
+
+    // logout
+    rpc Logout(LogoutRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            post: "/v1/api/logout"
+            body: "*"
+        };
+    };
+
+    // change password
+    rpc ChangePassword(ChangePasswordRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            post: "/v1/api/change-password"
+            body: "*"
+        };
+    };
+
+    // admin delete a user by ID
+    rpc DeleteUserByID(DeleteUserRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            delete: "/v1/api/delete-user"
+        };
+    };
+}
+
+message DeleteUserRequest{
+    string user_id = 1;
+}
+
+message ChangePasswordRequest{
+    string token = 1;
+    string oldPassword = 2;
+    string newPassword = 3;
+}
+
+message LogoutRequest{
+    string token = 1;
+}
+
+message SignupRequest{
+    string username = 1;
+    string password = 2;
+}
+
+message LoginRequest{
+    string username = 1;
+    string password = 2;
+}
+
+message LoginResponse{
+    string token = 1;
+}
+
