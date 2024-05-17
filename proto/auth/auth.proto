@@ -55,12 +55,12 @@ message DeleteUserRequest{
 
 message ChangePasswordRequest{
     string token = 1;
-    string oldPassword = 2;
-    string newPassword = 3;
+    string old_password = 2;
+    string new_password = 3;
 }
 
 message LogoutRequest{
-    string token = 1;
+    string access_token = 1;
 }
 
 message SignupRequest{
@@ -74,6 +74,6 @@ message LoginRequest{
 }
 
 message LoginResponse{
-    string token = 1;
+    string access_token = 1;
 }
 
