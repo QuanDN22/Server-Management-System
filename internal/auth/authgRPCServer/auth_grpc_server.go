@@ -9,51 +9,31 @@ import (
 	"github.com/QuanDN22/Server-Management-System/proto/auth"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"gorm.io/gorm"
 )
 
 type AuthGrpcServer struct {
 	auth.UnimplementedAuthServiceServer
-	iss        *issuer.Issuer // create token
+	issuer     *issuer.Issuer // create token
 	config     *config.Config
 	logger     *zap.Logger
 	gRPCServer *grpc.Server
+	db         *gorm.DB
 }
-
-// // login
-// func (a *AuthGrpcServer) Login(ctx context.Context, in *auth.LoginRequest) (*auth.LoginResponse, error) {
-
-// }
-
-// // signup
-// func (a *AuthGrpcServer) Signup(ctx context.Context, in *auth.SignupRequest) (*emptypb.Empty, error) {
-
-// }
-
-// // logout
-// func (a *AuthGrpcServer) Logout(ctx context.Context, in *auth.LogoutRequest) (*emptypb.Empty, error) {
-
-// }
-
-// // change password
-// func (a *AuthGrpcServer) ChangePassword(ctx context.Context, in *auth.ChangePasswordRequest) (*emptypb.Empty, error) {
-
-// }
-
-// admin delete a user by ID
-// func (a *AuthGrpcServer) DeleteUserByID(ctx context.Context, in *auth.DeleteUserRequest) (*emptypb.Empty, error) {
-// }
 
 func NewAuthGRPCServer(
 	issuer *issuer.Issuer,
 	config *config.Config,
 	logger *zap.Logger,
 	grpcserver *grpc.Server,
+	db *gorm.DB,
 ) (s *AuthGrpcServer) {
 	s = &AuthGrpcServer{
-		iss:        issuer,
+		issuer:     issuer,
 		config:     config,
 		logger:     logger,
 		gRPCServer: grpcserver,
+		db:         db,
 	}
 
 	// Attach the Greeter service to the server
@@ -63,18 +43,18 @@ func NewAuthGRPCServer(
 
 func (a *AuthGrpcServer) Start(ctx context.Context, cancel context.CancelFunc) {
 	// Create listening on TCP port
-	lis, err := net.Listen("tcp", a.config.GrpcPort)
+	lis, err := net.Listen("tcp", a.config.AuthServerPort)
 	if err != nil {
 		cancel()
-		a.logger.Info("Failed to listen: ", zap.Error(err), zap.String("port", a.config.GrpcPort))
+		a.logger.Info("Failed to listen: ", zap.Error(err), zap.String("port", a.config.AuthServerPort))
 		return
 	}
 
 	// Serve gRPC Server
-	a.logger.Info("Auth gRPC server started", zap.String("port", a.config.GrpcPort))
+	a.logger.Info("Auth gRPC server started", zap.String("port", a.config.AuthServerPort))
 	if err := a.gRPCServer.Serve(lis); err != nil {
 		cancel()
-		a.logger.Info("error starting grpc server", zap.Error(err), zap.String("port", a.config.GrpcPort))
+		a.logger.Info("error starting grpc server", zap.Error(err), zap.String("port", a.config.AuthServerPort))
 		return
 	}
 

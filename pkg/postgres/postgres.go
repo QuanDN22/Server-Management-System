@@ -8,9 +8,9 @@ import (
 	"gorm.io/driver/postgres"
 )
 
-type postgresDB struct {
-	db *gorm.DB
-}
+// type postgresDB struct {
+// 	db *gorm.DB
+// }
 
 func NewPostgresDB(
 	host string,
@@ -18,7 +18,7 @@ func NewPostgresDB(
 	password string,
 	dbname string,
 	port string,
-) *postgresDB {
+) *gorm.DB {
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Shanghai",
 		host, user, password, dbname, port)
 
@@ -29,7 +29,5 @@ func NewPostgresDB(
 		log.Fatalf("failed to connect to database: %v", err)
 	} 
 
-	return &postgresDB{
-		db: db,
-	}
+	return db
 }

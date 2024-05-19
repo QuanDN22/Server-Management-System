@@ -33,7 +33,7 @@ func NewIssuer(privateKeyPath string) (*Issuer, error) {
 
 
 // IssueToken issues a new token for the given user with the given roles
-func (i *Issuer) IssueToken(user string, roles []string) (string, error) {
+func (i *Issuer) IssueToken(user string, roles string) (string, error) {
 	now := time.Now()
 	token := jwt.NewWithClaims(&jwt.SigningMethodEd25519{}, jwt.MapClaims{
 		// standardized claims
