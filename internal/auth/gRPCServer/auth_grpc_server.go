@@ -1,4 +1,4 @@
-package authgRPCServer
+package gRPCServer
 
 import (
 	"context"

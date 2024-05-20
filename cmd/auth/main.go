@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	"github.com/QuanDN22/Server-Management-System/internal/auth/authgRPCServer"
+	authgRPCServer "github.com/QuanDN22/Server-Management-System/internal/auth/gRPCServer"
 	"github.com/QuanDN22/Server-Management-System/internal/auth/domain"
 	"github.com/QuanDN22/Server-Management-System/internal/auth/issuer"
 	"github.com/QuanDN22/Server-Management-System/pkg/config"
