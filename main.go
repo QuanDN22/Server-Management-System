@@ -1,10 +1,7 @@
 package main
 
 import (
-	"fmt"
 	"log"
-
-	"github.com/QuanDN22/Server-Management-System/pkg/config"
 )
 
 func main() {
@@ -24,13 +21,13 @@ func main() {
 	// // export data from database into excel file
 	// models.ExportData_Example(db)
 
-	c, err := config.NewConfig("./pkg/config", ".env.auth")
-	if err != nil {
-		log.Fatal(err)
-	}
+	// c, err := config.NewConfig("./pkg/config", ".env.auth")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 	log.Println("config parsed...")
-	fmt.Println(c)
-	fmt.Println(c.ServiceName)
-	fmt.Println(c.GrpcAddr)
-	fmt.Println(c.GrpcPort)
+	// fmt.Println(c)
+	// fmt.Println(c.ServiceName)
+	// fmt.Println(c.GrpcAddr)
+	// fmt.Println(c.GrpcPort)
 }
