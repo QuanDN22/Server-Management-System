@@ -17,29 +17,35 @@ run-grpc-gateway:
 	go run .\cmd\grpc-gateway\main.go auth.ed.pub 
 
 # api
-token := eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJhcGkiLCJleHAiOjE3MTYxOTg1MTIsImlhdCI6MTcxNjE5NTUxMiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAxIiwibmJmIjoxNzE2MTk1NTEyLCJyb2xlcyI6InVzZXIiLCJ1c2VyIjoicXVhbjIifQ.9XpJGhGferHWPeVq7TD6XhfaxtzSkhMdbEyVrkf3jOG_2HjmP7pAWfupoeHU5JlDm7XtHX2832XbgRIK0tjOAA
-# token := eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJhcGkiLCJleHAiOjE3MTYxOTgwNzgsImlhdCI6MTcxNjE5NTA3OCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAxIiwibmJmIjoxNzE2MTk1MDc4LCJyb2xlcyI6ImFkbWluIiwidXNlciI6ImFkbWluIn0.55IockvUHsxnIW1IXc18OGwCarwwTGWOaw2pmlrq_Wqr_zZ6Jc3kBqE1lWOELcYI7qzKXojAkEGvd8Bth7ghCA
+# token := eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJhcGkiLCJleHAiOjE3MTYxOTg1MTIsImlhdCI6MTcxNjE5NTUxMiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAxIiwibmJmIjoxNzE2MTk1NTEyLCJyb2xlcyI6InVzZXIiLCJ1c2VyIjoicXVhbjIifQ.9XpJGhGferHWPeVq7TD6XhfaxtzSkhMdbEyVrkf3jOG_2HjmP7pAWfupoeHU5JlDm7XtHX2832XbgRIK0tjOAA
+token := eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJhcGkiLCJleHAiOjE3MTYxOTgwNzgsImlhdCI6MTcxNjE5NTA3OCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAxIiwibmJmIjoxNzE2MTk1MDc4LCJyb2xlcyI6ImFkbWluIiwidXNlciI6ImFkbWluIn0.55IockvUHsxnIW1IXc18OGwCarwwTGWOaw2pmlrq_Wqr_zZ6Jc3kBqE1lWOELcYI7qzKXojAkEGvd8Bth7ghCA
 
 # api of auth server
 login: 
-	curl -H "Content-Type: application/json" -X POST http://localhost:8080/v1/api/login \
+	curl -H "Content-Type: application/json" -X POST http://localhost:8080/v1/api/auth/login \
 	-d "{\"username\":\"admin\", \"password\":\"pass\"}"
 
 login-user:
-	curl -H "Content-Type: application/json" -X POST http://localhost:8080/v1/api/login \
+	curl -H "Content-Type: application/json" -X POST http://localhost:8080/v1/api/auth/login \
 	-d "{\"username\":\"quan2\", \"password\":\"2\"}"
 
 ping-auth-server: 
 	curl -s -H "Authorization: Bearer ${token}" \
-	localhost:8080/v1/api/ping-auth-server
+	localhost:8080/v1/api/auth/ping
 
 signup:
-	curl -H "Content-Type: application/json" -X POST http://localhost:8080/v1/api/signup \
+	curl -H "Content-Type: application/json" -X POST http://localhost:8080/v1/api/auth/signup \
 	-d "{\"username\":\"quan\", \"password\":\"0\", \"email\":\"quan0@gmail.com\"}"
 
 logout:
 	curl -H "Authorization: Bearer ${token}" -X POST http://localhost:8080/v1/api/logout
 
 delete: 
-	curl -s -H "Content-Type: application/json" "Authorization: Bearer ${token}" DELETE http://localhost:8080/v1/api/delete \
-	-d "{\"user_id\":\"5\"}"
+	curl -s \
+  	-H "Authorization: Bearer ${token}" \
+  	-H "Content-Type: application/json" \
+  	DELETE http://localhost:8080/v1/api/delete-user \
+  	-d "{\"userId\":\"2\"}"
+
+# curl -s -H "Content-Type: application/json" "Authorization: Bearer ${token}" DELETE http://localhost:8080/v1/api/delete \
+	# -d "{\"user_id\":\"1\"}"

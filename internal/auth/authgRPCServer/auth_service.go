@@ -3,7 +3,6 @@ package authgRPCServer
 import (
 	"context"
 	"fmt"
-	"strconv"
 
 	"github.com/QuanDN22/Server-Management-System/internal/auth/domain"
 	"github.com/QuanDN22/Server-Management-System/pkg/middleware"
@@ -134,7 +133,7 @@ func (a *AuthGrpcServer) Signup(ctx context.Context, in *auth.SignupRequest) (*e
 // }
 
 // admin delete a user by ID
-func (a *AuthGrpcServer) DeleteUserByID(ctx context.Context, in *auth.DeleteUserRequest) (*emptypb.Empty, error) {
+func (a *AuthGrpcServer) DeleteUserByID(ctx context.Context, in *auth.UserID) (*emptypb.Empty, error) {
 	token, err := middleware.ContextGetToken(ctx)
 	if err != nil {
 		return &emptypb.Empty{}, status.Error(codes.Unauthenticated, "no auth provided")
@@ -152,10 +151,9 @@ func (a *AuthGrpcServer) DeleteUserByID(ctx context.Context, in *auth.DeleteUser
 	}
 
 	userID := in.GetUserId()
-	id, _ := strconv.Atoi(userID)
 
 	var user domain.User
-	res := a.db.First(&user, "id = ?", id)
+	res := a.db.First(&user, "id = ?", userID)
 
 	if res.RowsAffected == 0 {
 		return &emptypb.Empty{}, status.Error(codes.NotFound, "user not found")

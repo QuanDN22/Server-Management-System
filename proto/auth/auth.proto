@@ -12,14 +12,14 @@ service AuthService {
     // ping server
     rpc Ping(google.protobuf.Empty) returns (PingMessage) {
         option (google.api.http) = {
-            get: "/v1/api/ping-auth-server"
+            get: "/v1/api/auth/ping"
         };
     }
 
     // login
     rpc Login(LoginRequest) returns (LoginResponse) {
         option (google.api.http) = {
-            post: "/v1/api/login"
+            post: "/v1/api/auth/login"
             body: "*"
         };
     };
@@ -27,65 +27,105 @@ service AuthService {
     // signup
     rpc Signup(SignupRequest) returns (google.protobuf.Empty) {
         option (google.api.http) = {
-            post: "/v1/api/signup"
+            post: "/v1/api/auth/signup"
             body: "*"
         };
     };
 
-    // logout
-    rpc Logout(LogoutRequest) returns (google.protobuf.Empty) {
+    // // logout
+    // rpc Logout(LogoutRequest) returns (google.protobuf.Empty) {
+    //     option (google.api.http) = {
+    //         post: "/v1/api/auth/logout"
+    //         body: "*"
+    //     };
+    // };
+
+    // get all users
+    rpc GetAllUsers(google.protobuf.Empty) returns (GetAllUsersResponse) {
         option (google.api.http) = {
-            post: "/v1/api/logout"
-            body: "*"
+            get: "/v1/api/auth/users"
+        };
+    };
+
+    // get user information by ID
+    rpc GetUserByID(UserID) returns (User) {
+        option (google.api.http) = {
+            get: "/v1/api/auth/users/{user_id}"
         };
     };
 
     // change password
     rpc ChangePassword(ChangePasswordRequest) returns (google.protobuf.Empty) {
         option (google.api.http) = {
-            post: "/v1/api/change-password"
+            post: "/v1/api/auth/users/{user_id}"
             body: "*"
         };
     };
 
     // admin delete a user by ID
-    rpc DeleteUserByID(DeleteUserRequest) returns (google.protobuf.Empty) {
+    rpc DeleteUserByID(UserID) returns (google.protobuf.Empty) {
         option (google.api.http) = {
-            delete: "/v1/api/delete-user"
+            delete: "/v1/api/auth/users/{user_id}"
+        };
+    };
+
+    // api for admin
+    // get email of admin
+    rpc GetAdminEmail(google.protobuf.Empty) returns (GetAdminEmailResponse) {
+        option (google.api.http) = {
+            get: "/v1/api/auth/email"
         };
     };
 }
 
+message UserID {
+    int32 user_id = 1 [ json_name = "user_id" ];
+}
+
+message User {
+    int32 user_id = 1 [ json_name = "user_id" ];
+    string username = 2 [ json_name = "username" ];
+    string email = 3 [ json_name = "email" ];
+}
+
+message GetAllUsersResponse{
+    repeated User users = 1 [ json_name = "users" ];
+}
+
+message GetAdminEmailResponse{
+    repeated string email = 1 [ json_name = "email" ];
+}
+
 message PingMessage {
-    string message = 1;
+    string message = 1 [ json_name = "message" ];
 }
 
 message DeleteUserRequest{
-    string user_id = 1;
+    int32 user_id = 1 [ json_name = "user_id" ];
 }
 
 message ChangePasswordRequest{
-    string token = 1;
-    string oldPassword = 2;
-    string newPassword = 3;
+    int32 user_id = 1 [ json_name = "user_id" ];
+    string old_password = 2 [ json_name = "old_password" ];
+    string new_password = 3 [ json_name = "new_password" ];
 }
 
 message LogoutRequest{
-    string access_token = 1;
+    string access_token = 1 [ json_name = "accesst_token" ];
 }
 
 message SignupRequest{
-    string username = 1;
-    string password = 2;
-    string email = 3;
+    string username = 1 [ json_name = "username" ];
+    string password = 2 [ json_name = "password" ];
+    string email = 3 [ json_name = "email" ];
 }
 
 message LoginRequest{
-    string username = 1;
-    string password = 2;
+    string username = 1 [ json_name = "username" ]; 
+    string password = 2 [ json_name = "password" ];
 }
 
 message LoginResponse{
-    string access_token = 1;
+    string access_token = 1 [ json_name = "accesst_token"];
 }
 

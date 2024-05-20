@@ -23,46 +23,9 @@ func NewMiddleware(publicKeyPath string) (*Middleware, error) {
 
 func (mw *Middleware) HandleHTTP(next http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path == "/v1/api/login" || r.URL.Path == "/v1/api/signup" {
+		if r.URL.Path == "/v1/api/auth/login" || r.URL.Path == "/v1/api/auth/signup" {
 			fmt.Println("2. start /login")
-			// check basic auth
-			// _, _, ok := r.BasicAuth()
-			// if !ok {
-			// 	w.WriteHeader(http.StatusUnauthorized)
-			// 	w.Write([]byte("missing basic auth")) //nolint
-			// 	return
-			// }
-
-			// fmt.Println("http 1")
-			// var v map[string]string
-			// err := json.NewDecoder(r.Body).Decode(&v)
-			// if err != nil {
-			// 	w.WriteHeader(http.StatusBadRequest)
-			// 	w.Write([]byte("invalid json body")) //nolint
-			// 	return
-			// }
-
-			// // fmt.Println("http 2")
-
-			// fmt.Println(v["username"], v["password"])
-			// if v["username"] == "" || v["password"] == "" {
-			// 	w.WriteHeader(http.StatusUnauthorized)
-			// 	w.Write([]byte("invalid credentials, missing username or password")) //nolint
-			// 	return
-			// }
-
-			// fmt.Println("http 3")
-
-			// // // r.SetBasicAuth(v["username"], v["password"])
-			// r.Header.Add("Content-Type", "application/json")
-			// json.NewDecoder(r.Body).Decode(&v)
-			// fmt.Println(v["username"], v["password"])
-
-			// fmt.Println("http 4")
-
 			next.ServeHTTP(w, r)
-
-			// fmt.Println("http 5")
 
 			fmt.Println("2. finish /login")
 			return
