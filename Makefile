@@ -3,6 +3,7 @@ gen:
    	--go_out ./proto --go_opt paths=source_relative \
    	--go-grpc_out ./proto --go-grpc_opt paths=source_relative \
 	--grpc-gateway_out ./proto --grpc-gateway_opt paths=source_relative \
+	--openapiv2_out ./static/openapiv2 \
    	./proto/auth/auth.proto
 
 gen-key:
@@ -22,7 +23,9 @@ token := eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJhcGkiLCJleHAiOjE3MTYyMD
 # api of auth server
 login: 
 	curl -H "Content-Type: application/json" -X POST http://localhost:8080/v1/api/auth/login \
-	-d "{\"username\":\"admin\", \"password\":\"pass\"}"
+	-d "{"username":"admin", "password":"pass"}"
+
+# -d "{\"username\":\"admin\", \"password\":\"pass\"}"
 
 login-user:
 	curl -H "Content-Type: application/json" -X POST http://localhost:8080/v1/api/auth/login \

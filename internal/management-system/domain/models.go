@@ -4,7 +4,7 @@ import "time"
 
 type Server struct {
 	// gorm.Model
-	ID uint `json:"id" gorm:"primarykey"`
+	ID uint `json:"server_id" gorm:"primarykey"`
 
 	Server_Name   string `json:"server_name" gorm:"column:server_name; not null; unique"`
 	Server_IPv4   string `json:"server_ipv4" gorm:"column:server_ipv4; not null; unique"`
