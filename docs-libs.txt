@@ -5,10 +5,22 @@ database: postgres - "gorm.io/driver/postgres"
 
 jwt-go: https://github.com/golang-jwt/jwt
 
+crypto: golang.org/x/crypto/bcrypt
+
 excel: github.com/xuri/excelize
 
-logger: zap - https://github.com/uber-go/zap
+logger: https://github.com/uber-go/zap
+logrotate: gopkg.in/natefinch/lumberjack.v2
 
-config: godotenv - https://github.com/joho/godotenv
-        viper - https://github.com/spf13/viper
+config: https://github.com/spf13/viper
+        https://github.com/joho/godotenv
+
+kafka: github.com/segmentio/kafka-go
+
+redis: 
+
+elasticsearch: 
+
+grpc-gateway: github.com/grpc-ecosystem/grpc-gateway
+        
 
