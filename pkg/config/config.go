@@ -13,7 +13,7 @@ type Config struct {
 	GrpcPort string `mapstructure:"GRPC_PORT"`
 
 	AuthServerPort       string `mapstructure:"AUTH_SERVER_PORT"`
-	ManagementServerPort string `mapstructure:"MANAGEMENT_SERVER_PORT"`
+	ManagementSystemPort string `mapstructure:"MANAGEMENT_SYSTEM_PORT"`
 	GrpcGatewayPort      string `mapstructure:"GRPC_GATEWAY_PORT"`
 
 	PGDatabaseHost     string `mapstructure:"PG_DATABASE_HOST"`
