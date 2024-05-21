@@ -1,2 +1,6 @@
-2024-05-20T17:45:28.057+0700	INFO	grpc-gateway/main.go:39	logger created...
-2024-05-20T17:45:28.058+0700	INFO	grpc-gateway/main.go:46	middleware created...
+{"L":"INFO","T":"2024-05-21T18:37:47.242+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-21T18:37:47.243+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-21T18:37:47.244+0700","M":"Serving gRPC-Gateway is running on :8080"}
+{"L":"INFO","T":"2024-05-21T18:38:38.311+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-21T18:38:38.312+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-21T18:38:38.314+0700","M":"Serving gRPC-Gateway is running on :8080"}

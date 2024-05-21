@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -10,6 +11,7 @@ import (
 	"github.com/QuanDN22/Server-Management-System/pkg/middleware"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
@@ -31,7 +33,15 @@ func main() {
 	log.Println("config parsed...")
 
 	// new logger
-	l, err := logger.NewLogger(cfg.ServiceName)
+	// Create a logger with lumberjack integration
+	l, err := logger.NewLogger(
+		fmt.Sprintf("%s%s.log", cfg.LogFilename, cfg.ServiceName), 
+		int(cfg.LogMaxSize), 
+		int(cfg.LogMaxBackups), 
+		int(cfg.LogMaxAge),
+		true,
+		zapcore.InfoLevel,
+	)
 	if err != nil {
 		cancel()
 		log.Fatal(err)
@@ -63,6 +73,6 @@ func main() {
 		Handler: mw.HandleHTTP(gwmux),
 	}
 
-	log.Printf("Serving gRPC-Gateway is running on %s", cfg.GrpcGatewayPort)
+	l.Info(fmt.Sprintf("Serving gRPC-Gateway is running on %s", cfg.GrpcGatewayPort))
 	log.Fatalln(gwServer.ListenAndServe())
 }

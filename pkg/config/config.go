@@ -8,9 +8,9 @@ import (
 
 type Config struct {
 	ServiceName string `mapstructure:"SERVICE_NAME"`
-	
-	GrpcAddr    string `mapstructure:"GRPC_ADDR"`
-	GrpcPort    string `mapstructure:"GRPC_PORT"`
+
+	GrpcAddr string `mapstructure:"GRPC_ADDR"`
+	GrpcPort string `mapstructure:"GRPC_PORT"`
 
 	AuthServerPort       string `mapstructure:"AUTH_SERVER_PORT"`
 	ManagementServerPort string `mapstructure:"MANAGEMENT_SERVER_PORT"`
@@ -29,6 +29,11 @@ type Config struct {
 	ResultsKafkaTopic           string `mapstructure:"RESULTS_KAFKA_TOPIC"`
 	KafkaConsumerGroupId        string `mapstructure:"KAFKA_CONSUMER_GROUP_ID"`
 	KafkaResultsConsumerGroupId string `mapstructure:"KAFKA_RESULTS_CONSUMER_GROUP_ID"`
+
+	LogFilename   string `mapstructure:"LOG_FILE_NAME"`
+	LogMaxSize    int64  `mapstructure:"LOG_MAX_SIZE"`
+	LogMaxBackups int64  `mapstructure:"LOG_MAX_BACKUPS"`
+	LogMaxAge     int64  `mapstructure:"LOG_MAX_AGE"`
 }
 
 func NewConfig(path string, name string) (config *Config, err error) {

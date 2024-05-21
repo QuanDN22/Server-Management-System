@@ -2,10 +2,11 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 
-	authgRPCServer "github.com/QuanDN22/Server-Management-System/internal/auth/gRPCServer"
 	"github.com/QuanDN22/Server-Management-System/internal/auth/domain"
+	authgRPCServer "github.com/QuanDN22/Server-Management-System/internal/auth/gRPCServer"
 	"github.com/QuanDN22/Server-Management-System/internal/auth/issuer"
 	"github.com/QuanDN22/Server-Management-System/pkg/config"
 	"github.com/QuanDN22/Server-Management-System/pkg/logger"
@@ -13,6 +14,7 @@ import (
 	"github.com/QuanDN22/Server-Management-System/pkg/postgres"
 	"github.com/QuanDN22/Server-Management-System/pkg/utils"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 
 	"google.golang.org/grpc"
 )
@@ -32,7 +34,14 @@ func main() {
 	log.Println("config parsed...")
 
 	// new logger
-	l, err := logger.NewLogger(cfg.ServiceName)
+	l, err := logger.NewLogger(
+		fmt.Sprintf("%s%s.log", cfg.LogFilename, cfg.ServiceName),
+		int(cfg.LogMaxSize),
+		int(cfg.LogMaxBackups),
+		int(cfg.LogMaxAge),
+		true,
+		zapcore.InfoLevel,
+	)
 	if err != nil {
 		cancel()
 		log.Fatal(err)

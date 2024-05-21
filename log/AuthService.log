@@ -2,3 +2,7 @@
 2024-05-20T17:45:17.825+0700	INFO	auth/main.go:59	database connected...
 2024-05-20T17:45:21.424+0700	INFO	auth/main.go:93	middleware created...
 2024-05-20T17:45:21.425+0700	INFO	gRPCServer/auth_grpc_server.go:54	Auth gRPC server started	{"port": ":5001"}
+{"L":"INFO","T":"2024-05-21T18:38:46.881+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-21T18:38:47.169+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-05-21T18:38:51.416+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-21T18:38:51.417+0700","M":"Auth gRPC server started","port":":5001"}
