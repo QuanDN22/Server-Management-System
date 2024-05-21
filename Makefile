@@ -3,8 +3,8 @@ gen:
    	--go_out ./proto --go_opt paths=source_relative \
    	--go-grpc_out ./proto --go-grpc_opt paths=source_relative \
 	--grpc-gateway_out ./proto --grpc-gateway_opt paths=source_relative \
-	--openapiv2_out ./static/openapiv2 \
-   	./proto/auth/auth.proto
+	--openapiv2_out ./static/openapiv2 --openapiv2_opt use_go_templates=true \
+   	./proto/auth/auth.proto ./proto/management-system/server.proto
 
 gen-key:
 	openssl genpkey -algorithm ED25519 -outform pem -out auth.ed

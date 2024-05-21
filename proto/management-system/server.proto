@@ -11,23 +11,45 @@ option go_package = "github.com/QuanDN22/Server-Management-System/proto/manageme
 
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
     info: {
-        title: "Management-System API";
-        version: "1.0";
-        description: "";
-        contact: {
-        name: "gRPC-Gateway project";
-        url: "https://github.com/grpc-ecosystem/grpc-gateway";
-        email: "none@example.com";
+      title: "Management System API Documentation"; 
+      version: "2.0";
+      contact: {
+        name: "Dinh Quan";
+        url: "github.com/QuanDN22/Server-Management-System";
+        email: "dinhngocquan112378@gmail.com";
+      };
     };
-    license: {
-        name: "BSD 3-Clause License";
-        url: "https://github.com/grpc-ecosystem/grpc-gateway/blob/main/LICENSE";
-        };
-    };
+
+    host: "localhost:8080";
+
+    // Overwriting host entry breaks tests, so this is not done here.
+    external_docs: {
+      url: "https://github.com/grpc-ecosystem/grpc-gateway";
+      description: "More about gRPC-Gateway";
+    }
+
+    schemes: HTTP;
     schemes: HTTPS;
     consumes: "application/json";
     produces: "application/json";
-};
+    security_definitions: {
+      security: {
+        key: "ApiKeyAuth";
+        value: {
+          type: TYPE_API_KEY;
+          in: IN_HEADER;
+          name: "Authorization";
+        }
+      }
+    }
+    security: {
+      security_requirement: {
+        key: "ApiKeyAuth";
+        value: {};
+      }
+    }
+  
+  };
 
 service ManagementSystem {
     // Ping server
@@ -70,7 +92,7 @@ service ManagementSystem {
         };
 
         option (google.api.http) = {
-            put: "/v1/api/servers/{server_id}"
+            put: "/v1/api/servers/{Server_ID}"
             body: "*"
         };
     };
@@ -84,7 +106,7 @@ service ManagementSystem {
             tags: [ "Server" ];
         };
         option (google.api.http) = {
-            delete: "/v1/api/servers/{server_id}"
+            delete: "/v1/api/servers/{Server_ID}"
         };
     };
 

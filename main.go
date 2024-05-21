@@ -30,4 +30,22 @@ func main() {
 	// fmt.Println(c.ServiceName)
 	// fmt.Println(c.GrpcAddr)
 	// fmt.Println(c.GrpcPort)
+
+	// port := flag.String("p", "3000", "port to serve on")
+	// directory := flag.String("d", ".", "the directory of static file to host")
+	// flag.Parse()
+
+	// http.Handle("/", http.FileServer(http.Dir(*directory)))
+
+	// log.Printf("Serving %s on HTTP port: %s\n", *directory, *port)
+	// log.Fatal(http.ListenAndServe(":"+*port, nil))
+
+	// port := flag.String("p", "3000", "port to serve on")
+	// directory := flag.String("d", ".", "./static/openapiv2/auth/auth.swagger.json")
+	// flag.Parse()
+
+	// http.Handle("/", http.StripPrefix("/",http.FileServer(http.Dir(*directory))))
+
+	// log.Printf("Serving %s on HTTP port: %s\n", *directory, *port)
+	// log.Fatal(http.ListenAndServe(":3000", nil))
 }

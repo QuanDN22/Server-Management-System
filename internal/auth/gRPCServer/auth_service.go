@@ -14,6 +14,21 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
+// ping
+func (a *AuthGrpcServer) Ping(ctx context.Context, _ *emptypb.Empty) (*auth.PingMessage, error) {
+	token, err := middleware.ContextGetToken(ctx)
+	if err != nil {
+		return &auth.PingMessage{}, status.Error(codes.Unauthenticated, "no auth provided")
+	}
+
+	// dig the roles from the claims
+	roles := token.Claims.(jwt.MapClaims)["roles"]
+
+	return &auth.PingMessage{
+		Message: fmt.Sprintf("Pong auth server, %v", roles),
+	}, nil
+}
+
 // login
 func (a *AuthGrpcServer) Login(ctx context.Context, in *auth.LoginRequest) (*auth.LoginResponse, error) {
 	// fmt.Printf("Login request %s, %s", in.GetUsername(), in.GetPassword())
@@ -50,22 +65,7 @@ func (a *AuthGrpcServer) Login(ctx context.Context, in *auth.LoginRequest) (*aut
 
 	return &auth.LoginResponse{
 		AccessToken: tokenString,
-	}, status.Error(codes.OK, "successful login")
-}
-
-// ping
-func (a *AuthGrpcServer) Ping(ctx context.Context, _ *emptypb.Empty) (*auth.PingMessage, error) {
-	token, err := middleware.ContextGetToken(ctx)
-	if err != nil {
-		return &auth.PingMessage{}, status.Error(codes.Unauthenticated, "no auth provided")
-	}
-
-	// dig the roles from the claims
-	roles := token.Claims.(jwt.MapClaims)["roles"]
-
-	return &auth.PingMessage{
-		Message: fmt.Sprintf("Pong auth server, %v", roles),
-	}, status.Error(codes.OK, "ping successful")
+	}, nil
 }
 
 // signup
@@ -114,7 +114,7 @@ func (a *AuthGrpcServer) Signup(ctx context.Context, in *auth.SignupRequest) (*e
 	res = a.db.Create(&user)
 	if res.RowsAffected == 1 {
 		fmt.Println("successful")
-		return &emptypb.Empty{}, status.Error(codes.OK, "successful")
+		return &emptypb.Empty{}, nil
 	}
 
 	// fmt.Println("failed to create user")
@@ -128,10 +128,166 @@ func (a *AuthGrpcServer) Signup(ctx context.Context, in *auth.SignupRequest) (*e
 // }
 
 // // change password
-// func (a *AuthGrpcServer) ChangePassword(ctx context.Context, in *auth.ChangePasswordRequest) (*emptypb.Empty, error) {
+func (a *AuthGrpcServer) ChangePassword(ctx context.Context, in *auth.ChangePasswordRequest) (*emptypb.Empty, error) {
+	token, err := middleware.ContextGetToken(ctx)
+	if err != nil {
+		return &emptypb.Empty{}, status.Error(codes.Unauthenticated, "no auth provided")
+	}
 
-// }
+	// dig the roles from the claims
+	username := token.Claims.(jwt.MapClaims)["username"].(string)
 
+	var userInToken domain.User
+	res := a.db.First(&userInToken, "username = ?", username)
+	if res.Error != nil {
+		return &emptypb.Empty{}, status.Error(codes.Internal, "failed to get user information")
+	}
+	if res.RowsAffected == 0 {
+		return &emptypb.Empty{}, status.Error(codes.Internal, "permission denied, user deleted")
+	}
+	
+	if in.GetUserId() < 1 {
+		return &emptypb.Empty{}, status.Error(codes.InvalidArgument, "invalid user id")
+	}
+
+	// user can only change their own password
+	if userInToken.ID != uint(in.GetUserId()) {
+		return &emptypb.Empty{}, status.Error(codes.PermissionDenied, "permission denied")
+	}
+
+	if res.Error != nil {
+		return &emptypb.Empty{}, status.Error(codes.Internal, "failed to get user information")
+	}
+
+	if res.RowsAffected == 0 {
+		return &emptypb.Empty{}, status.Error(codes.NotFound, "user not found")
+	}
+
+	oldPassword := in.GetOldPassword()
+	newPassword := in.GetNewPassword()
+
+	if oldPassword == "" || newPassword == "" {
+		return &emptypb.Empty{}, status.Error(codes.InvalidArgument, "missing old password or new password")
+	}
+
+	if oldPassword == newPassword {
+		return &emptypb.Empty{}, status.Error(codes.InvalidArgument, "old password and new password are the same")
+	}
+
+	if !utils.CompareHashPassword(oldPassword, userInToken.Password) {
+		return &emptypb.Empty{}, status.Error(codes.InvalidArgument, "invalid old password")
+	}
+
+	userInToken.Password, err = utils.GenerateHashPassword(newPassword)
+	if err != nil {
+		return &emptypb.Empty{}, status.Error(codes.Internal, "failed to hash password")
+	}
+
+	res = a.db.Save(&userInToken)
+	if res.RowsAffected == 1 {
+		return &emptypb.Empty{}, nil
+	}
+
+	return &emptypb.Empty{}, status.Error(codes.Internal, "failed to change password")
+}
+
+// get user information by ID
+// admin can get all users and can not get information of other admin
+// user can only get their own information
+func (a *AuthGrpcServer) GetUserByID(ctx context.Context, id *auth.UserID) (*auth.User, error) {
+	if id.GetUserId() < 1 {
+		return &auth.User{}, status.Error(codes.InvalidArgument, "invalid user id")
+	}
+
+	token, err := middleware.ContextGetToken(ctx)
+	if err != nil {
+		return &auth.User{}, status.Error(codes.Unauthenticated, "no auth provided")
+	}
+
+	// dig the roles from the claims
+	username := token.Claims.(jwt.MapClaims)["username"].(string)
+	roles := token.Claims.(jwt.MapClaims)["roles"]
+
+	var userInToken domain.User
+	res := a.db.First(&userInToken, "username = ?", username)
+	if res.RowsAffected == 0 {
+		return &auth.User{}, status.Error(codes.Internal, "permission denied, user deleted")
+	}
+
+	if roles == "user" {
+		// user can not get information of other user
+		if userInToken.ID != uint(id.GetUserId()) {
+			return &auth.User{}, status.Error(codes.PermissionDenied, "permission denied")
+		}
+
+		// user can only get their own information
+		return &auth.User{
+			UserId:    id.GetUserId(),
+			Username:  userInToken.UserName,
+			Email:     userInToken.Email,
+			CreatedAt: userInToken.CreatedAt.String(),
+			UpdatedAt: userInToken.UpdatedAt.String(),
+		}, nil
+	}
+
+	var user domain.User
+	res = a.db.First(&user, "id = ?", id.GetUserId())
+
+	if res.RowsAffected == 0 {
+		return &auth.User{}, status.Error(codes.NotFound, "user not found")
+	}
+
+	fmt.Println("user", user)
+
+	// admin can not get information of other admin
+	if user.Role == "admin" && user.UserName != userInToken.UserName {
+		return &auth.User{}, status.Error(codes.PermissionDenied, "permission denied")
+	}
+
+	return &auth.User{
+		UserId:    id.GetUserId(),
+		Username:  user.UserName,
+		Email:     user.Email,
+		CreatedAt: user.CreatedAt.String(),
+		UpdatedAt: user.UpdatedAt.String(),
+	}, nil
+}
+
+// api for admin
+// get all users
+func (a *AuthGrpcServer) GetAllUsers(ctx context.Context, _ *emptypb.Empty) (*auth.GetAllUsersResponse, error) {
+	token, err := middleware.ContextGetToken(ctx)
+	if err != nil {
+		return &auth.GetAllUsersResponse{}, status.Error(codes.Unauthenticated, "no auth provided")
+	}
+
+	fmt.Println("token ", token)
+
+	// dig the roles from the claims
+	roles := token.Claims.(jwt.MapClaims)["roles"]
+
+	fmt.Println(roles)
+
+	if roles != "admin" {
+		return &auth.GetAllUsersResponse{}, status.Error(codes.PermissionDenied, "permission denied")
+	}
+
+	var users []*auth.User
+
+	res := a.db.Model(&domain.User{}).Select("id", "username", "email", "created_at", "updated_at").Where("role = ?", "user").Find(&users)
+
+	if res.Error != nil {
+		return &auth.GetAllUsersResponse{}, status.Error(codes.Internal, "failed to get all users")
+	}
+
+	fmt.Println("users", users)
+
+	return &auth.GetAllUsersResponse{
+		Users: users,
+	}, nil
+}
+
+// api for admin
 // admin delete a user by ID
 func (a *AuthGrpcServer) DeleteUserByID(ctx context.Context, in *auth.UserID) (*emptypb.Empty, error) {
 	token, err := middleware.ContextGetToken(ctx)
@@ -170,5 +326,38 @@ func (a *AuthGrpcServer) DeleteUserByID(ctx context.Context, in *auth.UserID) (*
 		return &emptypb.Empty{}, status.Error(codes.Internal, "failed to delete user")
 	}
 
-	return &emptypb.Empty{}, status.Error(codes.OK, "successful delete user by id given")
+	return &emptypb.Empty{}, nil
+}
+
+// api for admin
+// get email of admin
+func (a *AuthGrpcServer) GetAdminEmail(ctx context.Context, _ *emptypb.Empty) (*auth.GetAdminEmailResponse, error) {
+	token, err := middleware.ContextGetToken(ctx)
+	if err != nil {
+		return &auth.GetAdminEmailResponse{}, status.Error(codes.Unauthenticated, "no auth provided")
+	}
+
+	fmt.Println("token ", token)
+
+	// dig the roles from the claims
+	roles := token.Claims.(jwt.MapClaims)["roles"]
+
+	fmt.Println(roles)
+
+	if roles != "admin" {
+		return &auth.GetAdminEmailResponse{}, status.Error(codes.PermissionDenied, "permission denied")
+	}
+
+	var emails []string
+	res := a.db.Model(&domain.User{}).Where("role = ?", "admin").Select("email").Find(&emails)
+
+	if res.Error != nil {
+		return &auth.GetAdminEmailResponse{}, status.Error(codes.Internal, "failed to get admin email")
+	}
+
+	fmt.Println("emails", emails)
+
+	return &auth.GetAdminEmailResponse{
+		Email: emails,
+	}, nil
 }

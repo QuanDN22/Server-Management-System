@@ -85,8 +85,17 @@ func main() {
 		{UserName: "quan1", Password: "1", Email: "quan1@gmail.com", Role: "user"},
 		{UserName: "quan2", Password: "2", Email: "quan2@gmail.com", Role: "user"},
 		{UserName: "quan3", Password: "3", Email: "quan3@gmail.com", Role: "user"},
+		{UserName: "quan4", Password: "4", Email: "quan4@gmail.com", Role: "user"},
+		{UserName: "quan5", Password: "5", Email: "quan5@gmail.com", Role: "user"},
+		{UserName: "quan6", Password: "6", Email: "quan6@gmail.com", Role: "user"},
+		{UserName: "quan7", Password: "7", Email: "quan7@gmail.com", Role: "user"},
+		{UserName: "quan8", Password: "8", Email: "quan8@gmail.com", Role: "user"},
+		{UserName: "quan9", Password: "9", Email: "quan9@gmail.com", Role: "user"},
+		{UserName: "quan10", Password: "10", Email: "quan10@gmail.com", Role: "user"},
 
-		{UserName: "admin", Password: "pass", Email: "admin@gmail.com", Role: "admin"},
+		{UserName: "admin1", Password: "1", Email: "admin1@gmail.com", Role: "admin"},
+		{UserName: "admin2", Password: "2", Email: "admin2@gmail.com", Role: "admin"},
+		{UserName: "admin3", Password: "3", Email: "admin3@gmail.com", Role: "admin"},
 	}
 
 	for _, user := range users {

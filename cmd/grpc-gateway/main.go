@@ -35,9 +35,9 @@ func main() {
 	// new logger
 	// Create a logger with lumberjack integration
 	l, err := logger.NewLogger(
-		fmt.Sprintf("%s%s.log", cfg.LogFilename, cfg.ServiceName), 
-		int(cfg.LogMaxSize), 
-		int(cfg.LogMaxBackups), 
+		fmt.Sprintf("%s%s.log", cfg.LogFilename, cfg.ServiceName),
+		int(cfg.LogMaxSize),
+		int(cfg.LogMaxBackups),
 		int(cfg.LogMaxAge),
 		true,
 		zapcore.InfoLevel,

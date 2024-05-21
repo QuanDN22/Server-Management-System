@@ -1,16 +1,12 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Echo API",
-    "version": "1.0",
+    "title": "Auth Service API Documentation",
+    "version": "2.0",
     "contact": {
-      "name": "gRPC-Gateway project",
-      "url": "https://github.com/grpc-ecosystem/grpc-gateway",
-      "email": "none@example.com"
-    },
-    "license": {
-      "name": "BSD 3-Clause License",
-      "url": "https://github.com/grpc-ecosystem/grpc-gateway/blob/main/LICENSE"
+      "name": "Dinh Quan",
+      "url": "github.com/QuanDN22/Server-Management-System",
+      "email": "dinhngocquan112378@gmail.com"
     }
   },
   "tags": [
@@ -18,7 +14,9 @@
       "name": "AuthService"
     }
   ],
+  "host": "localhost:8080",
   "schemes": [
+    "http",
     "https"
   ],
   "consumes": [
@@ -226,7 +224,7 @@
           "AuthService"
         ]
       },
-      "post": {
+      "patch": {
         "summary": "change password",
         "operationId": "AuthService_ChangePassword",
         "responses": {
@@ -257,7 +255,15 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/AuthServiceChangePasswordBody"
+              "type": "object",
+              "properties": {
+                "old_password": {
+                  "type": "string"
+                },
+                "new_password": {
+                  "type": "string"
+                }
+              }
             }
           }
         ],
@@ -268,17 +274,6 @@
     }
   },
   "definitions": {
-    "AuthServiceChangePasswordBody": {
-      "type": "object",
-      "properties": {
-        "old_password": {
-          "type": "string"
-        },
-        "new_password": {
-          "type": "string"
-        }
-      }
-    },
     "protobufAny": {
       "type": "object",
       "properties": {
@@ -383,8 +378,30 @@
         },
         "email": {
           "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
         }
       }
     }
+  },
+  "securityDefinitions": {
+    "ApiKeyAuth": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "externalDocs": {
+    "description": "More about gRPC-Gateway",
+    "url": "https://github.com/grpc-ecosystem/grpc-gateway"
   }
 }

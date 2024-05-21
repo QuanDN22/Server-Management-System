@@ -26,3 +26,115 @@
 {"L":"INFO","T":"2024-05-21T20:32:41.696+0700","M":"database connected..."}
 {"L":"INFO","T":"2024-05-21T20:32:45.351+0700","M":"middleware created..."}
 {"L":"INFO","T":"2024-05-21T20:32:45.352+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-05-22T00:22:11.917+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-22T00:22:11.972+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-05-22T00:22:15.163+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-22T00:22:15.164+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-05-22T00:26:09.961+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-22T00:26:09.999+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-05-22T00:26:13.156+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-22T00:26:13.156+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-05-22T00:27:30.347+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-22T00:27:30.402+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-05-22T00:27:33.583+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-22T00:27:33.584+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-05-22T00:28:23.882+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-22T00:28:23.936+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-05-22T00:28:27.125+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-22T00:28:27.126+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-05-22T01:27:46.229+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-22T01:27:46.261+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-05-22T01:27:49.455+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-22T01:27:49.455+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-05-22T01:30:28.823+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-22T01:30:28.857+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-05-22T01:30:32.117+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-22T01:30:32.118+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-05-22T01:31:32.938+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-22T01:31:32.973+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-05-22T01:31:36.137+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-22T01:31:36.139+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-05-22T01:35:42.412+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-22T01:35:42.445+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-05-22T01:35:52.924+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-22T01:35:52.925+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-05-22T01:54:09.204+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-22T01:54:09.240+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-05-22T01:54:19.609+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-22T01:54:19.610+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-05-22T01:57:50.865+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-22T01:57:50.938+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-05-22T01:58:03.142+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-22T01:58:03.142+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-05-22T02:02:13.604+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-22T02:02:13.643+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-05-22T02:02:24.012+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-22T02:02:24.012+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-05-22T02:05:22.931+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-22T02:05:22.981+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-05-22T02:05:33.281+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-22T02:05:33.282+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-05-22T02:28:02.641+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-22T02:28:02.706+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-05-22T02:28:13.232+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-22T02:28:13.233+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-05-22T02:38:04.433+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-22T02:38:04.489+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-05-22T02:38:16.801+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-22T02:38:16.803+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-05-22T02:39:10.535+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-22T02:39:10.575+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-05-22T02:39:22.769+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-22T02:39:22.769+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-05-22T02:41:38.826+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-22T02:41:38.875+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-05-22T02:41:49.278+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-22T02:41:49.278+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-05-22T02:48:19.193+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-22T02:48:19.234+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-05-22T02:48:29.688+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-22T02:48:29.688+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-05-22T02:50:26.211+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-22T02:50:26.258+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-05-22T02:50:36.628+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-22T02:50:36.629+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-05-22T02:52:08.860+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-22T02:52:08.923+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-05-22T02:52:19.321+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-22T02:52:19.321+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-05-22T02:53:13.145+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-22T02:53:13.179+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-05-22T02:53:25.173+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-22T02:53:25.175+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-05-22T02:54:25.632+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-22T02:54:25.669+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-05-22T02:54:37.937+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-22T02:54:37.940+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-05-22T03:07:02.568+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-22T03:07:02.620+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-05-22T03:07:13.918+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-22T03:07:13.918+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-05-22T03:21:05.747+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-22T03:21:05.799+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-05-22T03:21:19.115+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-22T03:21:19.117+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-05-22T03:35:47.173+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-22T03:35:47.226+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-05-22T03:35:57.755+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-22T03:35:57.755+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-05-22T03:44:22.438+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-22T03:44:22.482+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-05-22T03:44:34.763+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-22T03:44:34.766+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-05-22T03:45:25.959+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-22T03:45:26.047+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-05-22T03:45:38.102+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-22T03:45:38.103+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-05-22T03:57:20.998+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-22T03:57:21.030+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-05-22T03:57:33.165+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-22T03:57:33.168+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-05-22T04:03:58.495+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-22T04:03:58.552+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-05-22T04:04:10.835+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-22T04:04:10.837+0700","M":"Auth gRPC server started","port":":5001"}
