@@ -240,12 +240,10 @@
           "type": "boolean"
         },
         "created_at": {
-          "type": "string",
-          "format": "date-time"
+          "type": "string"
         },
         "updated_at": {
-          "type": "string",
-          "format": "date-time"
+          "type": "string"
         }
       },
       "title": "server"

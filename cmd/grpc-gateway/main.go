@@ -16,6 +16,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 
 	authpb "github.com/QuanDN22/Server-Management-System/proto/auth"
+	mspb "github.com/QuanDN22/Server-Management-System/proto/management-system"
 )
 
 func main() {
@@ -64,6 +65,11 @@ func main() {
 	}
 
 	err = authpb.RegisterAuthServiceHandlerFromEndpoint(ctx, gwmux, cfg.AuthServerPort, opts)
+	if err != nil {
+		log.Fatalln("Failed to register gateway:", err)
+	}
+
+	err = mspb.RegisterManagementSystemHandlerFromEndpoint(ctx, gwmux, cfg.ManagementSystemServerPort, opts)
 	if err != nil {
 		log.Fatalln("Failed to register gateway:", err)
 	}

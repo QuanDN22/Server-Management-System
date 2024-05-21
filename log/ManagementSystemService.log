@@ -1,0 +1,4 @@
+{"L":"INFO","T":"2024-05-22T05:05:56.201+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-22T05:05:56.245+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-05-22T05:05:56.281+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-22T05:05:56.282+0700","M":"Auth gRPC server started","port":":5002"}

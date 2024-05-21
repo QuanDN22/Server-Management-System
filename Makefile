@@ -17,6 +17,9 @@ run-auth-server:
 run-grpc-gateway:
 	go run .\cmd\grpc-gateway\main.go auth.ed.pub 
 
+run-management-system:
+	go run .\cmd\management-system\main.go auth.ed.pub
+
 # api
 # token := eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJhcGkiLCJleHAiOjE3MTYxOTg1MTIsImlhdCI6MTcxNjE5NTUxMiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAxIiwibmJmIjoxNzE2MTk1NTEyLCJyb2xlcyI6InVzZXIiLCJ1c2VyIjoicXVhbjIifQ.9XpJGhGferHWPeVq7TD6XhfaxtzSkhMdbEyVrkf3jOG_2HjmP7pAWfupoeHU5JlDm7XtHX2832XbgRIK0tjOAA
 token := eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJhcGkiLCJleHAiOjE3MTYyMDQ5MzksImlhdCI6MTcxNjIwMTkzOSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAxIiwibmJmIjoxNzE2MjAxOTM5LCJyb2xlcyI6ImFkbWluIiwidXNlciI6ImFkbWluIn0.FlMQFy0uWZG7Dhw9_AHufbY874qfu8hlp9pM_eFccSE5ztQGSjR5SDFw-a0aHb49awxbwl3HAUUOYMHJ_DeSBg
