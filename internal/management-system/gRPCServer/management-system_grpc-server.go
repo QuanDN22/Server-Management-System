@@ -54,30 +54,30 @@ func NewManagementSystemGrpcServer(
 
 func (ms *ManagementSystemGrpcServer) Start(ctx context.Context, cancel context.CancelFunc) {
 	// start consumer of topic ping
-	go func() {
-		for {
-			// the `ReadMessage` method blocks until we receive the next event
-			msg, err := ms.pingConsumer.ReadMessage(ctx)
-			if err != nil {
-				panic("could not read message " + err.Error())
-			}
+	// go func() {
+	// 	for {
+	// 		// the `ReadMessage` method blocks until we receive the next event
+	// 		msg, err := ms.pingConsumer.ReadMessage(ctx)
+	// 		if err != nil {
+	// 			panic("could not read message " + err.Error())
+	// 		}
 
-			go ms.Woker(ctx, msg)
-		}
-	}()
+	// 		go ms.Woker(ctx, msg)
+	// 	}
+	// }()
 
 	// start consumer of topic monitor
-	go func (){
-		for {
-			// the `ReadMessage` method blocks until we receive the next event
-			msg, err := ms.monitorConsumer.ReadMessage(ctx)
-			if err != nil {
-				panic("could not read message " + err.Error())
-			}
+	// go func() {
+	// 	for {
+	// 		// the `ReadMessage` method blocks until we receive the next event
+	// 		msg, err := ms.monitorConsumer.ReadMessage(ctx)
+	// 		if err != nil {
+	// 			panic("could not read message " + err.Error())
+	// 		}
 
-			go ms.Woker(ctx, msg)
-		}
-	}()
+	// 		go ms.Woker(ctx, msg)
+	// 	}
+	// }()
 
 	// grpc server
 	go func() {
@@ -157,8 +157,8 @@ func (ms *ManagementSystemGrpcServer) Woker(ctx context.Context, msg kafka.Messa
 		// Marshal the struct/map to JSON for efficient message encoding
 		messageBytes, err := json.Marshal(resultTopic)
 		if err != nil {
-			ms.logger.Error("Failed to marshal resultTopic: "+err.Error())
-			return  // Handle error appropriately
+			ms.logger.Error("Failed to marshal resultTopic: " + err.Error())
+			return // Handle error appropriately
 		}
 
 		err = ms.monitorProducer.WriteMessages(ctx, kafka.Message{

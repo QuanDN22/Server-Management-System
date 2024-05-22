@@ -8,6 +8,7 @@ package management_system
 
 import (
 	context "context"
+	httpbody "google.golang.org/genproto/googleapis/api/httpbody"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -24,6 +25,7 @@ const (
 	ManagementSystem_CreateServer_FullMethodName = "/management.system.service.ManagementSystem/CreateServer"
 	ManagementSystem_UpdateServer_FullMethodName = "/management.system.service.ManagementSystem/UpdateServer"
 	ManagementSystem_DeleteServer_FullMethodName = "/management.system.service.ManagementSystem/DeleteServer"
+	ManagementSystem_ImportServer_FullMethodName = "/management.system.service.ManagementSystem/ImportServer"
 )
 
 // ManagementSystemClient is the client API for ManagementSystem service.
@@ -38,6 +40,8 @@ type ManagementSystemClient interface {
 	UpdateServer(ctx context.Context, in *UpdateServerRequest, opts ...grpc.CallOption) (*Server, error)
 	// Delete server
 	DeleteServer(ctx context.Context, in *DeleteServerRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Import server
+	ImportServer(ctx context.Context, opts ...grpc.CallOption) (ManagementSystem_ImportServerClient, error)
 }
 
 type managementSystemClient struct {
@@ -84,6 +88,40 @@ func (c *managementSystemClient) DeleteServer(ctx context.Context, in *DeleteSer
 	return out, nil
 }
 
+func (c *managementSystemClient) ImportServer(ctx context.Context, opts ...grpc.CallOption) (ManagementSystem_ImportServerClient, error) {
+	stream, err := c.cc.NewStream(ctx, &ManagementSystem_ServiceDesc.Streams[0], ManagementSystem_ImportServer_FullMethodName, opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &managementSystemImportServerClient{stream}
+	return x, nil
+}
+
+type ManagementSystem_ImportServerClient interface {
+	Send(*ImportServerRequest) error
+	CloseAndRecv() (*httpbody.HttpBody, error)
+	grpc.ClientStream
+}
+
+type managementSystemImportServerClient struct {
+	grpc.ClientStream
+}
+
+func (x *managementSystemImportServerClient) Send(m *ImportServerRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *managementSystemImportServerClient) CloseAndRecv() (*httpbody.HttpBody, error) {
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	m := new(httpbody.HttpBody)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // ManagementSystemServer is the server API for ManagementSystem service.
 // All implementations must embed UnimplementedManagementSystemServer
 // for forward compatibility
@@ -96,6 +134,8 @@ type ManagementSystemServer interface {
 	UpdateServer(context.Context, *UpdateServerRequest) (*Server, error)
 	// Delete server
 	DeleteServer(context.Context, *DeleteServerRequest) (*emptypb.Empty, error)
+	// Import server
+	ImportServer(ManagementSystem_ImportServerServer) error
 	mustEmbedUnimplementedManagementSystemServer()
 }
 
@@ -114,6 +154,9 @@ func (UnimplementedManagementSystemServer) UpdateServer(context.Context, *Update
 }
 func (UnimplementedManagementSystemServer) DeleteServer(context.Context, *DeleteServerRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteServer not implemented")
+}
+func (UnimplementedManagementSystemServer) ImportServer(ManagementSystem_ImportServerServer) error {
+	return status.Errorf(codes.Unimplemented, "method ImportServer not implemented")
 }
 func (UnimplementedManagementSystemServer) mustEmbedUnimplementedManagementSystemServer() {}
 
@@ -200,6 +243,32 @@ func _ManagementSystem_DeleteServer_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ManagementSystem_ImportServer_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(ManagementSystemServer).ImportServer(&managementSystemImportServerServer{stream})
+}
+
+type ManagementSystem_ImportServerServer interface {
+	SendAndClose(*httpbody.HttpBody) error
+	Recv() (*ImportServerRequest, error)
+	grpc.ServerStream
+}
+
+type managementSystemImportServerServer struct {
+	grpc.ServerStream
+}
+
+func (x *managementSystemImportServerServer) SendAndClose(m *httpbody.HttpBody) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *managementSystemImportServerServer) Recv() (*ImportServerRequest, error) {
+	m := new(ImportServerRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // ManagementSystem_ServiceDesc is the grpc.ServiceDesc for ManagementSystem service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -224,6 +293,12 @@ var ManagementSystem_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _ManagementSystem_DeleteServer_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "ImportServer",
+			Handler:       _ManagementSystem_ImportServer_Handler,
+			ClientStreams: true,
+		},
+	},
 	Metadata: "management-system/server.proto",
 }

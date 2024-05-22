@@ -101,6 +101,7 @@ func main() {
 	// grpc server
 	grpcserver := grpc.NewServer(
 		grpc.UnaryInterceptor(mw.UnaryServerInterceptor),
+		grpc.StreamInterceptor(mw.StreamServerInterceptor),
 	)
 	management_system_grpcserver := gRPCServer.NewManagementSystemGrpcServer(cfg, l, grpcserver, db, pingConsumer, monitorConsumer, monitorProducer)
 	management_system_grpcserver.Start(ctx, cancel)

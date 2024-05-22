@@ -22,7 +22,8 @@ run-management-system:
 
 # api
 # token := eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJhcGkiLCJleHAiOjE3MTYxOTg1MTIsImlhdCI6MTcxNjE5NTUxMiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAxIiwibmJmIjoxNzE2MTk1NTEyLCJyb2xlcyI6InVzZXIiLCJ1c2VyIjoicXVhbjIifQ.9XpJGhGferHWPeVq7TD6XhfaxtzSkhMdbEyVrkf3jOG_2HjmP7pAWfupoeHU5JlDm7XtHX2832XbgRIK0tjOAA
-token := eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJhcGkiLCJleHAiOjE3MTYyMDQ5MzksImlhdCI6MTcxNjIwMTkzOSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAxIiwibmJmIjoxNzE2MjAxOTM5LCJyb2xlcyI6ImFkbWluIiwidXNlciI6ImFkbWluIn0.FlMQFy0uWZG7Dhw9_AHufbY874qfu8hlp9pM_eFccSE5ztQGSjR5SDFw-a0aHb49awxbwl3HAUUOYMHJ_DeSBg
+token := eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJhcGkiLCJleHAiOjE3MTY0MTgwMTcsImlhdCI6MTcxNjQxNTAxNywiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAxIiwibmJmIjoxNzE2NDE1MDE3LCJyb2xlcyI6ImFkbWluIiwidXNlcm5hbWUiOiJhZG1pbjEifQ.EXq6JO9K7u8wf87fuRbmPCA4yaMTqfi2ZyAWbwGhqN0wfPsrhE0Va4ScfCCE8_7ctFuXKnmX6MzGnBOR3nLWBA
+
 # api of auth server
 login: 
 	curl -H "Content-Type: application/json" -X POST http://localhost:8080/v1/api/auth/login \
@@ -54,3 +55,10 @@ delete:
 
 # curl -s -H "Content-Type: application/json" "Authorization: Bearer ${token}" DELETE http://localhost:8080/v1/api/delete \
 	# -d "{\"user_id\":\"1\"}"
+
+
+import:
+	curl \
+	-H "Authorization: Bearer ${token}" \
+	-X POST -F "attachment=@./data/data_server_copy.xlsx" http://localhost:8080/v1/api/servers/import
+

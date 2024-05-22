@@ -2,12 +2,16 @@ package gRPCServer
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"io"
+	"log"
 
 	"github.com/QuanDN22/Server-Management-System/internal/management-system/domain"
 	"github.com/QuanDN22/Server-Management-System/pkg/middleware"
 	managementsystem "github.com/QuanDN22/Server-Management-System/proto/management-system"
 	"github.com/golang-jwt/jwt"
+	"google.golang.org/genproto/googleapis/api/httpbody"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -169,7 +173,7 @@ func (ms *ManagementSystemGrpcServer) UpdateServer(ctx context.Context, in *mana
 				}
 			}
 
-			if server_status != server.Server_Status && server_status != ""{
+			if server_status != server.Server_Status && server_status != "" {
 				server.Server_Status = server_status
 			}
 
@@ -338,3 +342,107 @@ func (ms *ManagementSystemGrpcServer) DeleteServer(ctx context.Context, in *mana
 	return &emptypb.Empty{}, nil
 }
 
+// Import server
+func (ms *ManagementSystemGrpcServer) ImportServer(stream managementsystem.ManagementSystem_ImportServerServer) error {
+	// fmt.Println("start import server")
+
+	type server struct {
+		Server_Name  string
+		Server_IPv4   string
+		Server_Status string
+	}
+
+	importSucces := 0
+	listServersImportSucces := make([]server, 0)
+
+	importFailed := 0
+	listServersImportFailed := make([]server, 0)
+
+	type response struct {
+		ImportSucces            int
+		ImportFailed            int
+		ListServersImportSucces []server
+		ListServersImportFailed []server
+	}
+
+	////
+	for {
+		req, err := stream.Recv()
+		if err == io.EOF {
+			responses, _ := json.Marshal(&response{
+				ImportSucces:            importSucces,
+				ListServersImportSucces: listServersImportSucces,
+				ImportFailed:            importFailed,
+				ListServersImportFailed: listServersImportFailed,
+			})
+
+			fmt.Println("Result", importSucces, importFailed)
+
+			return stream.SendAndClose(&httpbody.HttpBody{
+				ContentType: "application/json",
+				Data:        []byte(responses),
+			})
+		}
+		if err != nil {
+			log.Fatalf("Error while reading client stream: %v", err)
+			return err
+		}
+
+		// TODO:
+		var res server
+		err = json.Unmarshal(req.Content, &res)
+		if err != nil {
+			log.Fatalf("Error while unmarshalling: %v", err)
+		}
+		log.Println(res)
+
+		// check if infomation server invalid
+		if res.Server_Name == "" || res.Server_IPv4 == "" || res.Server_Status == "" {
+			importFailed++
+			listServersImportFailed = append(listServersImportFailed, res)
+			continue
+		}
+
+		fmt.Println("server info not null")
+
+		// check if server name already exists
+		var server1 domain.Server
+		result := ms.db.First(&server1, "server_name = ?", res.Server_Name)
+		if result.RowsAffected != 0 {
+			importFailed++
+			listServersImportFailed = append(listServersImportFailed, res)
+			continue
+		}
+
+		fmt.Println("server name is not existing")
+
+		// check if server ip already exists
+		var server2 domain.Server
+		result = ms.db.First(&server2, "server_ipv4 = ?", res.Server_IPv4)
+		if result.RowsAffected != 0 {
+			importFailed++
+			listServersImportFailed = append(listServersImportFailed, res)
+			continue
+		}
+
+		fmt.Println("server ip is not existing")
+
+		// create new server
+		result = ms.db.Create(&domain.Server{
+			Server_Name:   res.Server_Name,
+			Server_IPv4:   res.Server_IPv4,
+			Server_Status: res.Server_Status,
+		})
+
+		if result.RowsAffected == 0 {
+			importFailed++
+			listServersImportFailed = append(listServersImportFailed, res)
+			continue
+		}
+
+		fmt.Println("server ip is created")
+
+		importSucces++
+		listServersImportSucces = append(listServersImportSucces, res)
+	}
+}
