@@ -22,5 +22,6 @@ redis:
 elasticsearch: 
 
 grpc-gateway: github.com/grpc-ecosystem/grpc-gateway
-        
+
+docker stop $(docker ps -a -q)
 

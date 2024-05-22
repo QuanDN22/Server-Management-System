@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/QuanDN22/Server-Management-System/internal/consumer"
 	"github.com/QuanDN22/Server-Management-System/internal/management-system/domain"
 	"github.com/QuanDN22/Server-Management-System/internal/management-system/gRPCServer"
 	"github.com/QuanDN22/Server-Management-System/pkg/config"
+	"github.com/QuanDN22/Server-Management-System/pkg/kafka/producer"
 	"github.com/QuanDN22/Server-Management-System/pkg/logger"
 	"github.com/QuanDN22/Server-Management-System/pkg/middleware"
 	"github.com/QuanDN22/Server-Management-System/pkg/postgres"
@@ -64,22 +66,31 @@ func main() {
 	}
 
 	users := []domain.Server{
-		{Server_Name: "server#1", Server_IPv4: "192.168.1.1", Server_Status: "on", },
-		{Server_Name: "server#2", Server_IPv4: "192.168.1.2", Server_Status: "off", },
-		{Server_Name: "server#3", Server_IPv4: "192.168.1.3", Server_Status: "off", },
-		{Server_Name: "server#4", Server_IPv4: "192.168.1.4", Server_Status: "on", },
-		{Server_Name: "server#5", Server_IPv4: "192.168.1.5", Server_Status: "off", },
-		{Server_Name: "server#6", Server_IPv4: "192.168.1.6", Server_Status: "off", },
-		{Server_Name: "server#7", Server_IPv4: "192.168.1.7", Server_Status: "on", },
-		{Server_Name: "server#8", Server_IPv4: "192.168.1.8", Server_Status: "on", },
-		{Server_Name: "server#9", Server_IPv4: "192.168.1.9", Server_Status: "on", },
-		{Server_Name: "server#10", Server_IPv4: "192.168.1.10", Server_Status: "off", },
+		{Server_Name: "server#1", Server_IPv4: "192.168.1.1", Server_Status: "on"},
+		{Server_Name: "server#2", Server_IPv4: "192.168.1.2", Server_Status: "off"},
+		{Server_Name: "server#3", Server_IPv4: "192.168.1.3", Server_Status: "off"},
+		{Server_Name: "server#4", Server_IPv4: "192.168.1.4", Server_Status: "on"},
+		{Server_Name: "server#5", Server_IPv4: "192.168.1.5", Server_Status: "off"},
+		{Server_Name: "server#6", Server_IPv4: "192.168.1.6", Server_Status: "off"},
+		{Server_Name: "server#7", Server_IPv4: "192.168.1.7", Server_Status: "on"},
+		{Server_Name: "server#8", Server_IPv4: "192.168.1.8", Server_Status: "on"},
+		{Server_Name: "server#9", Server_IPv4: "192.168.1.9", Server_Status: "on"},
+		{Server_Name: "server#10", Server_IPv4: "192.168.1.10", Server_Status: "off"},
 	}
 
 	for _, user := range users {
 		db.Create(&user)
 	}
 
+	// ping Consumer
+	pingConsumer := consumer.NewConsumer(ctx, cfg.PingBrokerAddress, cfg.PingTopic, cfg.PingConsumerGroupID)
+
+	// monitor Consumer
+	monitorConsumer := consumer.NewConsumer(ctx, cfg.MonitorBrokerAddress, cfg.MonitorTopic, cfg.MonitorConsumerGroupID)
+
+	// monitor Producer
+	monitorProducer := producer.NewProducer(ctx, cfg.MonitorBrokerAddress, cfg.MonitorResultsTopic)
+	
 	mw, err := middleware.NewMiddleware(cfg.PathPublicKey)
 	// mw, err := middleware.NewMiddleware(os.Args[1])
 	if err != nil {
@@ -91,6 +102,6 @@ func main() {
 	grpcserver := grpc.NewServer(
 		grpc.UnaryInterceptor(mw.UnaryServerInterceptor),
 	)
-	management_system_grpcserver := gRPCServer.NewManagementSystemGrpcServer(cfg, l, grpcserver, db)
+	management_system_grpcserver := gRPCServer.NewManagementSystemGrpcServer(cfg, l, grpcserver, db, pingConsumer, monitorConsumer, monitorProducer)
 	management_system_grpcserver.Start(ctx, cancel)
 }

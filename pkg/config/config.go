@@ -9,12 +9,14 @@ import (
 type Config struct {
 	ServiceName string `mapstructure:"SERVICE_NAME"`
 
+	NumberOfServer int `mapstructure:"NUMBER_OF_SERVER"`
+
 	GrpcAddr string `mapstructure:"GRPC_ADDR"`
 	GrpcPort string `mapstructure:"GRPC_PORT"`
 
-	AuthServerPort       string `mapstructure:"AUTH_SERVER_PORT"`
+	AuthServerPort             string `mapstructure:"AUTH_SERVER_PORT"`
 	ManagementSystemServerPort string `mapstructure:"MANAGEMENT_SYSTEM_SERVER_PORT"`
-	GrpcGatewayPort      string `mapstructure:"GRPC_GATEWAY_PORT"`
+	GrpcGatewayPort            string `mapstructure:"GRPC_GATEWAY_PORT"`
 
 	PGDatabaseHost     string `mapstructure:"PG_DATABASE_HOST"`
 	PGDatabaseUser     string `mapstructure:"PG_DATABASE_USER"`
@@ -25,6 +27,17 @@ type Config struct {
 	PathPrivateKey string `mapstructure:"PATH_PRIVATE_KEY"`
 	PathPublicKey  string `mapstructure:"PATH_PUBLIC_KEY"`
 
+	PingBrokerAddress   string `mapstructure:"PING_BROKER_ADDRESS"`
+	PingTopic           string `mapstructure:"PING_TOPIC"`
+	PingResultsTopic    string `mapstructure:"PING_RESULTS_TOPIC"`
+	PingConsumerGroupID string `mapstructure:"PING_CONSUMER_GROUP_ID"`
+
+	MonitorBrokerAddress   string `mapstructure:"MONITOR_BROKER_ADDRESS"`
+	MonitorTopic           string `mapstructure:"MONITOR_TOPIC"`
+	MonitorResultsTopic    string `mapstructure:"MONITOR_RESULTS_TOPIC"`
+	MonitorConsumerGroupID string `mapstructure:"MONITOR_CONSUMER_GROUP_ID"`
+
+	KafkaBrokerAddress          string `mapstructure:"KAFKA_BROKER_ADDRESS"`
 	KafkaTopic                  string `mapstructure:"KAFKA_TOPIC"`
 	ResultsKafkaTopic           string `mapstructure:"RESULTS_KAFKA_TOPIC"`
 	KafkaConsumerGroupId        string `mapstructure:"KAFKA_CONSUMER_GROUP_ID"`
