@@ -157,7 +157,7 @@
                   "type": "string"
                 },
                 "server_status": {
-                  "type": "boolean"
+                  "type": "string"
                 }
               },
               "title": "update server request"
@@ -209,7 +209,7 @@
           "type": "string"
         },
         "server_status": {
-          "type": "boolean"
+          "type": "string"
         }
       },
       "title": "create server request"
@@ -237,7 +237,7 @@
           "type": "string"
         },
         "server_status": {
-          "type": "boolean"
+          "type": "string"
         },
         "created_at": {
           "type": "string"

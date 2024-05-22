@@ -131,14 +131,14 @@ message UpdateServerRequest {
     int64 Server_ID = 1 [ json_name = "server_id" ];
     string Server_Name = 2 [ json_name = "server_name" ];
     string Server_IPv4 = 3 [ json_name = "server_ipv4" ];
-    bool Server_Status = 4 [ json_name = "server_status" ];
+    string Server_Status = 4 [ json_name = "server_status" ];
 }
 
 // create server request
 message CreateServerRequest {
     string Server_Name = 1  [ json_name = "server_name" ];
 	string Server_IPv4 = 2  [ json_name = "server_ipv4" ];
-    bool Server_Status = 3  [ json_name = "server_status" ];
+    string Server_Status = 3  [ json_name = "server_status" ];
 }
 
 // server
@@ -146,7 +146,7 @@ message Server {
     int64 Server_ID = 1 [ json_name = "server_id" ];
     string Server_Name = 2 [ json_name = "server_name" ];
     string Server_IPv4 = 3 [ json_name = "server_ipv4" ];
-    bool Server_Status = 4 [ json_name = "server_status" ];
+    string Server_Status = 4 [ json_name = "server_status" ];
 
     string CreatedAt = 5 [ json_name = "created_at" ];
     string UpdatedAt = 6 [ json_name = "updated_at" ];

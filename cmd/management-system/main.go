@@ -64,16 +64,16 @@ func main() {
 	}
 
 	users := []domain.Server{
-		{Server_Name: "server#1", Server_IPv4: "192.168.1.1", Server_Status: true, },
-		{Server_Name: "server#2", Server_IPv4: "192.168.1.2", Server_Status: false, },
-		{Server_Name: "server#3", Server_IPv4: "192.168.1.3", Server_Status: false, },
-		{Server_Name: "server#4", Server_IPv4: "192.168.1.4", Server_Status: true, },
-		{Server_Name: "server#5", Server_IPv4: "192.168.1.5", Server_Status: false, },
-		{Server_Name: "server#6", Server_IPv4: "192.168.1.6", Server_Status: false, },
-		{Server_Name: "server#7", Server_IPv4: "192.168.1.7", Server_Status: true, },
-		{Server_Name: "server#8", Server_IPv4: "192.168.1.8", Server_Status: true, },
-		{Server_Name: "server#9", Server_IPv4: "192.168.1.9", Server_Status: true, },
-		{Server_Name: "server#10", Server_IPv4: "192.168.1.10", Server_Status: false, },
+		{Server_Name: "server#1", Server_IPv4: "192.168.1.1", Server_Status: "on", },
+		{Server_Name: "server#2", Server_IPv4: "192.168.1.2", Server_Status: "off", },
+		{Server_Name: "server#3", Server_IPv4: "192.168.1.3", Server_Status: "off", },
+		{Server_Name: "server#4", Server_IPv4: "192.168.1.4", Server_Status: "on", },
+		{Server_Name: "server#5", Server_IPv4: "192.168.1.5", Server_Status: "off", },
+		{Server_Name: "server#6", Server_IPv4: "192.168.1.6", Server_Status: "off", },
+		{Server_Name: "server#7", Server_IPv4: "192.168.1.7", Server_Status: "on", },
+		{Server_Name: "server#8", Server_IPv4: "192.168.1.8", Server_Status: "on", },
+		{Server_Name: "server#9", Server_IPv4: "192.168.1.9", Server_Status: "on", },
+		{Server_Name: "server#10", Server_IPv4: "192.168.1.10", Server_Status: "off", },
 	}
 
 	for _, user := range users {
