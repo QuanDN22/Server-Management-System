@@ -41,3 +41,44 @@ func (mw *Middleware) UnaryServerInterceptor(ctx context.Context, req interface{
 	ctx = ContextSetToken(ctx, token)
 	return handler(ctx, req)
 }
+
+func (mw *Middleware) StreamServerInterceptor(srv interface{}, ss grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
+	fmt.Println()
+	fmt.Println("4. Stream Server Interceptor")
+	fmt.Println(info.FullMethod)
+
+	headers, ok := metadata.FromIncomingContext(ss.Context())
+	if !ok {
+		return status.Errorf(codes.Unauthenticated, "no auth provided")
+	}
+
+	tokens := headers.Get("jwt")
+	if len(tokens) < 1 {
+		return status.Errorf(codes.Unauthenticated, "no auth provided")
+	}
+
+	tokenString := tokens[0] // just use the first, ignore repeated headers
+
+	token, err := mw.GetToken(tokenString)
+	if err != nil {
+		return fmt.Errorf("invalid token: %w", err)
+	}
+
+	ctx := ContextSetToken(ss.Context(), token)
+
+	wrappedStream := &wrapperStream{
+		ServerStream: ss,
+		ctx:          ctx,
+	}
+
+	return handler(srv, wrappedStream)
+}
+
+type wrapperStream struct {
+	grpc.ServerStream
+	ctx context.Context
+}
+
+func (w *wrapperStream) Context() context.Context {
+	return w.ctx
+}
