@@ -102,7 +102,7 @@ func (ms *ManagementSystemGrpcServer) CreateServer(ctx context.Context, in *mana
 	}, nil
 }
 
-// // Update server
+// Update server
 func (ms *ManagementSystemGrpcServer) UpdateServer(ctx context.Context, in *managementsystem.UpdateServerRequest) (*managementsystem.Server, error) {
 	token, err := middleware.ContextGetToken(ctx)
 	if err != nil {
