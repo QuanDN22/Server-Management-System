@@ -1,0 +1,692 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "title": "apu/server/server.proto",
+      "version": "version not set"
+    },
+    "tags": [
+      {
+        "name": "ServerService"
+      }
+    ],
+    "consumes": [
+      "application/json"
+    ],
+    "produces": [
+      "application/json"
+    ],
+    "paths": {
+      "/api/v1/server": {
+        "get": {
+          "summary": "Get list user",
+          "operationId": "ServerService_ListServers",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "$ref": "#/definitions/ListServersResponse"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
+            }
+          },
+          "parameters": [
+            {
+              "name": "query",
+              "in": "query",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "name": "filter.createdAtFrom",
+              "in": "query",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "name": "filter.createdAtTo",
+              "in": "query",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "name": "filter.updatedAtFrom",
+              "in": "query",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "name": "filter.updatedAtTo",
+              "in": "query",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "name": "filter.status",
+              "in": "query",
+              "required": false,
+              "type": "string",
+              "enum": [
+                "NONE",
+                "ON",
+                "OFF"
+              ],
+              "default": "NONE"
+            },
+            {
+              "name": "pagination.limit",
+              "in": "query",
+              "required": false,
+              "type": "string",
+              "format": "int64"
+            },
+            {
+              "name": "pagination.page",
+              "in": "query",
+              "required": false,
+              "type": "string",
+              "format": "int64"
+            },
+            {
+              "name": "pagination.pageSize",
+              "in": "query",
+              "required": false,
+              "type": "string",
+              "format": "int64"
+            },
+            {
+              "name": "pagination.sort",
+              "in": "query",
+              "required": false,
+              "type": "string",
+              "enum": [
+                "NONE",
+                "ASC",
+                "DESC"
+              ],
+              "default": "NONE"
+            },
+            {
+              "name": "pagination.sortBy",
+              "in": "query",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "name": "Authorization",
+              "in": "header",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "tags": [
+            "ServerService"
+          ]
+        },
+        "delete": {
+          "summary": "Delete server by name",
+          "operationId": "ServerService_DeleteServerByName",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
+            }
+          },
+          "parameters": [
+            {
+              "name": "name",
+              "description": "The resource name of the Server to be deleted.",
+              "in": "query",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "Authorization",
+              "in": "header",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "tags": [
+            "ServerService"
+          ]
+        },
+        "post": {
+          "summary": "Create server",
+          "operationId": "ServerService_CreateServer",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "$ref": "#/definitions/Server"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
+            }
+          },
+          "parameters": [
+            {
+              "name": "body",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/CreateServerRequest"
+              }
+            },
+            {
+              "name": "Authorization",
+              "in": "header",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "tags": [
+            "ServerService"
+          ]
+        }
+      },
+      "/api/v1/server/by/name": {
+        "get": {
+          "summary": "Get server by name",
+          "operationId": "ServerService_GetServerByName",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "$ref": "#/definitions/Server"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
+            }
+          },
+          "parameters": [
+            {
+              "name": "name",
+              "description": "The field will contain name of the resource requested.",
+              "in": "query",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "Authorization",
+              "in": "header",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "tags": [
+            "ServerService"
+          ]
+        }
+      },
+      "/api/v1/server/export": {
+        "post": {
+          "summary": "Export server",
+          "operationId": "ServerService_ExportServer",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
+            }
+          },
+          "parameters": [
+            {
+              "name": "body",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/ExportServerRequest"
+              }
+            },
+            {
+              "name": "Authorization",
+              "in": "header",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "tags": [
+            "ServerService"
+          ]
+        }
+      },
+      "/api/v1/server/{id}": {
+        "get": {
+          "summary": "Get server by id",
+          "operationId": "ServerService_GetServerById",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "$ref": "#/definitions/Server"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
+            }
+          },
+          "parameters": [
+            {
+              "name": "id",
+              "description": "The field will contain name of the resource requested.",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "Authorization",
+              "in": "header",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "tags": [
+            "ServerService"
+          ]
+        },
+        "delete": {
+          "summary": "Delete server by id",
+          "operationId": "ServerService_DeleteServerById",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
+            }
+          },
+          "parameters": [
+            {
+              "name": "id",
+              "description": "The resource id of the Server to be deleted.",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "Authorization",
+              "in": "header",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "tags": [
+            "ServerService"
+          ]
+        },
+        "patch": {
+          "summary": "Update server",
+          "operationId": "ServerService_UpdateServer",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "$ref": "#/definitions/Server"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
+            }
+          },
+          "parameters": [
+            {
+              "name": "id",
+              "description": "The Server resource which replaces the resource on the server.",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "body",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/ServerServiceUpdateServerBody"
+              }
+            },
+            {
+              "name": "Authorization",
+              "in": "header",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "tags": [
+            "ServerService"
+          ]
+        }
+      }
+    },
+    "definitions": {
+      "CreateServerRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The Server resource to create.\nThe field name should match the Noun in the method name."
+          },
+          "status": {
+            "$ref": "#/definitions/CreateServerRequestServerStatus"
+          },
+          "ipv4": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "CreateServerRequestServerStatus": {
+        "type": "string",
+        "enum": [
+          "NONE",
+          "ON",
+          "OFF"
+        ],
+        "default": "NONE"
+      },
+      "ExportServerRequest": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "format": "int64"
+          },
+          "file": {
+            "$ref": "#/definitions/FileExport"
+          },
+          "filter": {
+            "$ref": "#/definitions/FilterServer"
+          },
+          "pagination": {
+            "$ref": "#/definitions/PaginationExportRequest"
+          }
+        }
+      },
+      "FileExport": {
+        "type": "object",
+        "properties": {
+          "fileName": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "fileName"
+        ]
+      },
+      "FilterServer": {
+        "type": "object",
+        "properties": {
+          "createdAtFrom": {
+            "type": "string"
+          },
+          "createdAtTo": {
+            "type": "string"
+          },
+          "updatedAtFrom": {
+            "type": "string"
+          },
+          "updatedAtTo": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/definitions/FilterServerServerStatus"
+          }
+        }
+      },
+      "FilterServerServerStatus": {
+        "type": "string",
+        "enum": [
+          "NONE",
+          "ON",
+          "OFF"
+        ],
+        "default": "NONE"
+      },
+      "ImportServerResponse": {
+        "type": "object",
+        "properties": {
+          "numServerImported": {
+            "type": "string",
+            "format": "int64"
+          },
+          "serverImported": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "$ref": "#/definitions/Server"
+            }
+          },
+          "numServerFail": {
+            "type": "string",
+            "format": "int64"
+          },
+          "serverFail": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "$ref": "#/definitions/Server"
+            }
+          }
+        }
+      },
+      "ListServersResponse": {
+        "type": "object",
+        "properties": {
+          "servers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "$ref": "#/definitions/Server"
+            },
+            "description": "The field name should match the noun \"Server\" in the method name.\nThere will be a maximum number of items returned based on the page_size field in the request."
+          },
+          "total": {
+            "type": "string",
+            "format": "int64"
+          }
+        }
+      },
+      "Pagination": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "string",
+            "format": "int64"
+          },
+          "page": {
+            "type": "string",
+            "format": "int64"
+          },
+          "pageSize": {
+            "type": "string",
+            "format": "int64"
+          },
+          "sort": {
+            "$ref": "#/definitions/TypeSort"
+          },
+          "sortBy": {
+            "type": "string"
+          }
+        }
+      },
+      "PaginationExportRequest": {
+        "type": "object",
+        "properties": {
+          "pageSize": {
+            "type": "string",
+            "format": "int64"
+          },
+          "fromPage": {
+            "type": "string",
+            "format": "int64"
+          },
+          "toPage": {
+            "type": "string",
+            "format": "int64"
+          },
+          "sort": {
+            "$ref": "#/definitions/TypeSort"
+          },
+          "sortBy": {
+            "type": "string"
+          }
+        }
+      },
+      "Server": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "createdBy": {
+            "type": "string",
+            "format": "int64"
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "updatedBy": {
+            "type": "string",
+            "format": "int64"
+          },
+          "deletedAt": {
+            "type": "string"
+          },
+          "deletedBy": {
+            "type": "string",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/definitions/ServerServerStatus"
+          },
+          "ipv4": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "ipv4"
+        ]
+      },
+      "ServerServerStatus": {
+        "type": "string",
+        "enum": [
+          "NONE",
+          "ON",
+          "OFF"
+        ],
+        "default": "NONE"
+      },
+      "ServerServiceUpdateServerBody": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/definitions/UpdateServerRequestServerStatus"
+          },
+          "ipv4": {
+            "type": "string"
+          }
+        }
+      },
+      "TypeSort": {
+        "type": "string",
+        "enum": [
+          "NONE",
+          "ASC",
+          "DESC"
+        ],
+        "default": "NONE"
+      },
+      "UpdateServerRequestServerStatus": {
+        "type": "string",
+        "enum": [
+          "NONE",
+          "ON",
+          "OFF"
+        ],
+        "default": "NONE"
+      },
+      "protobufAny": {
+        "type": "object",
+        "properties": {
+          "@type": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": {}
+      },
+      "rpcStatus": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "$ref": "#/definitions/protobufAny"
+            }
+          }
+        }
+      }
+    }
+  }
+  
