@@ -24,6 +24,11 @@ type Config struct {
 	PGDatabaseDBName   string `mapstructure:"PG_DATABASE_DBNAME"`
 	PGDatabasePort     string `mapstructure:"PG_DATABASE_PORT"`
 
+	RedisHost string `mapstructure:"REDIS_HOST"`
+	RedisPort string `mapstructure:"REDIS_PORT"`
+	RedisPassword string `mapstructure:"REDIS_PASSWORD"`
+	RedisDB string `mapstructure:"REDIS_DB"`
+
 	PathPrivateKey string `mapstructure:"PATH_PRIVATE_KEY"`
 	PathPublicKey  string `mapstructure:"PATH_PUBLIC_KEY"`
 
