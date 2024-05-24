@@ -84,11 +84,60 @@
         ]
       }
     },
-    "/v1/api/servers/{server_id}": {
-      "delete": {
-        "summary": "Delete server",
-        "description": "Delete server",
-        "operationId": "DeleteServer",
+    "/v1/api/servers/import": {
+      "post": {
+        "description": "Imports server data from an Excel file and creates multiple servers.",
+          "consumes": [
+              "multipart/form-data"
+          ],
+          "produces": [
+              "application/json"
+          ],
+          "tags": [
+              "Server"
+          ],
+          "summary": "Import servers from Excel",
+          "parameters": [
+              {
+                  "type": "file",
+                  "description": "Excel file containing server data",
+                  "name": "listserver",
+                  "in": "formData",
+                  "required": true
+              }
+          ],
+          "responses": {
+              "200": {
+                  "description": "OK",
+                  "schema": {
+                  }
+              },
+              "400": {
+                  "description": "Bad request - Failed to read or open file",
+                  "schema": {
+          
+                  }
+              },
+              "403": {
+                  "description": "Forbidden - User does not have permission to import servers",
+                  "schema": {
+                      
+                  }
+              },
+              "500": {
+                  "description": "Internal server error - Failed to parse Excel or create servers",
+                  "schema": {
+                    
+                  }
+              }
+          }
+      }
+  },
+  "/v1/api/servers/{server_id}": {
+    "delete": {
+      "summary": "Delete server",
+      "description": "Delete server",
+      "operationId": "DeleteServer",
         "responses": {
           "200": {
             "description": "A successful response.",

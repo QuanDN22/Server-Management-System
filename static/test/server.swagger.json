@@ -142,34 +142,6 @@
             "type": "string"
           },
           {
-            "name": "filter.createdAtFrom",
-            "description": "server_created_at_from: 2024-05-20",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "filter.createdAtTo",
-            "description": "server_created_at_to: 2024-05-25",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "filter.updatedAtFrom",
-            "description": "server_updated_at_from: 2024-05-20",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "filter.updatedAtTo",
-            "description": "server_updated_at_to: 2024-05-25",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
             "name": "sort",
             "description": "sort by field\n\n/servers?sort_by=server_status.asc,server_status.desc",
             "in": "query",

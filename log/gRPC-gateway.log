@@ -122,3 +122,60 @@
 {"L":"INFO","T":"2024-05-23T04:57:42.853+0700","M":"logger created..."}
 {"L":"INFO","T":"2024-05-23T04:57:42.853+0700","M":"middleware created..."}
 {"L":"INFO","T":"2024-05-23T04:57:42.854+0700","M":"Serving gRPC-Gateway is running on :8080"}
+{"L":"INFO","T":"2024-05-23T19:23:00.605+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-23T19:23:00.605+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-23T19:23:00.608+0700","M":"Serving gRPC-Gateway is running on :8080"}
+{"L":"INFO","T":"2024-05-24T11:02:35.567+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-24T11:02:35.568+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-24T11:02:35.568+0700","M":"Serving gRPC-Gateway is running on :8080"}
+{"L":"INFO","T":"2024-05-24T12:49:18.934+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-24T12:49:18.935+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-24T12:49:18.936+0700","M":"Serving gRPC-Gateway is running on :8080"}
+{"L":"INFO","T":"2024-05-24T13:05:57.561+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-24T13:05:57.562+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-24T13:05:57.562+0700","M":"Serving gRPC-Gateway is running on :8080"}
+{"L":"INFO","T":"2024-05-24T13:13:54.266+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-24T13:13:54.266+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-24T13:13:54.267+0700","M":"Serving gRPC-Gateway is running on :8080"}
+{"L":"INFO","T":"2024-05-24T13:32:28.250+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-24T13:32:28.251+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-24T13:32:28.251+0700","M":"Serving gRPC-Gateway is running on :8080"}
+{"L":"INFO","T":"2024-05-24T13:34:48.464+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-24T13:34:48.464+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-24T13:34:48.465+0700","M":"Serving gRPC-Gateway is running on :8080"}
+{"L":"INFO","T":"2024-05-24T13:35:58.275+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-24T13:35:58.275+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-24T13:35:58.276+0700","M":"Serving gRPC-Gateway is running on :8080"}
+{"L":"INFO","T":"2024-05-24T13:38:56.308+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-24T13:38:56.308+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-24T13:38:56.309+0700","M":"Serving gRPC-Gateway is running on :8080"}
+{"L":"INFO","T":"2024-05-24T13:54:51.024+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-24T13:54:51.024+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-24T13:54:51.025+0700","M":"Serving gRPC-Gateway is running on :8080"}
+{"L":"INFO","T":"2024-05-24T14:01:54.904+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-24T14:01:54.904+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-24T14:01:54.905+0700","M":"Serving gRPC-Gateway is running on :8080"}
+{"L":"INFO","T":"2024-05-24T14:03:52.639+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-24T14:03:52.639+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-24T14:03:52.640+0700","M":"Serving gRPC-Gateway is running on :8080"}
+{"L":"INFO","T":"2024-05-24T14:05:16.987+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-24T14:05:16.987+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-24T14:05:16.987+0700","M":"Serving gRPC-Gateway is running on :8080"}
+{"L":"INFO","T":"2024-05-24T14:07:08.170+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-24T14:07:08.170+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-24T14:07:08.171+0700","M":"Serving gRPC-Gateway is running on :8080"}
+{"L":"INFO","T":"2024-05-24T14:20:35.758+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-24T14:20:35.759+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-24T14:20:35.759+0700","M":"Serving gRPC-Gateway is running on :8080"}
+{"L":"INFO","T":"2024-05-24T14:32:24.755+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-24T14:32:24.755+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-24T14:32:24.755+0700","M":"Serving gRPC-Gateway is running on :8080"}
+{"L":"INFO","T":"2024-05-24T15:58:26.503+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-24T15:58:26.504+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-24T15:58:26.504+0700","M":"Serving gRPC-Gateway is running on :8080"}
+{"L":"INFO","T":"2024-05-24T16:00:31.090+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-24T16:00:31.090+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-24T16:00:31.091+0700","M":"Serving gRPC-Gateway is running on :8080"}
+{"L":"INFO","T":"2024-05-24T16:49:51.617+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-05-24T16:49:51.618+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-05-24T16:49:51.618+0700","M":"Serving gRPC-Gateway is running on :8080"}

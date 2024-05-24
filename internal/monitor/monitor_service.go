@@ -3,26 +3,15 @@ package monitor
 import (
 	"context"
 
-	"github.com/segmentio/kafka-go"
-	"go.uber.org/zap"
+	mt "github.com/QuanDN22/Server-Management-System/proto/monitor"
+	"github.com/golang/protobuf/ptypes/empty"
 )
 
-type MonitorService struct {
-	MonitorProducer *kafka.Writer
-	MonitorConsumer *kafka.Reader
-	logger          *zap.Logger
-}
+func (m *MonitorService) GetUpTime(ctx context.Context, _ *empty.Empty) (*mt.ResponseUptime, error) {
+	// Get uptime of the server
 
-func NewMonitorService(MonitorProducer *kafka.Writer, MonitorConsumer *kafka.Reader, logger *zap.Logger) *MonitorService {
-	return &MonitorService{
-		MonitorProducer: MonitorProducer,
-		MonitorConsumer: MonitorConsumer,
-		logger:          logger,
-	}
-}
-
-func (m *MonitorService) Start(ctx context.Context) {
-	go m.StartMonitorConsumer(ctx)
-	go m.StartMonitorProducer(ctx)
-	<-ctx.Done()
+	// return uptime
+	return &mt.ResponseUptime{
+		Uptime: 10.00,
+	}, nil
 }

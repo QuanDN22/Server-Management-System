@@ -213,11 +213,6 @@
     },
     "/v1/api/servers/export": {
       "get": {
-        "security": [
-          {
-            "Bearer": []
-          }
-        ],
         "description": "Exports server data to an Excel file based on the provided filters.",
         "produces": [
           "application/octet-stream"

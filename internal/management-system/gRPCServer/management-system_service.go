@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"strconv"
+	"strings"
 
 	"github.com/QuanDN22/Server-Management-System/internal/management-system/domain"
 	"github.com/QuanDN22/Server-Management-System/pkg/middleware"
@@ -15,6 +17,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"gorm.io/gorm"
 )
 
 // Ping server
@@ -347,7 +350,7 @@ func (ms *ManagementSystemGrpcServer) ImportServer(stream managementsystem.Manag
 	// fmt.Println("start import server")
 
 	type server struct {
-		Server_Name  string
+		Server_Name   string
 		Server_IPv4   string
 		Server_Status string
 	}
@@ -369,12 +372,12 @@ func (ms *ManagementSystemGrpcServer) ImportServer(stream managementsystem.Manag
 	for {
 		req, err := stream.Recv()
 		if err == io.EOF {
-			responses, _ := json.Marshal(&response{
+			responses, _ := json.MarshalIndent(&response{
 				ImportSucces:            importSucces,
 				ListServersImportSucces: listServersImportSucces,
 				ImportFailed:            importFailed,
 				ListServersImportFailed: listServersImportFailed,
-			})
+			}, "", " ")
 
 			fmt.Println("Result", importSucces, importFailed)
 
@@ -445,4 +448,77 @@ func (ms *ManagementSystemGrpcServer) ImportServer(stream managementsystem.Manag
 		importSucces++
 		listServersImportSucces = append(listServersImportSucces, res)
 	}
+}
+
+// View server
+func (ms *ManagementSystemGrpcServer) ViewServer(ctx context.Context, in *managementsystem.ViewServerRequest) (*managementsystem.ViewServerResponse, error) {
+	// get data in redis
+	key, _ := json.Marshal(in)
+
+	data, err := ms.cache.Get(ctx, string(key)).Result()
+
+	if err == nil {
+		return &managementsystem.ViewServerResponse{
+			Content: []byte(data),
+		}, nil
+	}
+
+	// if not found in redis, get data in database
+	limit := in.GetLimit()
+	offset := in.GetOffset()
+	filter_server_name := in.GetFilterServerName()
+	filter_server_ipv4 := in.GetFilterServerIpv4()
+	filter_server_status := in.GetFilterServerStatus()
+	sort := in.GetSort()
+
+	fmt.Println(limit, offset, filter_server_name, filter_server_ipv4, filter_server_status, sort)
+
+	var servers []domain.Server
+	var result *gorm.DB
+
+	if filter_server_name != "" {
+		result = ms.db.Where("server_name = ?", fmt.Sprintf("%" + filter_server_name + "%"))
+	}
+
+	if filter_server_ipv4 != "" {
+		result = result.Where("server_ipv4 = ?", fmt.Sprintf("%" + filter_server_ipv4 + "%"))
+	}
+
+	if filter_server_status != "" {
+		result = result.Where("server_status = ?", filter_server_status)
+	}
+
+	if sort != "" {
+		ops := strings.Split(sort, ",")
+		for _, v := range ops {
+			op := strings.Split(v, ".")
+			result = result.Order(fmt.Sprintf("%s %s", op[0], op[1]))
+		}
+	}
+
+	l, _ := strconv.Atoi(limit)
+	o, _ := strconv.Atoi(offset)
+
+	if l != 0 && o != 0 {
+		result = result.Limit(l).Offset(o).Find(&servers)
+	}
+
+	type response struct {
+		Total   int
+		Servers []domain.Server
+	}
+
+	res, _ := json.MarshalIndent(&response{
+		Total:   int(result.RowsAffected),
+		Servers: servers,
+	}, "", " ")
+
+	fmt.Println(result.RowsAffected)
+
+	// set data in redis
+	_ = ms.cache.Set(ctx, string(key), res, 0).Err()
+
+	return &managementsystem.ViewServerResponse{
+		Content: res,
+	}, nil
 }
