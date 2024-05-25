@@ -82,6 +82,7 @@ service ManagementSystem {
     };
 
     // View server
+    rpc ViewServer(ViewServerRequest) returns (ViewServerResponse) {};
 
     // Update server
     rpc UpdateServer(UpdateServerRequest) returns (Server) {
@@ -116,6 +117,22 @@ service ManagementSystem {
 
 
     // Export server
+}
+
+// view server request
+message ViewServerRequest {
+    int64 Server_ID = 1 [ json_name = "server_id" ];
+    string limit = 2;
+	string offset = 3 ;
+	string filter_server_name = 4;
+	string filter_server_ipv4 = 5;
+	string filter_server_status = 6;
+	string sort = 7;
+}
+
+// view server response
+message ViewServerResponse {
+    bytes Content = 1;
 }
 
 // import server request

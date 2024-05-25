@@ -10,6 +10,7 @@ import (
 	"github.com/QuanDN22/Server-Management-System/internal/management-system/domain"
 	"github.com/QuanDN22/Server-Management-System/pkg/config"
 	managementsystem "github.com/QuanDN22/Server-Management-System/proto/management-system"
+	"github.com/redis/go-redis/v9"
 	"github.com/segmentio/kafka-go"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -22,6 +23,7 @@ type ManagementSystemGrpcServer struct {
 	logger       *zap.Logger
 	gRPCServer   *grpc.Server
 	db           *gorm.DB
+	cache        *redis.Client 
 	pingConsumer *kafka.Reader
 
 	monitorConsumer *kafka.Reader
@@ -33,6 +35,7 @@ func NewManagementSystemGrpcServer(
 	logger *zap.Logger,
 	grpcserver *grpc.Server,
 	db *gorm.DB,
+	cache *redis.Client,
 	pingConsumer *kafka.Reader,
 	monitorConsumer *kafka.Reader,
 	monitorProducer *kafka.Writer,
@@ -42,6 +45,7 @@ func NewManagementSystemGrpcServer(
 		logger:          logger,
 		gRPCServer:      grpcserver,
 		db:              db,
+		cache:           cache,
 		pingConsumer:    pingConsumer,
 		monitorConsumer: monitorConsumer,
 		monitorProducer: monitorProducer,

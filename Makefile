@@ -3,8 +3,9 @@ gen:
    	--go_out ./proto --go_opt paths=source_relative \
    	--go-grpc_out ./proto --go-grpc_opt paths=source_relative \
 	--grpc-gateway_out ./proto --grpc-gateway_opt paths=source_relative \
-	--openapiv2_out ./static/openapiv2 --openapiv2_opt use_go_templates=true \
-   	./proto/auth/auth.proto ./proto/management-system/server.proto
+   	./proto/auth/auth.proto ./proto/management-system/server.proto ./proto/monitor/monitor.proto
+
+# --openapiv2_out ./static/openapiv2 --openapiv2_opt use_go_templates=true \
 
 gen-key:
 	openssl genpkey -algorithm ED25519 -outform pem -out auth.ed
@@ -15,10 +16,10 @@ run-auth-server:
 	go run ./cmd/auth/main.go
 
 run-grpc-gateway:
-	go run .\cmd\grpc-gateway\main.go auth.ed.pub 
+	go run ./cmd/grpc-gateway/main.go auth.ed.pub 
 
 run-management-system:
-	go run .\cmd\management-system\main.go auth.ed.pub
+	go run ./cmd/management-system/main.go auth.ed.pub
 
 # api
 # token := eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJhcGkiLCJleHAiOjE3MTYxOTg1MTIsImlhdCI6MTcxNjE5NTUxMiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAxIiwibmJmIjoxNzE2MTk1NTEyLCJyb2xlcyI6InVzZXIiLCJ1c2VyIjoicXVhbjIifQ.9XpJGhGferHWPeVq7TD6XhfaxtzSkhMdbEyVrkf3jOG_2HjmP7pAWfupoeHU5JlDm7XtHX2832XbgRIK0tjOAA

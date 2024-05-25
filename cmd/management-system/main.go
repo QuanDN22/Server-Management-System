@@ -13,6 +13,7 @@ import (
 	"github.com/QuanDN22/Server-Management-System/pkg/logger"
 	"github.com/QuanDN22/Server-Management-System/pkg/middleware"
 	"github.com/QuanDN22/Server-Management-System/pkg/postgres"
+	"github.com/redis/go-redis/v9"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc"
@@ -49,21 +50,21 @@ func main() {
 
 	// database
 	db := postgres.NewPostgresDB(cfg.PGDatabaseHost, cfg.PGDatabaseUser, cfg.PGDatabasePassword, cfg.PGDatabaseDBName, cfg.PGDatabasePort)
-	l.Info("database connected...")
-	// delete table if it doesn't exist
-	err = db.Migrator().DropTable(&domain.Server{})
-	if err != nil {
-		log.Fatalf("Failed to drop table servers: %v", err)
-	} else {
-		log.Println("Dropped table servers")
-	}
-	// Auto migrate the Server model
-	err = db.AutoMigrate(&domain.Server{})
-	if err != nil {
-		log.Fatalf("Failed to migrate servers datable: %v", err)
-	} else {
-		log.Println("migrate servers datable successfully")
-	}
+	// l.Info("database connected...")
+	// // delete table if it doesn't exist
+	// err = db.Migrator().DropTable(&domain.Server{})
+	// if err != nil {
+	// 	log.Fatalf("Failed to drop table servers: %v", err)
+	// } else {
+	// 	log.Println("Dropped table servers")
+	// }
+	// // Auto migrate the Server model
+	// err = db.AutoMigrate(&domain.Server{})
+	// if err != nil {
+	// 	log.Fatalf("Failed to migrate servers datable: %v", err)
+	// } else {
+	// 	log.Println("migrate servers datable successfully")
+	// }
 
 	users := []domain.Server{
 		{Server_Name: "server#1", Server_IPv4: "192.168.1.1", Server_Status: "on"},
@@ -82,6 +83,20 @@ func main() {
 		db.Create(&user)
 	}
 
+	// cache
+	client := redis.NewClient(&redis.Options{
+		Addr:     fmt.Sprintf("%s:%s", "localhost", ":6379"),
+		Password: "", // no password set
+		DB:       0,  // use default DB
+	})
+
+	// Ping Redis to check if the connection is working
+	pong, err := client.Ping(ctx).Result()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(pong)
+
 	// ping Consumer
 	pingConsumer := consumer.NewConsumer(ctx, cfg.PingBrokerAddress, cfg.PingTopic, cfg.PingConsumerGroupID)
 
@@ -90,7 +105,7 @@ func main() {
 
 	// monitor Producer
 	monitorProducer := producer.NewProducer(ctx, cfg.MonitorBrokerAddress, cfg.MonitorResultsTopic)
-	
+
 	mw, err := middleware.NewMiddleware(cfg.PathPublicKey)
 	// mw, err := middleware.NewMiddleware(os.Args[1])
 	if err != nil {
@@ -103,6 +118,6 @@ func main() {
 		grpc.UnaryInterceptor(mw.UnaryServerInterceptor),
 		grpc.StreamInterceptor(mw.StreamServerInterceptor),
 	)
-	management_system_grpcserver := gRPCServer.NewManagementSystemGrpcServer(cfg, l, grpcserver, db, pingConsumer, monitorConsumer, monitorProducer)
+	management_system_grpcserver := gRPCServer.NewManagementSystemGrpcServer(cfg, l, grpcserver, db, client, pingConsumer, monitorConsumer, monitorProducer)
 	management_system_grpcserver.Start(ctx, cancel)
 }

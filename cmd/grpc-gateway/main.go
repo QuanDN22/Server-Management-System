@@ -6,8 +6,11 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"strconv"
 	"strings"
 
+	"github.com/QuanDN22/Server-Management-System/internal/management-system/domain"
 	"github.com/QuanDN22/Server-Management-System/pkg/config"
 	"github.com/QuanDN22/Server-Management-System/pkg/logger"
 	"github.com/QuanDN22/Server-Management-System/pkg/middleware"
@@ -84,6 +87,13 @@ func main() {
 
 	// export server
 	// "/v1/api/servers/export"
+	gwmux.HandlePath("GET", "/v1/api/servers/export", handleExportServerFile)
+
+	// view server
+	gwmux.HandlePath("GET", "/v1/api/servers/viewserver", handleViewServer)
+
+	// report
+	// gwmux.HandlePath("POST", "/v1/api/servers/report", handleReport)
 
 	gwServer := &http.Server{
 		Addr:    cfg.GrpcGatewayPort,
@@ -191,7 +201,7 @@ func handleImportServerFile(w http.ResponseWriter, r *http.Request, pathParams m
 	}
 
 	type server struct {
-		Server_Name  string
+		Server_Name   string
 		Server_IPv4   string
 		Server_Status string
 	}
@@ -199,7 +209,7 @@ func handleImportServerFile(w http.ResponseWriter, r *http.Request, pathParams m
 	// add server in database with three 3 fields: server_name, server_ip, server_status
 	for _, row := range rows {
 		data, _ := json.Marshal(&server{
-			Server_Name:  row[0],
+			Server_Name:   row[0],
 			Server_IPv4:   row[1],
 			Server_Status: row[2],
 		})
@@ -217,3 +227,309 @@ func handleImportServerFile(w http.ResponseWriter, r *http.Request, pathParams m
 
 	w.Write(res.Data)
 }
+
+func handleExportServerFile(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+	// config
+	cfg, err := config.NewConfig("./cmd/grpc-gateway", ".env.grpc-gateway")
+	if err != nil {
+		log.Fatalf("failed get config %v", err)
+	}
+	log.Println("config parsed...")
+
+	mw, err := middleware.NewMiddleware(cfg.PathPublicKey)
+	// mw, err := middleware.NewMiddleware(os.Args[1])
+	if err != nil {
+		log.Println("failed to create middleware", zap.Error(err))
+	}
+
+	// validate token
+	parts := strings.Split(r.Header.Get("Authorization"), " ")
+	if len(parts) < 2 || parts[0] != "Bearer" {
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte("missing or invalid authorization header")) //nolint
+		return
+	}
+	tokenString := parts[1]
+
+	token, err := mw.GetToken(tokenString)
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte("invalid token: " + err.Error())) //nolint
+		return
+	}
+
+	ctx := middleware.ContextSetToken(r.Context(), token)
+
+	// filer, pagination, sort
+	param := r.URL.Query()
+	fmt.Println(param)
+
+	limit := param.Get("limit")
+	offset := param.Get("offset")
+	filter_server_name := param.Get("filter.serverName")
+	filter_server_ipv4 := param.Get("filter.serverIpv4")
+	filter_server_status := param.Get("filter.serverStatus")
+	sort := param.Get("sort")
+
+	if limit == "" {
+		limit = "20"
+	}
+	if offset == "" {
+		offset = "0"
+	}
+
+	fmt.Println(limit, offset, filter_server_name, filter_server_ipv4, filter_server_status, sort)
+
+	// ViewServer(context.Context, *ViewServerRequest) (*ViewServerResponse, error)
+
+	// create a connection
+	conn, err := grpc.Dial(
+		cfg.ManagementSystemServerPort,
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithUnaryInterceptor(mw.UnaryClientInterceptor),
+	)
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer conn.Close()
+
+	//create a client
+	client := mspb.NewManagementSystemClient(conn)
+
+	res, err := client.ViewServer(ctx, &mspb.ViewServerRequest{
+		Limit:              limit,
+		Offset:             offset,
+		FilterServerName:   filter_server_name,
+		FilterServerIpv4:   filter_server_ipv4,
+		FilterServerStatus: filter_server_status,
+		Sort:               sort,
+	})
+
+	if err != nil {
+		log.Fatalf("Error while calling Upload: %v", err)
+	}
+
+	type response struct {
+		Total   int
+		Servers []domain.Server
+	}
+
+	respon := response{}
+
+	_ = json.Unmarshal(res.Content, &respon)
+
+	// create excel document
+	f := excelize.NewFile()
+	defer func() {
+		if err := f.Close(); err != nil {
+			log.Fatalf("Error exporting server file %v", err)
+		}
+	}()
+
+	// Create a new sheet.
+	index, err := f.NewSheet("Sheet1")
+	if err != nil {
+		log.Fatalf("Error creating sheet file %v", err)
+	} else {
+		log.Println("Sheet created")
+	}
+
+	// Set value of a row
+	err = f.SetSheetRow("Sheet1", "A1", &[]interface{}{
+		"Server_ID",
+		"Server_Name",
+		"Server_IPv4",
+		"Server_Status",
+		"Server_CreatedAt",
+		"Server_UpdatedAt",
+	})
+	if err != nil {
+		log.Fatalf("Error setting value of a row %v", err)
+	} else {
+		log.Println("Setting value of raw succesfully")
+	}
+
+	i := 2
+	for _, server := range respon.Servers {
+		location := "A" + strconv.Itoa(i)
+
+		err := f.SetSheetRow("Sheet1", location, &[]interface{}{
+			server.ID,
+			server.Server_Name,
+			server.Server_IPv4,
+			server.Server_Status,
+			server.CreatedAt,
+			server.UpdatedAt,
+		})
+		if err != nil {
+			log.Fatalf("Error setting value of a row %v", err)
+		}
+
+		i++
+	}
+
+	// Set active sheet of the workbook.
+	f.SetActiveSheet(index)
+	// Save spreadsheet by the given path.
+	if err := f.SaveAs("./data/data_export_example.xlsx"); err != nil {
+		log.Fatalf("Error saving spreadsheet file %v", err)
+	}
+
+	// w.Attachment("./data/data_export_example.xlsx", "data_export_example.xlsx")
+	fileBytes, err := os.ReadFile("/data/data_export_example.xlsx")
+	if err != nil {
+		w.Write([]byte("failed to read file")) //nolint
+	}
+	w.Header().Set("Content-Type", "application/octet-stream")
+	w.Write(fileBytes)
+}
+
+func handleViewServer(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+	// config
+	cfg, err := config.NewConfig("./cmd/grpc-gateway", ".env.grpc-gateway")
+	if err != nil {
+		log.Fatalf("failed get config %v", err)
+	}
+	log.Println("config parsed...")
+
+	mw, err := middleware.NewMiddleware(cfg.PathPublicKey)
+	// mw, err := middleware.NewMiddleware(os.Args[1])
+	if err != nil {
+		log.Println("failed to create middleware", zap.Error(err))
+	}
+
+	// validate token
+	parts := strings.Split(r.Header.Get("Authorization"), " ")
+	if len(parts) < 2 || parts[0] != "Bearer" {
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte("missing or invalid authorization header")) //nolint
+		return
+	}
+	tokenString := parts[1]
+
+	token, err := mw.GetToken(tokenString)
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte("invalid token: " + err.Error())) //nolint
+		return
+	}
+
+	ctx := middleware.ContextSetToken(r.Context(), token)
+
+	// filer, pagination, sort
+	param := r.URL.Query()
+	fmt.Println(param)
+
+	limit := param.Get("limit")
+	offset := param.Get("offset")
+	filter_server_name := param.Get("filter.serverName")
+	filter_server_ipv4 := param.Get("filter.serverIpv4")
+	filter_server_status := param.Get("filter.serverStatus")
+	sort := param.Get("sort")
+
+	if limit == "" {
+		limit = "20"
+	}
+	if offset == "" {
+		offset = "0"
+	}
+
+	fmt.Println(limit, offset, filter_server_name, filter_server_ipv4, filter_server_status, sort)
+
+	// ViewServer(context.Context, *ViewServerRequest) (*ViewServerResponse, error)
+
+	// create a connection
+	conn, err := grpc.Dial(
+		cfg.ManagementSystemServerPort,
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithUnaryInterceptor(mw.UnaryClientInterceptor),
+	)
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer conn.Close()
+
+	//create a client
+	client := mspb.NewManagementSystemClient(conn)
+
+	res, err := client.ViewServer(ctx, &mspb.ViewServerRequest{
+		Limit:              limit,
+		Offset:             offset,
+		FilterServerName:   filter_server_name,
+		FilterServerIpv4:   filter_server_ipv4,
+		FilterServerStatus: filter_server_status,
+		Sort:               sort,
+	})
+
+	if err != nil {
+		log.Fatalf("Error while calling Upload: %v", err)
+	}
+
+	w.Write([]byte(res.Content))
+}
+
+// func handleReport(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+// 	// config
+// 	cfg, err := config.NewConfig("./cmd/grpc-gateway", ".env.grpc-gateway")
+// 	if err != nil {
+// 		log.Fatalf("failed get config %v", err)
+// 	}
+// 	log.Println("config parsed...")
+
+// 	mw, err := middleware.NewMiddleware(cfg.PathPublicKey)
+// 	// mw, err := middleware.NewMiddleware(os.Args[1])
+// 	if err != nil {
+// 		log.Println("failed to create middleware", zap.Error(err))
+// 	}
+
+// 	// validate token
+// 	parts := strings.Split(r.Header.Get("Authorization"), " ")
+// 	if len(parts) < 2 || parts[0] != "Bearer" {
+// 		w.WriteHeader(http.StatusUnauthorized)
+// 		w.Write([]byte("missing or invalid authorization header")) //nolint
+// 		return
+// 	}
+// 	tokenString := parts[1]
+
+// 	token, err := mw.GetToken(tokenString)
+// 	if err != nil {
+// 		w.WriteHeader(http.StatusUnauthorized)
+// 		w.Write([]byte("invalid token: " + err.Error())) //nolint
+// 		return
+// 	}
+
+// 	ctx := middleware.ContextSetToken(r.Context(), token)
+
+// 	// get all mail of admin
+// 	// create a connection to auth server
+// 	conn_auth, err := grpc.Dial(
+// 		cfg.AuthServerPort,
+// 		grpc.WithTransportCredentials(insecure.NewCredentials()),
+// 		grpc.WithUnaryInterceptor(mw.UnaryClientInterceptor),
+// 	)
+// 	if err != nil {
+// 		log.Fatalf("did not connect: %v", err)
+// 	}
+// 	defer conn_auth.Close()
+
+// 	// create a client on conn_auth
+// 	client_auth := authpb.NewAuthServiceClient(conn_auth)
+
+// 	// create a connection to monitor server
+// 	conn_monitor, err := grpc.Dial(
+// 		"localhost:5003",
+// 		grpc.WithTransportCredentials(insecure.NewCredentials()),
+// 		grpc.WithUnaryInterceptor(mw.UnaryClientInterceptor),
+// 	)
+
+// 	// create a client to monitor server
+// 	client_monitor := mtpb.NewMonitorClient(conn_monitor)
+
+// 	// get all mail of admin
+// 	res, err := client_auth.GetAllMail(ctx, &authpb.GetAllMailRequest{})
+
+// 	if err != nil {
+// 		log.Fatalf("Error while calling GetAllMail: %v", err)
+// 	}
+
+// }
