@@ -13,7 +13,6 @@ import (
 	"github.com/QuanDN22/Server-Management-System/pkg/logger"
 	"github.com/QuanDN22/Server-Management-System/pkg/middleware"
 	"github.com/QuanDN22/Server-Management-System/pkg/postgres"
-	"github.com/redis/go-redis/v9"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc"
@@ -58,44 +57,44 @@ func main() {
 	// } else {
 	// 	log.Println("Dropped table servers")
 	// }
-	// // Auto migrate the Server model
-	// err = db.AutoMigrate(&domain.Server{})
-	// if err != nil {
-	// 	log.Fatalf("Failed to migrate servers datable: %v", err)
-	// } else {
-	// 	log.Println("migrate servers datable successfully")
+	// Auto migrate the Server model
+	err = db.AutoMigrate(&domain.Server{})
+	if err != nil {
+		log.Fatalf("Failed to migrate servers datable: %v", err)
+	} else {
+		log.Println("migrate servers datable successfully")
+	}
+
+	// users := []domain.Server{
+	// 	{Server_Name: "server#1", Server_IPv4: "192.168.1.1", Server_Status: "on"},
+	// 	{Server_Name: "server#2", Server_IPv4: "192.168.1.2", Server_Status: "off"},
+	// 	{Server_Name: "server#3", Server_IPv4: "192.168.1.3", Server_Status: "off"},
+	// 	{Server_Name: "server#4", Server_IPv4: "192.168.1.4", Server_Status: "on"},
+	// 	{Server_Name: "server#5", Server_IPv4: "192.168.1.5", Server_Status: "off"},
+	// 	{Server_Name: "server#6", Server_IPv4: "192.168.1.6", Server_Status: "off"},
+	// 	{Server_Name: "server#7", Server_IPv4: "192.168.1.7", Server_Status: "on"},
+	// 	{Server_Name: "server#8", Server_IPv4: "192.168.1.8", Server_Status: "on"},
+	// 	{Server_Name: "server#9", Server_IPv4: "192.168.1.9", Server_Status: "on"},
+	// 	{Server_Name: "server#10", Server_IPv4: "192.168.1.10", Server_Status: "off"},
 	// }
 
-	users := []domain.Server{
-		{Server_Name: "server#1", Server_IPv4: "192.168.1.1", Server_Status: "on"},
-		{Server_Name: "server#2", Server_IPv4: "192.168.1.2", Server_Status: "off"},
-		{Server_Name: "server#3", Server_IPv4: "192.168.1.3", Server_Status: "off"},
-		{Server_Name: "server#4", Server_IPv4: "192.168.1.4", Server_Status: "on"},
-		{Server_Name: "server#5", Server_IPv4: "192.168.1.5", Server_Status: "off"},
-		{Server_Name: "server#6", Server_IPv4: "192.168.1.6", Server_Status: "off"},
-		{Server_Name: "server#7", Server_IPv4: "192.168.1.7", Server_Status: "on"},
-		{Server_Name: "server#8", Server_IPv4: "192.168.1.8", Server_Status: "on"},
-		{Server_Name: "server#9", Server_IPv4: "192.168.1.9", Server_Status: "on"},
-		{Server_Name: "server#10", Server_IPv4: "192.168.1.10", Server_Status: "off"},
-	}
-
-	for _, user := range users {
-		db.Create(&user)
-	}
+	// for _, user := range users {
+	// 	db.Create(&user)
+	// }
 
 	// cache
-	client := redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("%s:%s", "localhost", ":6379"),
-		Password: "", // no password set
-		DB:       0,  // use default DB
-	})
+	// client := redis.NewClient(&redis.Options{
+	// 	Addr:     fmt.Sprintf("%s:%s", "localhost", "6379"),
+	// 	Password: "", // no password set
+	// 	DB:       0,  // use default DB
+	// })
 
 	// Ping Redis to check if the connection is working
-	pong, err := client.Ping(ctx).Result()
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(pong)
+	// pong, err := client.Ping(ctx).Result()
+	// if err != nil {
+	// 	fmt.Println(err)
+	// }
+	// fmt.Println(pong)
 
 	// ping Consumer
 	pingConsumer := consumer.NewConsumer(ctx, cfg.PingBrokerAddress, cfg.PingTopic, cfg.PingConsumerGroupID)
@@ -118,6 +117,7 @@ func main() {
 		grpc.UnaryInterceptor(mw.UnaryServerInterceptor),
 		grpc.StreamInterceptor(mw.StreamServerInterceptor),
 	)
-	management_system_grpcserver := gRPCServer.NewManagementSystemGrpcServer(cfg, l, grpcserver, db, client, pingConsumer, monitorConsumer, monitorProducer)
+	management_system_grpcserver := gRPCServer.NewManagementSystemGrpcServer(cfg, l, grpcserver, db, nil, pingConsumer, monitorConsumer, monitorProducer)
+	// management_system_grpcserver := gRPCServer.NewManagementSystemGrpcServer(cfg, l, grpcserver, db, nil, nil, nil, nil)
 	management_system_grpcserver.Start(ctx, cancel)
 }

@@ -280,8 +280,6 @@ func handleExportServerFile(w http.ResponseWriter, r *http.Request, pathParams m
 
 	fmt.Println(limit, offset, filter_server_name, filter_server_ipv4, filter_server_status, sort)
 
-	// ViewServer(context.Context, *ViewServerRequest) (*ViewServerResponse, error)
-
 	// create a connection
 	conn, err := grpc.Dial(
 		cfg.ManagementSystemServerPort,
@@ -375,13 +373,21 @@ func handleExportServerFile(w http.ResponseWriter, r *http.Request, pathParams m
 		log.Fatalf("Error saving spreadsheet file %v", err)
 	}
 
-	// w.Attachment("./data/data_export_example.xlsx", "data_export_example.xlsx")
-	fileBytes, err := os.ReadFile("/data/data_export_example.xlsx")
+	// Read the generated Excel file
+	fileBytes, err := os.ReadFile("./data/data_export_example.xlsx")
 	if err != nil {
-		w.Write([]byte("failed to read file")) //nolint
+		log.Fatalf("Failed to read file: %v", err)
 	}
-	w.Header().Set("Content-Type", "application/octet-stream")
-	w.Write(fileBytes)
+
+	// Set response headers
+	w.Header().Set("Content-Disposition", "attachment; filename=data_export_example.xlsx")
+	w.Header().Set("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+	w.Header().Set("Content-Length", strconv.Itoa(len(fileBytes)))
+
+	// Write the Excel file content to the response writer
+	if _, err := w.Write(fileBytes); err != nil {
+		log.Fatalf("Failed to write response: %v", err)
+	}
 }
 
 func handleViewServer(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {

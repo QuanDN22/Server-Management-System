@@ -17,7 +17,7 @@ services:
     # but take into consideration that it will change the way
     # you are connecting to your database.
     ports:
-      - 5433:5432
+      - 5434:5432
     environment:
       POSTGRES_USER: postgres # The PostgreSQL user (useful to connect to the database)
       POSTGRES_PASSWORD: quan1234 # The PostgreSQL password (useful to connect to the database)
@@ -28,7 +28,7 @@ services:
     # Official Postgres image from DockerHub (we use the last version)
     image: 'postgres:latest'
     ports:
-      - 5434:5432
+      - 5433:5432
     environment:
       POSTGRES_USER: postgres # The PostgreSQL user (useful to connect to the database)
       POSTGRES_PASSWORD: quan1234 # The PostgreSQL password (useful to connect to the database)
@@ -80,27 +80,27 @@ services:
     environment: 
       - xpack.security.enabled=false
       - discovery.type=single-node
-    networks:
-      - elastic
+    # networks:
+    #   - elastic
     ports:
       - 9200:9200
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-      nofile:
-        soft: 65536
-        hard: 65536
-    cap_add:
-      - IPC_LOCK
+    # ulimits:
+    #   memlock:
+    #     soft: -1
+    #     hard: -1
+    #   nofile:
+    #     soft: 65536
+    #     hard: 65536
+    # cap_add:
+    #   - IPC_LOCK
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
-    deploy:    
-      resources:
-          limits:
-            cpus: '2.0'
-          reservations:
-            cpus: '1.0'
+    # deploy:    
+    #   resources:
+    #       limits:
+    #         cpus: '2.0'
+    #       reservations:
+    #         cpus: '1.0'
 
   kibana:
     image: docker.elastic.co/kibana/kibana:8.13.1
@@ -110,16 +110,16 @@ services:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200    # address of elasticsearch docker container which kibana will connect
     ports:
       - 5601:5601
-    networks:
-      - elastic
+    # networks:
+    #   - elastic
     depends_on:
       - elasticsearch         # kibana will start when elasticsearch has started
-    deploy:    
-      resources:
-          limits:
-            cpus: '2.0'
-          reservations:
-            cpus: '1.0'
+    # deploy:    
+    #   resources:
+    #       limits:
+    #         cpus: '2.0'
+    #       reservations:
+    #         cpus: '1.0'
   
   redis:
     image: redis:latest
@@ -135,6 +135,6 @@ volumes:
     driver: local
   redis:
 
-networks:
-  elastic:
-    driver: bridge
+# networks:
+#   elastic:
+#     driver: bridge

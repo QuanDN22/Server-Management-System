@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/elastic/go-elasticsearch/v8/typedapi/types/enums/refresh"
 	"github.com/segmentio/kafka-go"
@@ -25,9 +26,9 @@ func (m *MonitorService) StartMonitorConsumer(ctx context.Context) {
 // the standard json/encoder will be run on your structure
 // and the result will be sent to Elasticsearch.
 type Document struct {
-	Timestamp string `json:"timestamp"`
-	Server_ID uint   `json:"server_id"`
-	Duration  int    `json:"duration"`
+	Timestamp time.Time `json:"timestamp"`
+	Server_ID uint      `json:"server_id"`
+	Duration  int       `json:"duration"`
 }
 
 func (m *MonitorService) Worker(msg kafka.Message) {
@@ -35,7 +36,7 @@ func (m *MonitorService) Worker(msg kafka.Message) {
 
 	// result topic from management system
 	var results struct {
-		TimeMonitor string `json:"time_monitor"`
+		TimeMonitor time.Time `json:"time_monitor"`
 		ServerIDs   []uint `json:"server_ids"`
 	}
 
@@ -63,9 +64,7 @@ func (m *MonitorService) Worker(msg kafka.Message) {
 				Server_ID: serverID,
 				Duration:  10,
 			}).
-			Id(fmt.Sprint((serverID))).
 			Refresh(refresh.Waitfor).
 			Do(context.Background())
 	}
-
 }

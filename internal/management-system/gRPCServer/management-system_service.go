@@ -17,7 +17,6 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
-	"gorm.io/gorm"
 )
 
 // Ping server
@@ -453,15 +452,15 @@ func (ms *ManagementSystemGrpcServer) ImportServer(stream managementsystem.Manag
 // View server
 func (ms *ManagementSystemGrpcServer) ViewServer(ctx context.Context, in *managementsystem.ViewServerRequest) (*managementsystem.ViewServerResponse, error) {
 	// get data in redis
-	key, _ := json.Marshal(in)
+	// key, _ := json.Marshal(in)
 
-	data, err := ms.cache.Get(ctx, string(key)).Result()
+	// data, err := ms.cache.Get(ctx, string(key)).Result()
 
-	if err == nil {
-		return &managementsystem.ViewServerResponse{
-			Content: []byte(data),
-		}, nil
-	}
+	// if err == nil {
+	// 	return &managementsystem.ViewServerResponse{
+	// 		Content: []byte(data),
+	// 	}, nil
+	// }
 
 	// if not found in redis, get data in database
 	limit := in.GetLimit()
@@ -474,33 +473,54 @@ func (ms *ManagementSystemGrpcServer) ViewServer(ctx context.Context, in *manage
 	fmt.Println(limit, offset, filter_server_name, filter_server_ipv4, filter_server_status, sort)
 
 	var servers []domain.Server
-	var result *gorm.DB
 
+	// Fetch data from database
+	result := ms.db.Model(&domain.Server{})
+
+	// Apply filters
+	fmt.Printf("server_name: %s\n", filter_server_name)
 	if filter_server_name != "" {
-		result = ms.db.Where("server_name = ?", fmt.Sprintf("%" + filter_server_name + "%"))
+		result = ms.db.Where("server_name LIKE ?", "%"+filter_server_name+"%")
 	}
+	fmt.Printf("number 1: %d", result.RowsAffected)
 
+	fmt.Printf("server_ipv4: %s\n", filter_server_ipv4)
 	if filter_server_ipv4 != "" {
-		result = result.Where("server_ipv4 = ?", fmt.Sprintf("%" + filter_server_ipv4 + "%"))
+		result = result.Where("server_ipv4 LIKE ?", "%"+filter_server_ipv4+"%")
 	}
+	fmt.Printf("number 2: %d\n", result.RowsAffected)
 
+	fmt.Printf("server_status: %s\n", filter_server_status)
 	if filter_server_status != "" {
 		result = result.Where("server_status = ?", filter_server_status)
 	}
+	fmt.Printf("number 3: %d\n", result.RowsAffected)
 
+	fmt.Printf("sort: %s\n", sort)
 	if sort != "" {
 		ops := strings.Split(sort, ",")
 		for _, v := range ops {
+			fmt.Printf("ops: %s", v)
 			op := strings.Split(v, ".")
 			result = result.Order(fmt.Sprintf("%s %s", op[0], op[1]))
 		}
 	}
+	fmt.Printf("number 4: %d\n", result.RowsAffected)
 
-	l, _ := strconv.Atoi(limit)
-	o, _ := strconv.Atoi(offset)
+	_limit, _ := strconv.Atoi(limit)
+	_offset, _ := strconv.Atoi(offset)
 
-	if l != 0 && o != 0 {
-		result = result.Limit(l).Offset(o).Find(&servers)
+	if _offset > 0 {
+		_offset = _offset*_limit - 1
+	}
+
+	fmt.Printf("limit: %d, offset: %d\n", _limit, _offset)
+	result = result.Limit(_limit).Offset(_offset)
+
+	// Execute query
+	if err := result.Find(&servers).Error; err != nil {
+		// Handle error
+		return nil, err
 	}
 
 	type response struct {
@@ -516,7 +536,7 @@ func (ms *ManagementSystemGrpcServer) ViewServer(ctx context.Context, in *manage
 	fmt.Println(result.RowsAffected)
 
 	// set data in redis
-	_ = ms.cache.Set(ctx, string(key), res, 0).Err()
+	// _ = ms.cache.Set(ctx, string(key), res, 0).Err()
 
 	return &managementsystem.ViewServerResponse{
 		Content: res,

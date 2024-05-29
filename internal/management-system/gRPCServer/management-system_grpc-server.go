@@ -2,10 +2,12 @@ package gRPCServer
 
 import (
 	"context"
+	"encoding/binary"
 	"encoding/json"
 	"fmt"
 	"net"
 	"strings"
+	"time"
 
 	"github.com/QuanDN22/Server-Management-System/internal/management-system/domain"
 	"github.com/QuanDN22/Server-Management-System/pkg/config"
@@ -23,7 +25,7 @@ type ManagementSystemGrpcServer struct {
 	logger       *zap.Logger
 	gRPCServer   *grpc.Server
 	db           *gorm.DB
-	cache        *redis.Client 
+	cache        *redis.Client
 	pingConsumer *kafka.Reader
 
 	monitorConsumer *kafka.Reader
@@ -138,8 +140,13 @@ func (ms *ManagementSystemGrpcServer) Woker(ctx context.Context, msg kafka.Messa
 
 	if msg.Topic == ms.config.MonitorTopic {
 		// consumer topic
-		fmt.Println(string(msg.Value))
-		time_monitor := string(msg.Value)
+		fmt.Println(msg.Value)
+
+		// Extract time_monitor value from message
+		time_monitor_byte := binary.LittleEndian.Uint64(msg.Value)
+
+		time_monitor := time.Unix(int64(time_monitor_byte), 0)
+		// time_monitor := string(msg.Value)
 		var server_ids []uint
 
 		res := ms.db.Model(&domain.Server{}).Select("server_id").Where("server_status = ?", "on").Find(&server_ids)
@@ -151,8 +158,8 @@ func (ms *ManagementSystemGrpcServer) Woker(ctx context.Context, msg kafka.Messa
 
 		// producer result topic
 		resultTopic := struct {
-			TimeMonitor string `json:"time_monitor"`
-			ServerIDs   []uint `json:"server_ids"`
+			TimeMonitor time.Time `json:"time_monitor"`
+			ServerIDs   []uint    `json:"server_ids"`
 		}{
 			TimeMonitor: time_monitor,
 			ServerIDs:   server_ids,
