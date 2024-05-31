@@ -60,7 +60,7 @@ func main() {
 	monitor_producer := producer.NewProducer(ctx, cfg.MonitorBrokerAddress, cfg.MonitorTopic)
 	l.Info("monitor producer created...")
 
-	mw, err := middleware.NewMiddleware(cfg.PathPublicKey)
+	_, err = middleware.NewMiddleware(cfg.PathPublicKey)
 	// mw, err := middleware.NewMiddleware(os.Args[1])
 	if err != nil {
 		l.Error("failed to create middleware", zap.Error(err))
@@ -88,7 +88,7 @@ func main() {
 	}
 
 	// create an index named uptime-server-monitor
-	// and provide a mapping for 
+	// and provide a mapping for
 	// the field timestamp which will be date
 	// and the field server_id which will be integer
 	// and the field duration which will be integer
@@ -118,7 +118,7 @@ func main() {
 
 	// grpc server
 	grpcserver := grpc.NewServer(
-		grpc.UnaryInterceptor(mw.UnaryServerInterceptor),
+	// grpc.UnaryInterceptor(mw.UnaryServerInterceptor),
 	)
 
 	monitorService := monitor.NewMonitorService(monitor_producer, monitor_consumer, l, grpcserver, es)

@@ -23,7 +23,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MonitorClient interface {
-	GetUpTime(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*ResponseUptime, error)
+	GetUpTime(ctx context.Context, in *RequestUptime, opts ...grpc.CallOption) (*ResponseUptime, error)
+	Report(ctx context.Context, in *ReportRequest, opts ...grpc.CallOption) (*empty.Empty, error)
 }
 
 type monitorClient struct {
@@ -34,9 +35,18 @@ func NewMonitorClient(cc grpc.ClientConnInterface) MonitorClient {
 	return &monitorClient{cc}
 }
 
-func (c *monitorClient) GetUpTime(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*ResponseUptime, error) {
+func (c *monitorClient) GetUpTime(ctx context.Context, in *RequestUptime, opts ...grpc.CallOption) (*ResponseUptime, error) {
 	out := new(ResponseUptime)
 	err := c.cc.Invoke(ctx, "/monitor.service.monitor/GetUpTime", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *monitorClient) Report(ctx context.Context, in *ReportRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/monitor.service.monitor/Report", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +57,8 @@ func (c *monitorClient) GetUpTime(ctx context.Context, in *empty.Empty, opts ...
 // All implementations must embed UnimplementedMonitorServer
 // for forward compatibility
 type MonitorServer interface {
-	GetUpTime(context.Context, *empty.Empty) (*ResponseUptime, error)
+	GetUpTime(context.Context, *RequestUptime) (*ResponseUptime, error)
+	Report(context.Context, *ReportRequest) (*empty.Empty, error)
 	mustEmbedUnimplementedMonitorServer()
 }
 
@@ -55,8 +66,11 @@ type MonitorServer interface {
 type UnimplementedMonitorServer struct {
 }
 
-func (UnimplementedMonitorServer) GetUpTime(context.Context, *empty.Empty) (*ResponseUptime, error) {
+func (UnimplementedMonitorServer) GetUpTime(context.Context, *RequestUptime) (*ResponseUptime, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUpTime not implemented")
+}
+func (UnimplementedMonitorServer) Report(context.Context, *ReportRequest) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Report not implemented")
 }
 func (UnimplementedMonitorServer) mustEmbedUnimplementedMonitorServer() {}
 
@@ -72,7 +86,7 @@ func RegisterMonitorServer(s grpc.ServiceRegistrar, srv MonitorServer) {
 }
 
 func _Monitor_GetUpTime_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(empty.Empty)
+	in := new(RequestUptime)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -84,7 +98,25 @@ func _Monitor_GetUpTime_Handler(srv interface{}, ctx context.Context, dec func(i
 		FullMethod: "/monitor.service.monitor/GetUpTime",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MonitorServer).GetUpTime(ctx, req.(*empty.Empty))
+		return srv.(MonitorServer).GetUpTime(ctx, req.(*RequestUptime))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Monitor_Report_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReportRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MonitorServer).Report(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/monitor.service.monitor/Report",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MonitorServer).Report(ctx, req.(*ReportRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -99,6 +131,10 @@ var Monitor_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUpTime",
 			Handler:    _Monitor_GetUpTime_Handler,
+		},
+		{
+			MethodName: "Report",
+			Handler:    _Monitor_Report_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

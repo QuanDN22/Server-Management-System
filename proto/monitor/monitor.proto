@@ -10,9 +10,22 @@ import "google/protobuf/empty.proto";
 option go_package = "github.com/QuanDN22/Server-Management-System/proto/monitor";
 
 service monitor {
-	rpc GetUpTime(google.protobuf.Empty) returns (ResponseUptime) {}
+	rpc GetUpTime(RequestUptime) returns (ResponseUptime) {}
+    rpc Report(ReportRequest) returns (google.protobuf.Empty) {}
 }
 
 message ResponseUptime {
     float uptime = 1;
 }
+
+message RequestUptime {
+    string from = 1;
+    string to = 2;
+}
+
+message ReportRequest {
+    string from = 1;
+    string to = 2;
+    repeated string email = 3;
+}
+
