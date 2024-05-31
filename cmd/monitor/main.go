@@ -70,7 +70,7 @@ func main() {
 	// connect to elasticsearch
 	// es, err := elasticsearch.NewDefaultClient()
 	es, err := elasticsearch.NewTypedClient(elasticsearch.Config{
-		Addresses: []string{"http://localhost:9200"},
+		Addresses: []string{"http://127.0.0.1:9200"},
 		Logger:    &elastictransport.ColorLogger{Output: os.Stdout, EnableRequestBody: true, EnableResponseBody: true},
 	})
 
@@ -87,23 +87,26 @@ func main() {
 		log.Fatalf("invalid tagline, got: %s", res.Tagline)
 	}
 
-	// create an index
-	// create an index named test-index
-	// and provide a mapping for the field price which will be an integer
+	// create an index named uptime-server-monitor
+	// and provide a mapping for 
+	// the field timestamp which will be date
+	// and the field server_id which will be integer
+	// and the field duration which will be integer
 	indexName := "uptime-server-monitor"
 	// If the index doesn't exist we create it with a mapping.
 	if exists, err := es.Indices.Exists(indexName).IsSuccess(context.Background()); !exists && err == nil {
 		res, err := es.Indices.Create(indexName).
 			Mappings(&types.TypeMapping{
 				Properties: map[string]types.Property{
-					"price": types.IntegerNumberProperty{},
-					"name":  types.KeywordProperty{},
+					"timestamp": types.DateProperty{},
+					"server_id": types.IntegerNumberProperty{},
+					"duration":  types.IntegerNumberProperty{},
 				},
 			}).
 			Do(context.Background())
 
 		if err != nil {
-			log.Fatalf("error creating index test-index: %s", err)
+			log.Fatalf("error creating index uptime-server-monitor: %s", err)
 		}
 
 		if !res.Acknowledged && res.Index != indexName {
