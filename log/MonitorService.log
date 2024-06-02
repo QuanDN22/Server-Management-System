@@ -321,3 +321,8 @@
 {"L":"INFO","T":"2024-06-03T03:44:57.908+0700","M":"monitor producer created..."}
 {"L":"INFO","T":"2024-06-03T03:44:57.908+0700","M":"middleware created..."}
 {"L":"INFO","T":"2024-06-03T03:44:57.921+0700","M":"Management System gRPC server started","port":":5003"}
+{"L":"INFO","T":"2024-06-03T04:15:34.985+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T04:15:34.985+0700","M":"monitor consumer created..."}
+{"L":"INFO","T":"2024-06-03T04:15:34.985+0700","M":"monitor producer created..."}
+{"L":"INFO","T":"2024-06-03T04:15:34.985+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T04:15:34.993+0700","M":"Management System gRPC server started","port":":5003"}
