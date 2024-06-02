@@ -266,3 +266,58 @@
 {"L":"ERROR","T":"2024-05-31T17:26:26.285+0700","M":"failed to create middleware","error":"unable to create validator: unable to read public key file: open : no such file or directory"}
 {"L":"INFO","T":"2024-05-31T17:26:26.285+0700","M":"middleware created..."}
 {"L":"INFO","T":"2024-05-31T17:26:26.290+0700","M":"Management System gRPC server started","port":":5003"}
+{"L":"INFO","T":"2024-06-02T23:16:40.803+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-02T23:16:40.804+0700","M":"monitor consumer created..."}
+{"L":"INFO","T":"2024-06-02T23:16:40.804+0700","M":"monitor producer created..."}
+{"L":"ERROR","T":"2024-06-02T23:16:40.804+0700","M":"failed to create middleware","error":"unable to create validator: unable to read public key file: open : The system cannot find the file specified."}
+{"L":"INFO","T":"2024-06-02T23:16:40.804+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-02T23:16:40.841+0700","M":"Management System gRPC server started","port":":5003"}
+{"L":"INFO","T":"2024-06-03T02:40:12.123+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T02:40:12.124+0700","M":"monitor consumer created..."}
+{"L":"INFO","T":"2024-06-03T02:40:12.124+0700","M":"monitor producer created..."}
+{"L":"ERROR","T":"2024-06-03T02:40:12.124+0700","M":"failed to create middleware","error":"unable to create validator: unable to read public key file: open : The system cannot find the file specified."}
+{"L":"INFO","T":"2024-06-03T02:40:12.124+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T02:40:12.132+0700","M":"Management System gRPC server started","port":":5003"}
+{"L":"INFO","T":"2024-06-03T02:49:17.908+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T02:49:17.908+0700","M":"monitor consumer created..."}
+{"L":"INFO","T":"2024-06-03T02:49:17.909+0700","M":"monitor producer created..."}
+{"L":"ERROR","T":"2024-06-03T02:49:17.909+0700","M":"failed to create middleware","error":"unable to create validator: unable to read public key file: open : The system cannot find the file specified."}
+{"L":"INFO","T":"2024-06-03T02:49:17.909+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T02:49:17.916+0700","M":"Management System gRPC server started","port":":5003"}
+{"L":"INFO","T":"2024-06-03T02:55:21.761+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T02:55:21.761+0700","M":"monitor consumer created..."}
+{"L":"INFO","T":"2024-06-03T02:55:21.761+0700","M":"monitor producer created..."}
+{"L":"ERROR","T":"2024-06-03T02:55:21.761+0700","M":"failed to create middleware","error":"unable to create validator: unable to read public key file: open : The system cannot find the file specified."}
+{"L":"INFO","T":"2024-06-03T02:55:21.761+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T02:55:21.771+0700","M":"Management System gRPC server started","port":":5003"}
+{"L":"INFO","T":"2024-06-03T03:05:38.036+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T03:05:38.037+0700","M":"monitor consumer created..."}
+{"L":"INFO","T":"2024-06-03T03:05:38.037+0700","M":"monitor producer created..."}
+{"L":"ERROR","T":"2024-06-03T03:05:38.038+0700","M":"failed to create middleware","error":"unable to create validator: unable to read public key file: open : The system cannot find the file specified."}
+{"L":"INFO","T":"2024-06-03T03:05:38.038+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T03:05:38.051+0700","M":"Management System gRPC server started","port":":5003"}
+{"L":"INFO","T":"2024-06-03T03:06:46.362+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T03:06:46.363+0700","M":"monitor consumer created..."}
+{"L":"INFO","T":"2024-06-03T03:06:46.363+0700","M":"monitor producer created..."}
+{"L":"INFO","T":"2024-06-03T03:06:46.363+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T03:06:46.370+0700","M":"Management System gRPC server started","port":":5003"}
+{"L":"INFO","T":"2024-06-03T03:10:39.000+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T03:10:39.000+0700","M":"monitor consumer created..."}
+{"L":"INFO","T":"2024-06-03T03:10:39.001+0700","M":"monitor producer created..."}
+{"L":"INFO","T":"2024-06-03T03:10:39.001+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T03:10:39.007+0700","M":"Management System gRPC server started","port":":5003"}
+{"L":"INFO","T":"2024-06-03T03:19:17.929+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T03:19:17.929+0700","M":"monitor consumer created..."}
+{"L":"INFO","T":"2024-06-03T03:19:17.929+0700","M":"monitor producer created..."}
+{"L":"INFO","T":"2024-06-03T03:19:17.929+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T03:19:17.937+0700","M":"Management System gRPC server started","port":":5003"}
+{"L":"INFO","T":"2024-06-03T03:33:26.448+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T03:33:26.448+0700","M":"monitor consumer created..."}
+{"L":"INFO","T":"2024-06-03T03:33:26.448+0700","M":"monitor producer created..."}
+{"L":"INFO","T":"2024-06-03T03:33:26.448+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T03:33:26.454+0700","M":"Management System gRPC server started","port":":5003"}
+{"L":"INFO","T":"2024-06-03T03:44:57.908+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T03:44:57.908+0700","M":"monitor consumer created..."}
+{"L":"INFO","T":"2024-06-03T03:44:57.908+0700","M":"monitor producer created..."}
+{"L":"INFO","T":"2024-06-03T03:44:57.908+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T03:44:57.921+0700","M":"Management System gRPC server started","port":":5003"}

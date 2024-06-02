@@ -3,7 +3,6 @@ package monitor
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"time"
 
 	"github.com/elastic/go-elasticsearch/v8/typedapi/types/enums/refresh"
@@ -32,12 +31,12 @@ type Document struct {
 }
 
 func (m *MonitorService) Worker(msg kafka.Message) {
-	fmt.Println(string(msg.Topic))
+	// fmt.Println(string(msg.Topic))
 
 	// result topic from management system
 	var results struct {
 		TimeMonitor time.Time `json:"time_monitor"`
-		ServerIDs   []uint `json:"server_ids"`
+		ServerIDs   []uint    `json:"server_ids"`
 	}
 
 	// Unmarshal JSON to the struct/map for efficient message decoding
@@ -47,7 +46,7 @@ func (m *MonitorService) Worker(msg kafka.Message) {
 		return // Handle error appropriately
 	}
 
-	fmt.Println(results)
+	// fmt.Println(results)
 
 	// {
 	// 	timestamp: 9:55

@@ -17,6 +17,8 @@ type Config struct {
 	AuthServerPort             string `mapstructure:"AUTH_SERVER_PORT"`
 	ManagementSystemServerPort string `mapstructure:"MANAGEMENT_SYSTEM_SERVER_PORT"`
 	GrpcGatewayPort            string `mapstructure:"GRPC_GATEWAY_PORT"`
+	MonitorServerPort          string `mapstructure:"MONITOR_SERVER_PORT"`
+	MailServerPort             string `mapstructure:"MAIL_SERVER_PORT"`
 
 	PGDatabaseHost     string `mapstructure:"PG_DATABASE_HOST"`
 	PGDatabaseUser     string `mapstructure:"PG_DATABASE_USER"`
@@ -24,10 +26,10 @@ type Config struct {
 	PGDatabaseDBName   string `mapstructure:"PG_DATABASE_DBNAME"`
 	PGDatabasePort     string `mapstructure:"PG_DATABASE_PORT"`
 
-	RedisHost string `mapstructure:"REDIS_HOST"`
-	RedisPort string `mapstructure:"REDIS_PORT"`
+	RedisHost     string `mapstructure:"REDIS_HOST"`
+	RedisPort     string `mapstructure:"REDIS_PORT"`
 	RedisPassword string `mapstructure:"REDIS_PASSWORD"`
-	RedisDB string `mapstructure:"REDIS_DB"`
+	RedisDB       string `mapstructure:"REDIS_DB"`
 
 	PathPrivateKey string `mapstructure:"PATH_PRIVATE_KEY"`
 	PathPublicKey  string `mapstructure:"PATH_PUBLIC_KEY"`

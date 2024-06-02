@@ -3,7 +3,9 @@ gen:
    	--go_out ./proto --go_opt paths=source_relative \
    	--go-grpc_out ./proto --go-grpc_opt paths=source_relative \
 	--grpc-gateway_out ./proto --grpc-gateway_opt paths=source_relative \
-   	./proto/auth/auth.proto ./proto/management-system/server.proto ./proto/monitor/monitor.proto
+   	./proto/auth/auth.proto ./proto/management-system/server.proto \
+	--openapiv2_out ./static/openapiv2 --openapiv2_opt use_go_templates=true \
+	./proto/monitor/monitor.proto ./proto/mail/mail.proto
 
 # --openapiv2_out ./static/openapiv2 --openapiv2_opt use_go_templates=true \
 

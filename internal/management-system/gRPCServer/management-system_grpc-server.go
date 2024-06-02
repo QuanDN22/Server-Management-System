@@ -17,6 +17,9 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"gorm.io/gorm"
+
+	"github.com/QuanDN22/Server-Management-System/proto/mail"
+	mt "github.com/QuanDN22/Server-Management-System/proto/monitor"
 )
 
 type ManagementSystemGrpcServer struct {
@@ -30,6 +33,9 @@ type ManagementSystemGrpcServer struct {
 
 	monitorConsumer *kafka.Reader
 	monitorProducer *kafka.Writer
+
+	monitorClient mt.MonitorClient
+	mailClient mail.MailClient
 }
 
 func NewManagementSystemGrpcServer(
@@ -41,6 +47,8 @@ func NewManagementSystemGrpcServer(
 	pingConsumer *kafka.Reader,
 	monitorConsumer *kafka.Reader,
 	monitorProducer *kafka.Writer,
+	monitorClient mt.MonitorClient,
+	mailClient mail.MailClient,
 ) (ms *ManagementSystemGrpcServer) {
 	ms = &ManagementSystemGrpcServer{
 		config:          config,
@@ -51,6 +59,8 @@ func NewManagementSystemGrpcServer(
 		pingConsumer:    pingConsumer,
 		monitorConsumer: monitorConsumer,
 		monitorProducer: monitorProducer,
+		monitorClient:   monitorClient,
+		mailClient:      mailClient,
 	}
 
 	// Attach the Greeter service to the server

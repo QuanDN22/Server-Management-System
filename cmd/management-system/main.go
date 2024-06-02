@@ -16,6 +16,10 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+
+	mt "github.com/QuanDN22/Server-Management-System/proto/monitor"
+	"github.com/QuanDN22/Server-Management-System/proto/mail"
 )
 
 func main() {
@@ -96,6 +100,14 @@ func main() {
 	// }
 	// fmt.Println(pong)
 
+	// middleware
+	mw, err := middleware.NewMiddleware(cfg.PathPublicKey)
+	// mw, err := middleware.NewMiddleware(os.Args[1])
+	if err != nil {
+		l.Error("failed to create middleware", zap.Error(err))
+	}
+	l.Info("middleware created...")
+
 	// ping Consumer
 	pingConsumer := consumer.NewConsumer(ctx, cfg.PingBrokerAddress, cfg.PingTopic, cfg.PingConsumerGroupID)
 
@@ -105,19 +117,52 @@ func main() {
 	// monitor Producer
 	monitorProducer := producer.NewProducer(ctx, cfg.MonitorBrokerAddress, cfg.MonitorResultsTopic)
 
-	mw, err := middleware.NewMiddleware(cfg.PathPublicKey)
-	// mw, err := middleware.NewMiddleware(os.Args[1])
+	// monitor Client
+	monitorConnect, err := grpc.Dial(
+		cfg.MonitorServerPort,
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithUnaryInterceptor(mw.UnaryClientInterceptor),
+	)
 	if err != nil {
-		l.Error("failed to create middleware", zap.Error(err))
+		log.Fatalf("did not connect to monitor server: %v", err)
 	}
-	l.Info("middleware created...")
+	defer monitorConnect.Close()
+
+	monitorClient := mt.NewMonitorClient(monitorConnect)
+
+	// mail client
+	mailConnect, err := grpc.Dial(
+		cfg.MailServerPort,
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithUnaryInterceptor(mw.UnaryClientInterceptor),
+	)
+
+	if err != nil {
+		log.Fatalf("did not connect to mail server: %v", err)
+	}
+	defer mailConnect.Close()
+
+	mailClient := mail.NewMailClient(mailConnect)
 
 	// grpc server
 	grpcserver := grpc.NewServer(
 		grpc.UnaryInterceptor(mw.UnaryServerInterceptor),
 		grpc.StreamInterceptor(mw.StreamServerInterceptor),
 	)
-	management_system_grpcserver := gRPCServer.NewManagementSystemGrpcServer(cfg, l, grpcserver, db, nil, pingConsumer, monitorConsumer, monitorProducer)
+	
+	management_system_grpcserver := gRPCServer.NewManagementSystemGrpcServer(
+		cfg, 
+		l, 
+		grpcserver, 
+		db, 
+		nil, 
+		pingConsumer, 
+		monitorConsumer, 
+		monitorProducer, 
+		monitorClient, 
+		mailClient,
+	)
+
 	// management_system_grpcserver := gRPCServer.NewManagementSystemGrpcServer(cfg, l, grpcserver, db, nil, nil, nil, nil)
 	management_system_grpcserver.Start(ctx, cancel)
 }

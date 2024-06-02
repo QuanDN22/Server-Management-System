@@ -17,6 +17,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
+
+	"github.com/QuanDN22/Server-Management-System/proto/mail"
+	mt "github.com/QuanDN22/Server-Management-System/proto/monitor"
 )
 
 // Ping server
@@ -541,4 +544,79 @@ func (ms *ManagementSystemGrpcServer) ViewServer(ctx context.Context, in *manage
 	return &managementsystem.ViewServerResponse{
 		Content: res,
 	}, nil
+}
+
+// Report server
+func (ms *ManagementSystemGrpcServer) Report(ctx context.Context, in *managementsystem.ReportRequest) (*emptypb.Empty, error) {
+	fmt.Println("Report server in Management System begin")
+
+	// count server
+	var count_server int64
+	if err := ms.db.Model(&domain.Server{}).Count(&count_server).Error; err != nil {
+		fmt.Println("Error counting records:", err)
+		return &emptypb.Empty{}, status.Errorf(codes.Internal, "Error counting records")
+	}
+
+	// count server on
+	var count_server_on int64
+	if err := ms.db.Model(&domain.Server{}).Where("server_status LIKE ?", "on").Count(&count_server_on).Error; err != nil {
+		fmt.Println("Error counting records:", err)
+		return &emptypb.Empty{}, status.Errorf(codes.Internal, "Error counting records")
+	}
+
+	// count server off
+	count_server_off := count_server - count_server_on
+
+	fmt.Println(count_server, count_server_on, count_server_off)
+
+	fmt.Println("Email:", in.GetEmail())
+
+	// get uptime of server
+	uptime, err := ms.monitorClient.GetUpTime(ctx, &mt.UptimeRequest{
+		Start: in.GetStart(),
+		End:   in.GetEnd(),
+	})
+
+	if err != nil {
+		return &emptypb.Empty{}, status.Error(codes.Internal, err.Error())
+	}
+
+	fmt.Println("uptime: ", uptime)
+
+	type data_server struct {
+		Sum_Server     int64   `json:"sum_server"`
+		Sum_Server_On  int64   `json:"sum_server_on"`
+		Sum_Server_Off int64   `json:"sum_server_off"`
+		Uptime         float32 `json:"uptime"`
+	}
+
+	type data struct {
+		Email      []string      `json:"email"`
+		DataServer []data_server `json:"data_send"`
+	}
+
+	send_data, _ := json.Marshal(data{
+		Email: in.GetEmail(),
+		DataServer: []data_server{
+			{
+				Sum_Server:     count_server,
+				Sum_Server_On:  count_server_on,
+				Sum_Server_Off: count_server_off,
+				Uptime:         uptime.Uptime,
+			},
+		},
+	})
+
+	fmt.Println("prepare send mail")
+
+	// send mail
+	_, err = ms.mailClient.SendMail(ctx, &mail.SendMailRequest{
+		DataSendMail: send_data,
+	})
+
+	if err != nil {
+		return &emptypb.Empty{}, status.Error(codes.Internal, err.Error())
+	}
+
+	return &emptypb.Empty{}, nil
 }

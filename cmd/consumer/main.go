@@ -1,15 +1,12 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"log"
 
 	"github.com/QuanDN22/Server-Management-System/pkg/config"
-	mt "github.com/QuanDN22/Server-Management-System/proto/monitor"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 func main() {
@@ -34,13 +31,13 @@ func main() {
 	}
 	defer conn.Close()
 
-	//create a client
-	client := mt.NewMonitorClient(conn)
+	// //create a client
+	// client := mt.NewMonitorClient(conn)
 
-	res, err := client.GetUpTime(context.Background(), &emptypb.Empty{})
+	// res, err := client.GetUpTime(context.Background(), &emptypb.Empty{})
 
-	if err != nil {
-		log.Fatalf("could not greet: %v", err)
-	}
-	log.Printf("Response: %v", res.Uptime)
+	// if err != nil {
+	// 	log.Fatalf("could not greet: %v", err)
+	// }
+	// log.Printf("Response: %v", res.Uptime)
 }

@@ -8,14 +8,18 @@ import (
 	mt "github.com/QuanDN22/Server-Management-System/proto/monitor"
 	"github.com/elastic/go-elasticsearch/v8/typedapi/core/search"
 	"github.com/elastic/go-elasticsearch/v8/typedapi/types"
-	"github.com/golang/protobuf/ptypes/empty"
 )
 
-func (m *MonitorService) GetUpTime(ctx context.Context, _ *empty.Empty) (*mt.ResponseUptime, error) {
-	var field = "server_id"
+func (m *MonitorService) GetUpTime(ctx context.Context, in *mt.UptimeRequest) (*mt.UptimeResponse, error) {
+	fmt.Println("GetUpTime called in monitor service...")
+
+	// var field = "server_id"
 	var duration = "duration"
-	var from = "2024-05-29T18:30:00+07:00"
-	var to = "2024-05-30T18:32:00+07:00"
+
+	start_ := in.GetStart() + "+07:00"
+	end_ := in.GetEnd() + "+07:00"
+
+	fmt.Println("monitor service getuptime: ", start_, " ", end_)
 
 	// Get uptime of the server
 	result, err := m.elasticClient.Search().Index("uptime-server-monitor").
@@ -23,11 +27,11 @@ func (m *MonitorService) GetUpTime(ctx context.Context, _ *empty.Empty) (*mt.Res
 			Query: &types.Query{
 				Bool: &types.BoolQuery{
 					Filter: []types.Query{
-						types.Query{
+						{
 							Range: map[string]types.RangeQuery{
 								"timestamp": types.DateRangeQuery{
-									Gte: &from,
-									Lte: &to,
+									Gte: &start_,
+									Lte: &end_,
 								},
 							},
 						},
@@ -35,16 +39,9 @@ func (m *MonitorService) GetUpTime(ctx context.Context, _ *empty.Empty) (*mt.Res
 				},
 			},
 			Aggregations: map[string]types.Aggregations{
-				"servers": types.Aggregations{
-					Terms: &types.TermsAggregation{
-						Field: &field,
-					},
-					Aggregations: map[string]types.Aggregations{
-						"total_duration": types.Aggregations{
-							Sum: &types.SumAggregation{
-								Field: &duration,
-							},
-						},
+				"total_duration": {
+					Sum: &types.SumAggregation{
+						Field: &duration,
 					},
 				},
 			},
@@ -55,10 +52,25 @@ func (m *MonitorService) GetUpTime(ctx context.Context, _ *empty.Empty) (*mt.Res
 	}
 
 	// Extract the sum from the aggregation result
-	fmt.Printf("Total uptime: %v", result.Aggregations["total_duration"].(*types.SimpleValueAggregate).Value)
+	fmt.Printf("Total uptime: %v", result.Aggregations["total_duration"].(*types.SumAggregate).Value)
 
 	// return uptime
-	return &mt.ResponseUptime{
-		Uptime: float32(result.Aggregations["total_duration"].(*types.SimpleValueAggregate).Value),
+	return &mt.UptimeResponse{
+		Uptime: float32(result.Aggregations["total_duration"].(*types.SumAggregate).Value),
 	}, nil
 }
+
+// Aggregations: map[string]types.Aggregations{
+// 	"servers": types.Aggregations{
+// 		Terms: &types.TermsAggregation{
+// 			Field: &field,
+// 		},
+// 		Aggregations: map[string]types.Aggregations{
+// 			"total_duration": types.Aggregations{
+// 				Sum: &types.SumAggregation{
+// 					Field: &duration,
+// 				},
+// 			},
+// 		},
+// 	},
+// },

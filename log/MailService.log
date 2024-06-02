@@ -1,0 +1,42 @@
+{"L":"INFO","T":"2024-06-03T02:48:36.067+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T02:48:36.068+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T02:48:36.069+0700","M":"Auth gRPC server started","port":":5004"}
+{"L":"INFO","T":"2024-06-03T03:05:20.899+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T03:05:20.900+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T03:05:20.901+0700","M":"Mail gRPC server started","port":":5004"}
+{"L":"INFO","T":"2024-06-03T03:25:45.429+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T03:25:45.430+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T03:25:45.653+0700","M":"Mail gRPC server started","port":":5004"}
+{"L":"INFO","T":"2024-06-03T03:32:42.005+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T03:32:42.006+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T03:32:42.513+0700","M":"Mail gRPC server started","port":":5004"}
+{"L":"INFO","T":"2024-06-03T03:34:10.093+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T03:34:10.094+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T03:34:10.095+0700","M":"Mail gRPC server started","port":":5004"}
+{"L":"INFO","T":"2024-06-03T03:38:02.470+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T03:38:02.470+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T03:38:02.475+0700","M":"Mail gRPC server started","port":":5004"}
+{"L":"INFO","T":"2024-06-03T03:44:32.456+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T03:44:32.457+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T03:44:35.570+0700","M":"Mail gRPC server started","port":":5004"}
+{"L":"INFO","T":"2024-06-03T03:47:13.516+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T03:47:13.516+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T03:47:13.518+0700","M":"Mail gRPC server started","port":":5004"}
+{"L":"INFO","T":"2024-06-03T03:50:07.793+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T03:50:07.795+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T03:50:07.890+0700","M":"Mail gRPC server started","port":":5004"}
+{"L":"INFO","T":"2024-06-03T04:04:14.896+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T04:04:14.898+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T04:04:19.913+0700","M":"Mail gRPC server started","port":":5004"}
+{"L":"INFO","T":"2024-06-03T04:10:08.241+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T04:10:08.241+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T04:10:08.246+0700","M":"Mail gRPC server started","port":":5004"}
+{"L":"INFO","T":"2024-06-03T04:16:48.991+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T04:16:48.991+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T04:16:48.994+0700","M":"Mail gRPC server started","port":":5004"}
+{"L":"INFO","T":"2024-06-03T04:20:40.125+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T04:20:40.125+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T04:20:40.129+0700","M":"Mail gRPC server started","port":":5004"}
+{"L":"INFO","T":"2024-06-03T04:23:39.925+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T04:23:39.926+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T04:23:44.933+0700","M":"Mail gRPC server started","port":":5004"}

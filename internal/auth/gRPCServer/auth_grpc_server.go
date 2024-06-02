@@ -36,7 +36,7 @@ func NewAuthGRPCServer(
 		db:         db,
 	}
 
-	// Attach the Greeter service to the server
+	// Attach the Auth service to the server
 	auth.RegisterAuthServiceServer(s.gRPCServer, s)
 	return s
 }

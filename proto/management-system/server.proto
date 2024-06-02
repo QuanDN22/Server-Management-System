@@ -117,6 +117,28 @@ service ManagementSystem {
 
 
     // Export server
+
+    // Report 
+    rpc Report(ReportRequest) returns (google.protobuf.Empty) {    
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Report server";
+            description: "Report server";
+            operation_id: "ReportServer";
+            tags: [ "Server" ];
+        };
+        option (google.api.http) = {
+            post: "/v1/api/servers/report"
+            body: "*"
+        };
+    }
+
+}
+
+// Report server
+message ReportRequest {
+    string start = 1;
+    string end = 2;
+    repeated string email = 3;
 }
 
 // view server request

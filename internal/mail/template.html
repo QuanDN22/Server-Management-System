@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 20px;
+      }
+      .container {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h3 {
+        color: #333333;
+      }
+      h4 {
+        color: #555555;
+      }
+      ul {
+        list-style-type: none;
+        padding: 0;
+      }
+      li {
+        background-color: #f9f9f9;
+        margin: 5px 0;
+        padding: 10px;
+        border-radius: 4px;
+        border: 1px solid #dddddd;
+      }
+      span {
+        color: #007BFF;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h3>Dear <span>Admin</span></h3>
+      <br /><br />
+      <h4>This mail is <span>report of VCServer</span></h4>
+      <br /><br />
+      <ul>
+        <li>Total: <span>{{.Sum_Server}}</span></li>
+        <li>Num server on: <span>{{.Sum_Server_On}}</span></li>
+        <li>Num server off: <span>{{.Sum_Server_Off}}</span></li>
+        <li>Avg server timeup: <span>{{.Uptime}}</span></li>
+      </ul>
+    </div>
+  </body>
+</html>
