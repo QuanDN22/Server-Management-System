@@ -33,7 +33,7 @@ func (v *Validator) GetToken(tokenString string) (*jwt.Token, error) {
 		tokenString,
 		func(token *jwt.Token) (interface{}, error) {
 			if _, ok := token.Method.(*jwt.SigningMethodEd25519); !ok {
-				return nil, fmt.Errorf("Unexpected signing method: %w", token.Header["alg"])
+				return nil, fmt.Errorf("unexpected signing method: %s", fmt.Sprintf("%v", token.Header["alg"]))
 			}
 			return v.key, nil
 		})

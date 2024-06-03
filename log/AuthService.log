@@ -255,3 +255,31 @@
 {"L":"INFO","T":"2024-06-03T04:14:17.284+0700","M":"database connected..."}
 {"L":"INFO","T":"2024-06-03T04:14:27.565+0700","M":"middleware created..."}
 {"L":"INFO","T":"2024-06-03T04:14:27.566+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-06-03T14:57:52.518+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T14:57:52.566+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-06-03T14:58:02.607+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T14:58:02.610+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-06-03T17:08:39.926+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T17:08:39.953+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-06-03T17:08:51.472+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T17:08:51.474+0700","M":"Failed to listen: ","error":"listen tcp :5001: bind: address already in use","port":":5001"}
+{"L":"INFO","T":"2024-06-03T17:11:35.181+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T17:11:35.221+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-06-03T17:11:45.555+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T17:11:45.557+0700","M":"Failed to listen: ","error":"listen tcp :5001: bind: address already in use","port":":5001"}
+{"L":"INFO","T":"2024-06-03T17:14:04.788+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T17:14:04.798+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-06-03T17:14:15.178+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T17:14:15.179+0700","M":"Failed to listen: ","error":"listen tcp :5001: bind: address already in use","port":":5001"}
+{"L":"INFO","T":"2024-06-03T17:14:34.461+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T17:14:34.469+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-06-03T17:14:44.766+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T17:14:44.768+0700","M":"Failed to listen: ","error":"listen tcp :5001: bind: address already in use","port":":5001"}
+{"L":"INFO","T":"2024-06-03T17:19:49.740+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T17:19:49.766+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-06-03T17:20:00.309+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T17:20:00.311+0700","M":"Failed to listen: ","error":"listen tcp :5001: bind: address already in use","port":":5001"}
+{"L":"INFO","T":"2024-06-03T17:21:11.533+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T17:21:11.541+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-06-03T17:21:21.936+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T17:21:21.937+0700","M":"Failed to listen: ","error":"listen tcp :5001: bind: address already in use","port":":5001"}

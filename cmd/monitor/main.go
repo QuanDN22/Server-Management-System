@@ -58,6 +58,7 @@ func main() {
 	monitor_producer := producer.NewProducer(ctx, cfg.MonitorBrokerAddress, cfg.MonitorTopic)
 	l.Info("monitor producer created...")
 
+	// middleware
 	mw, err := middleware.NewMiddleware(cfg.PathPublicKey)
 	// mw, err := middleware.NewMiddleware(os.Args[1])
 	if err != nil {

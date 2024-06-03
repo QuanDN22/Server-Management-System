@@ -8,17 +8,21 @@ import (
 	"log"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/QuanDN22/Server-Management-System/internal/management-system/domain"
 	"github.com/QuanDN22/Server-Management-System/pkg/middleware"
-	managementsystem "github.com/QuanDN22/Server-Management-System/proto/management-system"
+	"github.com/QuanDN22/Server-Management-System/proto/auth"
+	"github.com/go-co-op/gocron/v2"
 	"github.com/golang-jwt/jwt"
+	"github.com/golang/protobuf/ptypes/empty"
 	"google.golang.org/genproto/googleapis/api/httpbody"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 
 	"github.com/QuanDN22/Server-Management-System/proto/mail"
+	managementsystem "github.com/QuanDN22/Server-Management-System/proto/management-system"
 	mt "github.com/QuanDN22/Server-Management-System/proto/monitor"
 )
 
@@ -619,4 +623,99 @@ func (ms *ManagementSystemGrpcServer) Report(ctx context.Context, in *management
 	}
 
 	return &emptypb.Empty{}, nil
+}
+
+// WorkDaily report server
+func (ms *ManagementSystemGrpcServer) WorkDailyReport() {
+	s, _ := gocron.NewScheduler()
+
+	_, _ = s.NewJob(
+		gocron.DailyJob(
+			1,
+			gocron.NewAtTimes(
+				gocron.NewAtTime(16, 12, 0),
+			),
+		),
+		gocron.NewTask(
+			func() {
+				fmt.Println("Work daily send email")
+
+				// login to take token
+				login, err := ms.authClient.Login(context.Background(), &auth.LoginRequest{
+					Username: "admin2",
+					Password: "2",
+				})
+
+				if err != nil {
+					fmt.Println("Error login:", err)
+					return
+				}
+
+				fmt.Println("Token:", login.AccessToken)
+
+				// middleware
+				mw, err := middleware.NewMiddleware(ms.config.PathPublicKey)
+				if err != nil {
+					fmt.Println("failed to create middleware", err)
+				}
+
+				// set token to context
+				token, err := mw.GetToken(login.AccessToken)
+				if err != nil {
+					fmt.Println(("invalid token: " + err.Error()))
+					return
+				}
+
+				ctx := middleware.ContextSetToken(context.Background(), token)
+
+				// get email of admin
+				email, err := ms.authClient.GetAdminEmail(ctx, &emptypb.Empty{})
+				if err != nil {
+					fmt.Println("Error get email of admin:", err)
+					return
+				}
+
+				fmt.Println("Email of admin:", email.Email)
+
+				// time
+				start := time.Now().AddDate(0, 0, -2).Format(time.DateOnly) + "T00:00:00"
+				end := time.Now().AddDate(0, 0, -1).Format(time.DateOnly) + "T00:00:00"
+
+				fmt.Println("Start:", start)
+				fmt.Println("End:", end)
+
+				// send mail
+				_, err = ms.Report(ctx, &managementsystem.ReportRequest{
+					Start: start,
+					End:   end,
+					Email: []string{"dinhngocquan11072002@gmail.com", "dinhngocquan112378@gmail.com"},
+				})
+
+				if err != nil {
+					fmt.Println("Error send mail:", err)
+					return
+				}
+			},
+		),
+	)
+
+	s.Start()
+	c := make(chan byte)
+	<-c
+}
+
+// Get all server ip
+func (ms *ManagementSystemGrpcServer) GetAllServerIP(ctx context.Context, _ *empty.Empty) (*managementsystem.GetAllServerIPResponse, error) {
+	var serverIPs []string
+
+	// Fetch data from database
+	result := ms.db.Model(&domain.Server{}).Select("server_ipv4").Find(&serverIPs)
+
+	if result.Error != nil {
+		return &managementsystem.GetAllServerIPResponse{}, status.Error(codes.Internal, result.Error.Error())
+	}
+
+	return &managementsystem.GetAllServerIPResponse{
+		Server_IPv4: serverIPs,
+	}, nil
 }

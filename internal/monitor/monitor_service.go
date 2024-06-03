@@ -13,7 +13,7 @@ import (
 func (m *MonitorService) GetUpTime(ctx context.Context, in *mt.UptimeRequest) (*mt.UptimeResponse, error) {
 	fmt.Println("GetUpTime called in monitor service...")
 
-	// var field = "server_id"
+	// var field = "server_ipv4"
 	var duration = "duration"
 
 	start_ := in.GetStart() + "+07:00"

@@ -9,7 +9,13 @@ import (
 	"github.com/QuanDN22/Server-Management-System/pkg/config"
 	"github.com/QuanDN22/Server-Management-System/pkg/kafka/producer"
 	"github.com/QuanDN22/Server-Management-System/pkg/logger"
+	"github.com/QuanDN22/Server-Management-System/pkg/middleware"
+	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+
+	managementsystem "github.com/QuanDN22/Server-Management-System/proto/management-system"
 )
 
 func main() {
@@ -52,7 +58,28 @@ func main() {
 
 	l.Info("ping producer created...")
 
-	pingService := ping.NewPingService(ctx, pingProducer, l)
+	// middleware
+	mw, err := middleware.NewMiddleware(cfg.PathPublicKey)
+	// mw, err := middleware.NewMiddleware(os.Args[1])
+	if err != nil {
+		l.Error("failed to create middleware", zap.Error(err))
+	}
+	l.Info("middleware created...")
+
+	// managementsystem Client
+	managementsystemConnect, err := grpc.Dial(
+		cfg.ManagementSystemServerPort,
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithUnaryInterceptor(mw.UnaryClientInterceptor),
+	)
+	if err != nil {
+		log.Fatalf("did not connect to monitor server: %v", err)
+	}
+	defer managementsystemConnect.Close()
+
+	managementClient := managementsystem.NewManagementSystemClient(managementsystemConnect)
+
+	pingService := ping.NewPingService(ctx, pingProducer, l, managementClient)
 
 	pingService.Start(ctx, uint(cfg.NumberOfServer))
 }

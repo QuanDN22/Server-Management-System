@@ -18,8 +18,9 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	mt "github.com/QuanDN22/Server-Management-System/proto/monitor"
+	"github.com/QuanDN22/Server-Management-System/proto/auth"
 	"github.com/QuanDN22/Server-Management-System/proto/mail"
+	mt "github.com/QuanDN22/Server-Management-System/proto/monitor"
 )
 
 func main() {
@@ -144,23 +145,38 @@ func main() {
 
 	mailClient := mail.NewMailClient(mailConnect)
 
+	// auth client
+	authConnect, err := grpc.Dial(
+		cfg.AuthServerPort,
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithUnaryInterceptor(mw.UnaryClientInterceptor),
+	)
+
+	if err != nil {
+		log.Fatalf("did not connect to auth server: %v", err)
+	}
+	defer authConnect.Close()
+
+	authClient := auth.NewAuthServiceClient(authConnect)
+
 	// grpc server
 	grpcserver := grpc.NewServer(
 		grpc.UnaryInterceptor(mw.UnaryServerInterceptor),
 		grpc.StreamInterceptor(mw.StreamServerInterceptor),
 	)
-	
+
 	management_system_grpcserver := gRPCServer.NewManagementSystemGrpcServer(
-		cfg, 
-		l, 
-		grpcserver, 
-		db, 
-		nil, 
-		pingConsumer, 
-		monitorConsumer, 
-		monitorProducer, 
-		monitorClient, 
+		cfg,
+		l,
+		grpcserver,
+		db,
+		nil,
+		pingConsumer,
+		monitorConsumer,
+		monitorProducer,
+		monitorClient,
 		mailClient,
+		authClient,
 	)
 
 	// management_system_grpcserver := gRPCServer.NewManagementSystemGrpcServer(cfg, l, grpcserver, db, nil, nil, nil, nil)

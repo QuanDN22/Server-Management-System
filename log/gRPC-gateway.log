@@ -257,3 +257,12 @@
 {"L":"INFO","T":"2024-06-03T04:15:12.028+0700","M":"logger created..."}
 {"L":"INFO","T":"2024-06-03T04:15:12.028+0700","M":"middleware created..."}
 {"L":"INFO","T":"2024-06-03T04:15:12.028+0700","M":"Serving gRPC-Gateway is running on :8080"}
+{"L":"INFO","T":"2024-06-03T17:09:16.471+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T17:09:16.471+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T17:09:16.472+0700","M":"Serving gRPC-Gateway is running on :8080"}
+{"L":"INFO","T":"2024-06-03T17:14:14.794+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T17:14:14.794+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T17:14:14.795+0700","M":"Serving gRPC-Gateway is running on :8080"}
+{"L":"INFO","T":"2024-06-03T17:14:38.730+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-03T17:14:38.730+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-03T17:14:38.731+0700","M":"Serving gRPC-Gateway is running on :8080"}

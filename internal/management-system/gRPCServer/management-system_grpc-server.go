@@ -18,6 +18,7 @@ import (
 	"google.golang.org/grpc"
 	"gorm.io/gorm"
 
+	"github.com/QuanDN22/Server-Management-System/proto/auth"
 	"github.com/QuanDN22/Server-Management-System/proto/mail"
 	mt "github.com/QuanDN22/Server-Management-System/proto/monitor"
 )
@@ -35,7 +36,8 @@ type ManagementSystemGrpcServer struct {
 	monitorProducer *kafka.Writer
 
 	monitorClient mt.MonitorClient
-	mailClient mail.MailClient
+	mailClient    mail.MailClient
+	authClient    auth.AuthServiceClient
 }
 
 func NewManagementSystemGrpcServer(
@@ -49,6 +51,7 @@ func NewManagementSystemGrpcServer(
 	monitorProducer *kafka.Writer,
 	monitorClient mt.MonitorClient,
 	mailClient mail.MailClient,
+	authClient auth.AuthServiceClient,
 ) (ms *ManagementSystemGrpcServer) {
 	ms = &ManagementSystemGrpcServer{
 		config:          config,
@@ -61,6 +64,7 @@ func NewManagementSystemGrpcServer(
 		monitorProducer: monitorProducer,
 		monitorClient:   monitorClient,
 		mailClient:      mailClient,
+		authClient:      authClient,
 	}
 
 	// Attach the Greeter service to the server
@@ -121,18 +125,21 @@ func (ms *ManagementSystemGrpcServer) Start(ctx context.Context, cancel context.
 		}
 	}()
 
+	// send email work daily
+	go ms.WorkDailyReport()
+
 	<-ctx.Done()
 }
 
 func (ms *ManagementSystemGrpcServer) Woker(ctx context.Context, msg kafka.Message) {
 	if msg.Topic == ms.config.PingTopic {
 		split := strings.Split(string(msg.Value), ",")
-		server_id := split[0]
+		server_ipv4 := split[0]
 		status := split[1]
-		fmt.Println(server_id, status)
+		fmt.Println(server_ipv4, status)
 		var server domain.Server
 
-		res := ms.db.First(&server, server_id)
+		res := ms.db.First(&server, server_ipv4)
 		if res.RowsAffected == 0 {
 			ms.logger.Info("server not found")
 			return
@@ -157,9 +164,9 @@ func (ms *ManagementSystemGrpcServer) Woker(ctx context.Context, msg kafka.Messa
 
 		time_monitor := time.Unix(int64(time_monitor_byte), 0)
 		// time_monitor := string(msg.Value)
-		var server_ids []uint
+		var server_ipv4s []string
 
-		res := ms.db.Model(&domain.Server{}).Select("server_id").Where("server_status = ?", "on").Find(&server_ids)
+		res := ms.db.Model(&domain.Server{}).Select("server_ipv4").Where("server_status = ?", "on").Find(&server_ipv4s)
 
 		if res.Error != nil {
 			ms.logger.Info("Failed to get server")
@@ -169,10 +176,10 @@ func (ms *ManagementSystemGrpcServer) Woker(ctx context.Context, msg kafka.Messa
 		// producer result topic
 		resultTopic := struct {
 			TimeMonitor time.Time `json:"time_monitor"`
-			ServerIDs   []uint    `json:"server_ids"`
+			ServerIPv4s []string  `json:"server_ipv4s"`
 		}{
 			TimeMonitor: time_monitor,
-			ServerIDs:   server_ids,
+			ServerIPv4s: server_ipv4s,
 		}
 
 		// Marshal the struct/map to JSON for efficient message encoding
