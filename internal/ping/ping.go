@@ -58,12 +58,14 @@ func (p *PingService) Start(ctx context.Context, numberOfServer uint) {
 			var status string
 			if stats.PacketLoss != 3 {
 				status = "on"
+			} else {
+				status = "off"
 			}
 
 			// send to kafka
 			err = p.PingProducer.WriteMessages(ctx, kafka.Message{
 				Key:   []byte(server_ipv4),
-				Value: []byte(fmt.Sprintf("%s,%s", server_ipv4, status)),
+				Value: []byte(fmt.Sprintf("%s, %s", server_ipv4, status)),
 			})
 			if err != nil {
 				panic("could not write message " + err.Error())
@@ -73,6 +75,6 @@ func (p *PingService) Start(ctx context.Context, numberOfServer uint) {
 			p.logger.Info(msg)
 		}
 
-		time.Sleep(time.Second * 1)
+		time.Sleep(time.Second * 150)
 	}
 }
