@@ -63,20 +63,13 @@ func (ms *ManagementSystemGrpcServer) CreateServer(ctx context.Context, in *mana
 	// check if server name already exists
 	var server domain.Server
 	res := ms.db.First(&server, "server_name = ?", server_name)
-	// if res.Error != nil {
-	// 	return &managementsystem.Server{}, status.Error(codes.Internal, "failed to query server")
-	// }
-
+	
 	if res.RowsAffected != 0 {
 		return &managementsystem.Server{}, status.Error(codes.AlreadyExists, "server name already exists")
 	}
 
 	// check if server ip already exists
-	// res = ms.db.Model(&domain.Server{}).Where("server_ip = ?", server_ip).First(&server)
 	res = ms.db.First(&server, "server_ipv4 = ?", server_ipv4)
-	// if res.Error != nil {
-	// 	return &managementsystem.Server{}, status.Error(codes.Internal, "failed to query server")
-	// }
 
 	if res.RowsAffected != 0 {
 		return &managementsystem.Server{}, status.Error(codes.AlreadyExists, "server ip already exists")
@@ -204,10 +197,6 @@ func (ms *ManagementSystemGrpcServer) UpdateServer(ctx context.Context, in *mana
 			return &managementsystem.Server{}, status.Error(codes.AlreadyExists, "server name already exists")
 		}
 
-		// if server.Server_Name != server_name {
-		// 	server.Server_Name = server_name
-		// }
-
 		if server_ipv4 == "" {
 			if server_status == "" {
 				if server.Server_Name == server_name {
@@ -247,8 +236,6 @@ func (ms *ManagementSystemGrpcServer) UpdateServer(ctx context.Context, in *mana
 			if res.RowsAffected != 0 {
 				return &managementsystem.Server{}, status.Error(codes.AlreadyExists, "server ip already exists")
 			}
-
-			// server.Server_IPv4 = server_ipv4
 
 			if server_status != "" {
 				if server_name == server.Server_Name && server_ipv4 == server.Server_IPv4 && server_status == server.Server_Status {
@@ -552,7 +539,7 @@ func (ms *ManagementSystemGrpcServer) ViewServer(ctx context.Context, in *manage
 
 // Report server
 func (ms *ManagementSystemGrpcServer) Report(ctx context.Context, in *managementsystem.ReportRequest) (*emptypb.Empty, error) {
-	fmt.Println("Report server in Management System begin")
+	// fmt.Println("Report server in Management System begin")
 
 	// count server
 	var count_server int64
