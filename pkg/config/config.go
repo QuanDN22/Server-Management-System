@@ -9,16 +9,13 @@ import (
 type Config struct {
 	ServiceName string `mapstructure:"SERVICE_NAME"`
 
-	NumberOfServer int `mapstructure:"NUMBER_OF_SERVER"`
-
-	GrpcAddr string `mapstructure:"GRPC_ADDR"`
-	GrpcPort string `mapstructure:"GRPC_PORT"`
-
 	AuthServerPort             string `mapstructure:"AUTH_SERVER_PORT"`
 	ManagementSystemServerPort string `mapstructure:"MANAGEMENT_SYSTEM_SERVER_PORT"`
 	GrpcGatewayPort            string `mapstructure:"GRPC_GATEWAY_PORT"`
 	MonitorServerPort          string `mapstructure:"MONITOR_SERVER_PORT"`
 	MailServerPort             string `mapstructure:"MAIL_SERVER_PORT"`
+
+	TokenInternal string `mapsctructure:"TOKEN_INTERNAL"`
 
 	PGDatabaseHost     string `mapstructure:"PG_DATABASE_HOST"`
 	PGDatabaseUser     string `mapstructure:"PG_DATABASE_USER"`

@@ -81,5 +81,5 @@ func main() {
 
 	pingService := ping.NewPingService(ctx, pingProducer, l, managementClient)
 
-	pingService.Start(ctx, uint(cfg.NumberOfServer))
+	pingService.Start(ctx, uint(1000))
 }
