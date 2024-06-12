@@ -10,6 +10,7 @@ import (
 	"github.com/elastic/go-elasticsearch/v8/typedapi/types"
 )
 
+// Get up time of the server in the elasticsearch
 func (m *MonitorService) GetUpTime(ctx context.Context, in *mt.UptimeRequest) (*mt.UptimeResponse, error) {
 	fmt.Println("GetUpTime called in monitor service...")
 
@@ -74,3 +75,8 @@ func (m *MonitorService) GetUpTime(ctx context.Context, in *mt.UptimeRequest) (*
 // 		},
 // 	},
 // },
+
+// monitor server
+func (m *MonitorService) WorkDailyMonitor(ctx context.Context) {
+
+}

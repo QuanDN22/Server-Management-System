@@ -16,6 +16,9 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+
+	managementsystem "github.com/QuanDN22/Server-Management-System/proto/management-system"
 )
 
 func main() {
@@ -115,12 +118,25 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// managementsystem Client
+	managementsystemConnect, err := grpc.Dial(
+		cfg.ManagementSystemServerPort,
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithUnaryInterceptor(mw.UnaryClientInterceptor),
+	)
+	if err != nil {
+		log.Fatalf("did not connect to monitor server: %v", err)
+	}
+	defer managementsystemConnect.Close()
+
+	managementsystemClient := managementsystem.NewManagementSystemClient(managementsystemConnect)
+
 	// grpc server
 	grpcserver := grpc.NewServer(
 		grpc.UnaryInterceptor(mw.UnaryServerInterceptor),
 	)
 
-	monitorService := monitor.NewMonitorService(monitor_producer, monitor_consumer, l, cfg, grpcserver, es)
+	monitorService := monitor.NewMonitorService(monitor_producer, monitor_consumer, managementsystemClient, l, cfg, grpcserver, es)
 
 	monitorService.Start(ctx)
 }

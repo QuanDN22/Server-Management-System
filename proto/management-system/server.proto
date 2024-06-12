@@ -132,15 +132,20 @@ service ManagementSystem {
         };
     }
 
-    // Get all server_ip
-    rpc GetAllServerIP(google.protobuf.Empty) returns (GetAllServerIPResponse) {}
+    // Get all server_id and server_ipv4  
+    rpc GetAllServer(google.protobuf.Empty) returns (GetAllServerResponse) {}
 
 }
 
+// Get all server_id and server_ipv4 response
+message GetAllServerResponse {
+    repeated GetServerResponse servers = 1;
+}
 
 // Get all server_ip response
-message GetAllServerIPResponse {
-    repeated string Server_IPv4 = 1;
+message GetServerResponse {
+    int64 Server_ID = 1;
+    string Server_IPv4 = 2;
 }
 
 // Report server

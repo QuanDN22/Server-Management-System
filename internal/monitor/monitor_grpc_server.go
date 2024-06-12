@@ -6,17 +6,20 @@ import (
 
 	"github.com/segmentio/kafka-go"
 	"go.uber.org/zap"
-
-	"github.com/QuanDN22/Server-Management-System/pkg/config"
-	mt "github.com/QuanDN22/Server-Management-System/proto/monitor"
 	"github.com/elastic/go-elasticsearch/v8"
 	"google.golang.org/grpc"
+
+	"github.com/QuanDN22/Server-Management-System/pkg/config"
+
+	mt "github.com/QuanDN22/Server-Management-System/proto/monitor"
+	managementsystem "github.com/QuanDN22/Server-Management-System/proto/management-system"
 )
 
 type MonitorService struct {
 	mt.UnimplementedMonitorServer
 	MonitorProducer *kafka.Writer
 	MonitorConsumer *kafka.Reader
+	managementClient managementsystem.ManagementSystemClient
 	config          *config.Config
 	logger          *zap.Logger
 	gRPCServer      *grpc.Server
@@ -26,6 +29,9 @@ type MonitorService struct {
 func NewMonitorService(
 	MonitorProducer *kafka.Writer,
 	MonitorConsumer *kafka.Reader,
+
+	managementClient managementsystem.ManagementSystemClient,
+
 	logger *zap.Logger,
 	config *config.Config,
 	gRPCServer *grpc.Server,
@@ -34,6 +40,8 @@ func NewMonitorService(
 	ms = &MonitorService{
 		MonitorProducer: MonitorProducer,
 		MonitorConsumer: MonitorConsumer,
+
+		managementClient: managementClient,
 		config:          config,
 		logger:          logger,
 		gRPCServer:      gRPCServer,
@@ -46,8 +54,6 @@ func NewMonitorService(
 }
 
 func (m *MonitorService) Start(ctx context.Context) {
-	go m.StartMonitorConsumer(ctx)
-	go m.StartMonitorProducer(ctx)
 	// grpc server
 	go func() {
 		// Create listening on TCP port
@@ -70,5 +76,9 @@ func (m *MonitorService) Start(ctx context.Context) {
 			return
 		}
 	}()
+
+	// go m.StartMonitorConsumer(ctx)
+	go m.StartMonitorProducer(ctx)
+
 	<-ctx.Done()
 }

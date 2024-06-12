@@ -692,17 +692,17 @@ func (ms *ManagementSystemGrpcServer) WorkDailyReport() {
 }
 
 // Get all server ip
-func (ms *ManagementSystemGrpcServer) GetAllServerIP(ctx context.Context, _ *empty.Empty) (*managementsystem.GetAllServerIPResponse, error) {
-	var serverIPs []string
+func (ms *ManagementSystemGrpcServer) GetAllServer(ctx context.Context, _ *empty.Empty) (*managementsystem.GetAllServerResponse, error) {
+	getallserver := make([]*managementsystem.GetServerResponse, 0)
 
 	// Fetch data from database
-	result := ms.db.Model(&domain.Server{}).Select("server_ipv4").Find(&serverIPs)
+	result := ms.db.Model(&domain.Server{}).Select("server_ipv4").Find(&getallserver)
 
 	if result.Error != nil {
-		return &managementsystem.GetAllServerIPResponse{}, status.Error(codes.Internal, result.Error.Error())
+		return &managementsystem.GetAllServerResponse{}, status.Error(codes.Internal, result.Error.Error())
 	}
 
-	return &managementsystem.GetAllServerIPResponse{
-		Server_IPv4: serverIPs,
+	return &managementsystem.GetAllServerResponse{
+		Servers: getallserver,
 	}, nil
 }

@@ -79,7 +79,9 @@ func main() {
 
 	managementClient := managementsystem.NewManagementSystemClient(managementsystemConnect)
 
-	pingService := ping.NewPingService(ctx, pingProducer, l, managementClient)
+	// pingService := ping.NewPingService(ctx, pingProducer, l, managementClient)
 
-	pingService.Start(ctx, uint(1000))
+	_ = ping.NewPingService(ctx, pingProducer, l, managementClient)
+
+	// pingService.Start(ctx, uint(1000))
 }
