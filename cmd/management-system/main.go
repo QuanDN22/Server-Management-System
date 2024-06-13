@@ -9,7 +9,6 @@ import (
 	"github.com/QuanDN22/Server-Management-System/internal/management-system/domain"
 	"github.com/QuanDN22/Server-Management-System/internal/management-system/gRPCServer"
 	"github.com/QuanDN22/Server-Management-System/pkg/config"
-	"github.com/QuanDN22/Server-Management-System/pkg/kafka/producer"
 	"github.com/QuanDN22/Server-Management-System/pkg/logger"
 	"github.com/QuanDN22/Server-Management-System/pkg/middleware"
 	"github.com/QuanDN22/Server-Management-System/pkg/postgres"
@@ -109,14 +108,9 @@ func main() {
 	}
 	l.Info("middleware created...")
 
-	// ping Consumer
-	pingConsumer := consumer.NewConsumer(ctx, cfg.PingBrokerAddress, cfg.PingTopic, cfg.PingConsumerGroupID)
-
 	// monitor Consumer
 	monitorConsumer := consumer.NewConsumer(ctx, cfg.MonitorBrokerAddress, cfg.MonitorTopic, cfg.MonitorConsumerGroupID)
-
-	// monitor Producer
-	monitorProducer := producer.NewProducer(ctx, cfg.MonitorBrokerAddress, cfg.MonitorResultsTopic)
+	l.Info("monitor consumer created...")
 
 	// monitor Client
 	monitorConnect, err := grpc.Dial(
@@ -128,6 +122,7 @@ func main() {
 		log.Fatalf("did not connect to monitor server: %v", err)
 	}
 	defer monitorConnect.Close()
+	l.Info("monitor client created...")
 
 	monitorClient := mt.NewMonitorClient(monitorConnect)
 
@@ -142,6 +137,7 @@ func main() {
 		log.Fatalf("did not connect to mail server: %v", err)
 	}
 	defer mailConnect.Close()
+	l.Info("mail client created...")
 
 	mailClient := mail.NewMailClient(mailConnect)
 
@@ -156,6 +152,7 @@ func main() {
 		log.Fatalf("did not connect to auth server: %v", err)
 	}
 	defer authConnect.Close()
+	l.Info("auth client created...")
 
 	authClient := auth.NewAuthServiceClient(authConnect)
 
@@ -171,9 +168,7 @@ func main() {
 		grpcserver,
 		db,
 		nil,
-		pingConsumer,
 		monitorConsumer,
-		monitorProducer,
 		monitorClient,
 		mailClient,
 		authClient,

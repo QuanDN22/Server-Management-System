@@ -4,33 +4,34 @@ import (
 	"context"
 	"net"
 
+	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/segmentio/kafka-go"
 	"go.uber.org/zap"
-	"github.com/elastic/go-elasticsearch/v8"
 	"google.golang.org/grpc"
 
 	"github.com/QuanDN22/Server-Management-System/pkg/config"
 
-	mt "github.com/QuanDN22/Server-Management-System/proto/monitor"
+	"github.com/QuanDN22/Server-Management-System/proto/auth"
 	managementsystem "github.com/QuanDN22/Server-Management-System/proto/management-system"
+	mt "github.com/QuanDN22/Server-Management-System/proto/monitor"
 )
 
 type MonitorService struct {
 	mt.UnimplementedMonitorServer
-	MonitorProducer *kafka.Writer
-	MonitorConsumer *kafka.Reader
+	MonitorProducer  *kafka.Writer
 	managementClient managementsystem.ManagementSystemClient
-	config          *config.Config
-	logger          *zap.Logger
-	gRPCServer      *grpc.Server
-	elasticClient   *elasticsearch.TypedClient
+	authClient auth.AuthServiceClient
+	config           *config.Config
+	logger           *zap.Logger
+	gRPCServer       *grpc.Server
+	elasticClient    *elasticsearch.TypedClient
 }
 
 func NewMonitorService(
 	MonitorProducer *kafka.Writer,
-	MonitorConsumer *kafka.Reader,
 
 	managementClient managementsystem.ManagementSystemClient,
+	authClient auth.AuthServiceClient,
 
 	logger *zap.Logger,
 	config *config.Config,
@@ -39,13 +40,13 @@ func NewMonitorService(
 ) (ms *MonitorService) {
 	ms = &MonitorService{
 		MonitorProducer: MonitorProducer,
-		MonitorConsumer: MonitorConsumer,
 
 		managementClient: managementClient,
-		config:          config,
-		logger:          logger,
-		gRPCServer:      gRPCServer,
-		elasticClient:   elasticClient,
+		authClient: authClient,
+		config:           config,
+		logger:           logger,
+		gRPCServer:       gRPCServer,
+		elasticClient:    elasticClient,
 	}
 
 	// Attach the Monitor service to the grpc server
@@ -59,14 +60,14 @@ func (m *MonitorService) Start(ctx context.Context) {
 		// Create listening on TCP port
 		lis, err := net.Listen("tcp", m.config.MonitorServerPort)
 		if err != nil {
-			m.logger.Info("Failed to listen: ", zap.Error(err), zap.String("port", ":5003"))
+			m.logger.Info("Failed to listen: ", zap.Error(err), zap.String("port", m.config.MonitorServerPort))
 			return
 		}
 
 		// Serve gRPC Server
-		m.logger.Info("Management System gRPC server started", zap.String("port", ":5003"))
+		m.logger.Info("Management System gRPC server started", zap.String("port", m.config.MonitorServerPort))
 		if err := m.gRPCServer.Serve(lis); err != nil {
-			m.logger.Info("error starting grpc server", zap.Error(err), zap.String("port", ":5003"))
+			m.logger.Info("error starting grpc server", zap.Error(err), zap.String("port", m.config.MonitorServerPort))
 			return
 		}
 
@@ -77,8 +78,8 @@ func (m *MonitorService) Start(ctx context.Context) {
 		}
 	}()
 
-	// go m.StartMonitorConsumer(ctx)
-	go m.StartMonitorProducer(ctx)
+	// monitor server
+	go m.WorkDailyMonitorServer(ctx)
 
 	<-ctx.Done()
 }

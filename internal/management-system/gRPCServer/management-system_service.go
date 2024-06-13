@@ -10,9 +10,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/QuanDN22/Server-Management-System/internal/management-system/domain"
-	"github.com/QuanDN22/Server-Management-System/pkg/middleware"
-	"github.com/QuanDN22/Server-Management-System/proto/auth"
 	"github.com/go-co-op/gocron/v2"
 	"github.com/golang-jwt/jwt"
 	"github.com/golang/protobuf/ptypes/empty"
@@ -21,7 +18,11 @@ import (
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 
+	"github.com/QuanDN22/Server-Management-System/internal/management-system/domain"
+	"github.com/QuanDN22/Server-Management-System/pkg/middleware"
+	"github.com/QuanDN22/Server-Management-System/proto/auth"
 	"github.com/QuanDN22/Server-Management-System/proto/mail"
+
 	managementsystem "github.com/QuanDN22/Server-Management-System/proto/management-system"
 	mt "github.com/QuanDN22/Server-Management-System/proto/monitor"
 )
@@ -63,7 +64,7 @@ func (ms *ManagementSystemGrpcServer) CreateServer(ctx context.Context, in *mana
 	// check if server name already exists
 	var server domain.Server
 	res := ms.db.First(&server, "server_name = ?", server_name)
-	
+
 	if res.RowsAffected != 0 {
 		return &managementsystem.Server{}, status.Error(codes.AlreadyExists, "server name already exists")
 	}
@@ -614,13 +615,18 @@ func (ms *ManagementSystemGrpcServer) Report(ctx context.Context, in *management
 
 // WorkDaily report server
 func (ms *ManagementSystemGrpcServer) WorkDailyReport() {
-	s, _ := gocron.NewScheduler()
-
-	_, _ = s.NewJob(
+	// create a scheduler
+	s, err := gocron.NewScheduler()
+	if err != nil {
+		// handle error
+		fmt.Println("Error in creating scheduler")
+	}
+	// add a job to the scheduler
+	j, err := s.NewJob(
 		gocron.DailyJob(
 			1,
 			gocron.NewAtTimes(
-				gocron.NewAtTime(16, 12, 0),
+				gocron.NewAtTime(14, 15, 0),
 			),
 		),
 		gocron.NewTask(
@@ -648,6 +654,8 @@ func (ms *ManagementSystemGrpcServer) WorkDailyReport() {
 
 				// set token to context
 				token, err := mw.GetToken(login.AccessToken)
+				// token, err := mw.GetToken(ms.config.TokenInternal)
+
 				if err != nil {
 					fmt.Println(("invalid token: " + err.Error()))
 					return
@@ -686,9 +694,26 @@ func (ms *ManagementSystemGrpcServer) WorkDailyReport() {
 		),
 	)
 
+	if err != nil {
+		// handle error
+		fmt.Println("Error in adding job to scheduler")
+	}
+
+	// each job has a unique id
+	fmt.Println(j.ID())
+
+	// start the scheduler
 	s.Start()
+
 	c := make(chan byte)
 	<-c
+
+	// when you're done, shut it down
+	err = s.Shutdown()
+	if err != nil {
+		// handle error
+		fmt.Println("Error in shutting down scheduler")
+	}
 }
 
 // Get all server ip
@@ -696,7 +721,7 @@ func (ms *ManagementSystemGrpcServer) GetAllServer(ctx context.Context, _ *empty
 	getallserver := make([]*managementsystem.GetServerResponse, 0)
 
 	// Fetch data from database
-	result := ms.db.Model(&domain.Server{}).Select("server_ipv4").Find(&getallserver)
+	result := ms.db.Model(&domain.Server{}).Select("server_id, server_ipv4").Find(&getallserver)
 
 	if result.Error != nil {
 		return &managementsystem.GetAllServerResponse{}, status.Error(codes.Internal, result.Error.Error())

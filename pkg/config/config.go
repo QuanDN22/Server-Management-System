@@ -31,15 +31,12 @@ type Config struct {
 	PathPrivateKey string `mapstructure:"PATH_PRIVATE_KEY"`
 	PathPublicKey  string `mapstructure:"PATH_PUBLIC_KEY"`
 
-	PingBrokerAddress   string `mapstructure:"PING_BROKER_ADDRESS"`
-	PingTopic           string `mapstructure:"PING_TOPIC"`
-	PingResultsTopic    string `mapstructure:"PING_RESULTS_TOPIC"`
-	PingConsumerGroupID string `mapstructure:"PING_CONSUMER_GROUP_ID"`
-
 	MonitorBrokerAddress   string `mapstructure:"MONITOR_BROKER_ADDRESS"`
 	MonitorTopic           string `mapstructure:"MONITOR_TOPIC"`
 	MonitorResultsTopic    string `mapstructure:"MONITOR_RESULTS_TOPIC"`
 	MonitorConsumerGroupID string `mapstructure:"MONITOR_CONSUMER_GROUP_ID"`
+
+	MonitorDurationMinute int `mapstructure:"MONITOR_DURATION_MINUTE"`
 
 	KafkaBrokerAddress          string `mapstructure:"KAFKA_BROKER_ADDRESS"`
 	KafkaTopic                  string `mapstructure:"KAFKA_TOPIC"`

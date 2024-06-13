@@ -272,3 +272,6 @@
 {"L":"INFO","T":"2024-06-12T11:16:53.452+0700","M":"logger created..."}
 {"L":"INFO","T":"2024-06-12T11:16:53.453+0700","M":"middleware created..."}
 {"L":"INFO","T":"2024-06-12T11:16:53.454+0700","M":"Serving gRPC-Gateway is running on :8080"}
+{"L":"INFO","T":"2024-06-13T11:09:38.952+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-13T11:09:38.952+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-13T11:09:38.953+0700","M":"Serving gRPC-Gateway is running on :8080"}

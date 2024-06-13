@@ -7,7 +7,6 @@ import (
 
 	"github.com/QuanDN22/Server-Management-System/internal/monitor"
 	"github.com/QuanDN22/Server-Management-System/pkg/config"
-	"github.com/QuanDN22/Server-Management-System/pkg/kafka/consumer"
 	"github.com/QuanDN22/Server-Management-System/pkg/kafka/producer"
 	"github.com/QuanDN22/Server-Management-System/pkg/logger"
 	"github.com/QuanDN22/Server-Management-System/pkg/middleware"
@@ -18,6 +17,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
+	"github.com/QuanDN22/Server-Management-System/proto/auth"
 	managementsystem "github.com/QuanDN22/Server-Management-System/proto/management-system"
 )
 
@@ -54,10 +54,6 @@ func main() {
 	}
 	l.Info("logger created...")
 
-	monitor_consumer := consumer.NewConsumer(ctx, cfg.MonitorBrokerAddress, cfg.MonitorResultsTopic, cfg.MonitorConsumerGroupID)
-
-	l.Info("monitor consumer created...")
-
 	monitor_producer := producer.NewProducer(ctx, cfg.MonitorBrokerAddress, cfg.MonitorTopic)
 	l.Info("monitor producer created...")
 
@@ -70,7 +66,6 @@ func main() {
 	l.Info("middleware created...")
 
 	// connect to elasticsearch
-	// es, err := elasticsearch.NewDefaultClient()
 	es, err := elasticsearch.NewTypedClient(elasticsearch.Config{
 		Addresses: []string{"http://127.0.0.1:9200"},
 		// Logger:    &elastictransport.ColorLogger{Output: os.Stdout, EnableRequestBody: true, EnableResponseBody: true},
@@ -118,6 +113,21 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// auth client
+	authConnect, err := grpc.Dial(
+		cfg.AuthServerPort,
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithUnaryInterceptor(mw.UnaryClientInterceptor),
+	)
+
+	if err != nil {
+		log.Fatalf("did not connect to auth server: %v", err)
+	}
+	defer authConnect.Close()
+	l.Info("auth client created...")
+
+	authClient := auth.NewAuthServiceClient(authConnect)
+
 	// managementsystem Client
 	managementsystemConnect, err := grpc.Dial(
 		cfg.ManagementSystemServerPort,
@@ -125,7 +135,7 @@ func main() {
 		grpc.WithUnaryInterceptor(mw.UnaryClientInterceptor),
 	)
 	if err != nil {
-		log.Fatalf("did not connect to monitor server: %v", err)
+		log.Fatalf("did not connect to management server: %v", err)
 	}
 	defer managementsystemConnect.Close()
 
@@ -136,7 +146,7 @@ func main() {
 		grpc.UnaryInterceptor(mw.UnaryServerInterceptor),
 	)
 
-	monitorService := monitor.NewMonitorService(monitor_producer, monitor_consumer, managementsystemClient, l, cfg, grpcserver, es)
+	monitorService := monitor.NewMonitorService(monitor_producer, managementsystemClient, authClient, l, cfg, grpcserver, es)
 
 	monitorService.Start(ctx)
 }

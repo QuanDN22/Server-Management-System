@@ -46,3 +46,6 @@
 {"L":"INFO","T":"2024-06-03T18:35:10.401+0700","M":"logger created..."}
 {"L":"INFO","T":"2024-06-03T18:35:10.402+0700","M":"middleware created..."}
 {"L":"INFO","T":"2024-06-03T18:35:10.404+0700","M":"Mail gRPC server started","port":":5004"}
+{"L":"INFO","T":"2024-06-13T11:17:12.992+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-13T11:17:12.993+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-13T11:17:12.994+0700","M":"Mail gRPC server started","port":":5004"}

@@ -1,7 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"time"
+
+	"github.com/go-co-op/gocron/v2"
 )
 
 func main() {
@@ -48,4 +52,43 @@ func main() {
 
 	// log.Printf("Serving %s on HTTP port: %s\n", *directory, *port)
 	// log.Fatal(http.ListenAndServe(":3000", nil))
+
+	// create a scheduler
+	s, err := gocron.NewScheduler()
+	if err != nil {
+		// handle error
+		fmt.Println("Error in creating scheduler")
+	}
+
+	// add a job to the scheduler
+	j, err := s.NewJob(
+		gocron.DurationJob(
+			time.Second * 5,
+		),
+		gocron.NewTask(
+			func() {
+				fmt.Println("hello abc")
+			},
+		),
+	)
+	if err != nil {
+		// handle error
+		fmt.Println("Error in adding job to scheduler")
+	}
+
+	// each job has a unique id
+	fmt.Println(j.ID())
+
+	// start the scheduler
+	s.Start()
+
+	c := make(chan byte)
+	<-c
+
+	// when you're done, shut it down
+	err = s.Shutdown()
+	if err != nil {
+		// handle error
+		fmt.Println("Error in shutting down scheduler")
+	}
 }
