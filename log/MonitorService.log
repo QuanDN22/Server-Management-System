@@ -436,3 +436,113 @@
 {"L":"INFO","T":"2024-06-13T17:13:40.835+0700","M":"middleware created..."}
 {"L":"INFO","T":"2024-06-13T17:13:40.840+0700","M":"auth client created..."}
 {"L":"INFO","T":"2024-06-13T17:13:40.841+0700","M":"Management System gRPC server started","port":":5003"}
+{"L":"INFO","T":"2024-06-14T11:51:04.057+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-14T11:51:04.057+0700","M":"monitor producer created..."}
+{"L":"INFO","T":"2024-06-14T11:51:04.057+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-14T11:51:04.071+0700","M":"auth client created..."}
+{"L":"INFO","T":"2024-06-14T11:51:04.071+0700","M":"Management System gRPC server started","port":":5003"}
+{"L":"INFO","T":"2024-06-14T11:54:41.095+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-14T11:54:41.095+0700","M":"monitor producer created..."}
+{"L":"INFO","T":"2024-06-14T11:54:41.095+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-14T11:54:41.108+0700","M":"auth client created..."}
+{"L":"INFO","T":"2024-06-14T11:54:41.110+0700","M":"Management System gRPC server started","port":":5003"}
+{"L":"INFO","T":"2024-06-14T11:55:27.283+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-14T11:55:27.284+0700","M":"monitor producer created..."}
+{"L":"INFO","T":"2024-06-14T11:55:27.284+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-14T11:55:27.294+0700","M":"auth client created..."}
+{"L":"INFO","T":"2024-06-14T11:55:27.297+0700","M":"Management System gRPC server started","port":":5003"}
+{"L":"INFO","T":"2024-06-14T14:17:31.561+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-14T14:17:31.562+0700","M":"monitor producer created..."}
+{"L":"INFO","T":"2024-06-14T14:17:31.562+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-14T14:17:31.575+0700","M":"auth client created..."}
+{"L":"INFO","T":"2024-06-14T14:17:31.576+0700","M":"Management System gRPC server started","port":":5003"}
+{"L":"INFO","T":"2024-06-14T14:23:28.349+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-14T14:23:28.349+0700","M":"monitor producer created..."}
+{"L":"INFO","T":"2024-06-14T14:23:28.349+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-14T14:23:28.355+0700","M":"auth client created..."}
+{"L":"INFO","T":"2024-06-14T14:23:28.357+0700","M":"Management System gRPC server started","port":":5003"}
+{"L":"INFO","T":"2024-06-14T14:27:29.866+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-14T14:27:29.866+0700","M":"monitor producer created..."}
+{"L":"INFO","T":"2024-06-14T14:27:29.867+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-14T14:27:29.873+0700","M":"auth client created..."}
+{"L":"INFO","T":"2024-06-14T14:27:29.874+0700","M":"Management System gRPC server started","port":":5003"}
+{"L":"INFO","T":"2024-06-14T14:28:45.440+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-14T14:28:45.441+0700","M":"monitor producer created..."}
+{"L":"INFO","T":"2024-06-14T14:28:45.441+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-14T14:28:45.449+0700","M":"auth client created..."}
+{"L":"INFO","T":"2024-06-14T14:28:45.450+0700","M":"Management System gRPC server started","port":":5003"}
+{"L":"INFO","T":"2024-06-14T14:29:55.475+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-14T14:29:55.475+0700","M":"monitor producer created..."}
+{"L":"INFO","T":"2024-06-14T14:29:55.475+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-14T14:29:55.480+0700","M":"auth client created..."}
+{"L":"INFO","T":"2024-06-14T14:29:55.482+0700","M":"Management System gRPC server started","port":":5003"}
+{"L":"INFO","T":"2024-06-14T14:30:16.277+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-14T14:30:16.277+0700","M":"monitor producer created..."}
+{"L":"INFO","T":"2024-06-14T14:30:16.278+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-14T14:30:16.284+0700","M":"auth client created..."}
+{"L":"INFO","T":"2024-06-14T14:30:16.285+0700","M":"Management System gRPC server started","port":":5003"}
+{"L":"INFO","T":"2024-06-14T14:31:05.046+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-14T14:31:05.049+0700","M":"monitor producer created..."}
+{"L":"INFO","T":"2024-06-14T14:31:05.050+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-14T14:31:05.057+0700","M":"auth client created..."}
+{"L":"INFO","T":"2024-06-14T14:31:05.058+0700","M":"Management System gRPC server started","port":":5003"}
+{"L":"INFO","T":"2024-06-14T14:31:29.258+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-14T14:31:29.258+0700","M":"monitor producer created..."}
+{"L":"INFO","T":"2024-06-14T14:31:29.258+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-14T14:31:29.263+0700","M":"auth client created..."}
+{"L":"INFO","T":"2024-06-14T14:31:29.267+0700","M":"Management System gRPC server started","port":":5003"}
+{"L":"INFO","T":"2024-06-14T14:33:08.965+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-14T14:33:08.965+0700","M":"monitor producer created..."}
+{"L":"INFO","T":"2024-06-14T14:33:08.965+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-14T14:33:08.970+0700","M":"auth client created..."}
+{"L":"INFO","T":"2024-06-14T14:33:08.972+0700","M":"Management System gRPC server started","port":":5003"}
+{"L":"INFO","T":"2024-06-14T14:34:10.660+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-14T14:34:10.661+0700","M":"monitor producer created..."}
+{"L":"INFO","T":"2024-06-14T14:34:10.661+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-14T14:34:10.666+0700","M":"auth client created..."}
+{"L":"INFO","T":"2024-06-14T14:34:10.667+0700","M":"Management System gRPC server started","port":":5003"}
+{"L":"INFO","T":"2024-06-14T14:34:53.606+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-14T14:34:53.607+0700","M":"monitor producer created..."}
+{"L":"INFO","T":"2024-06-14T14:34:53.607+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-14T14:34:53.614+0700","M":"auth client created..."}
+{"L":"INFO","T":"2024-06-14T14:34:53.615+0700","M":"Management System gRPC server started","port":":5003"}
+{"L":"INFO","T":"2024-06-14T14:35:48.014+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-14T14:35:48.014+0700","M":"monitor producer created..."}
+{"L":"INFO","T":"2024-06-14T14:35:48.015+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-14T14:35:48.021+0700","M":"auth client created..."}
+{"L":"INFO","T":"2024-06-14T14:35:48.022+0700","M":"Management System gRPC server started","port":":5003"}
+{"L":"INFO","T":"2024-06-14T14:36:30.649+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-14T14:36:30.650+0700","M":"monitor producer created..."}
+{"L":"INFO","T":"2024-06-14T14:36:30.650+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-14T14:36:30.655+0700","M":"auth client created..."}
+{"L":"INFO","T":"2024-06-14T14:36:30.655+0700","M":"Management System gRPC server started","port":":5003"}
+{"L":"INFO","T":"2024-06-14T14:37:13.296+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-14T14:37:13.296+0700","M":"monitor producer created..."}
+{"L":"INFO","T":"2024-06-14T14:37:13.296+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-14T14:37:13.301+0700","M":"auth client created..."}
+{"L":"INFO","T":"2024-06-14T14:37:13.303+0700","M":"Management System gRPC server started","port":":5003"}
+{"L":"INFO","T":"2024-06-14T14:48:29.474+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-14T14:48:29.474+0700","M":"monitor producer created..."}
+{"L":"INFO","T":"2024-06-14T14:48:29.474+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-14T14:48:29.487+0700","M":"auth client created..."}
+{"L":"INFO","T":"2024-06-14T14:48:29.487+0700","M":"Management System gRPC server started","port":":5003"}
+{"L":"INFO","T":"2024-06-14T14:53:15.654+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-14T14:53:15.654+0700","M":"monitor producer created..."}
+{"L":"INFO","T":"2024-06-14T14:53:15.654+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-14T14:53:16.017+0700","M":"auth client created..."}
+{"L":"INFO","T":"2024-06-14T14:53:16.019+0700","M":"Management System gRPC server started","port":":5003"}
+{"L":"INFO","T":"2024-06-14T16:15:43.720+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-14T16:15:43.720+0700","M":"monitor producer created..."}
+{"L":"INFO","T":"2024-06-14T16:15:43.720+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-14T16:15:43.729+0700","M":"auth client created..."}
+{"L":"INFO","T":"2024-06-14T16:15:43.731+0700","M":"Management System gRPC server started","port":":5003"}
+{"L":"INFO","T":"2024-06-14T16:25:02.616+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-14T16:25:02.616+0700","M":"monitor producer created..."}
+{"L":"INFO","T":"2024-06-14T16:25:02.617+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-14T16:25:02.621+0700","M":"auth client created..."}
+{"L":"INFO","T":"2024-06-14T16:25:02.623+0700","M":"Management System gRPC server started","port":":5003"}
+{"L":"INFO","T":"2024-06-14T16:56:06.966+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-14T16:56:06.967+0700","M":"monitor producer created..."}
+{"L":"INFO","T":"2024-06-14T16:56:06.967+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-14T16:56:06.971+0700","M":"auth client created..."}
+{"L":"INFO","T":"2024-06-14T16:56:06.972+0700","M":"Management System gRPC server started","port":":5003"}

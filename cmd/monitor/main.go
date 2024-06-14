@@ -39,6 +39,10 @@ func main() {
 	}
 	log.Println("config parsed...")
 
+	fmt.Println("monitor duration: ", cfg.MonitorDurationMinute)
+	fmt.Println("token_internal: ", cfg.TokenInternal)
+	fmt.Println("max concurrent ping servers: ", cfg.MaxConurrentPingServers)
+
 	// new logger
 	l, err := logger.NewLogger(
 		fmt.Sprintf("%s%s.log", cfg.LogFilename, cfg.ServiceName),

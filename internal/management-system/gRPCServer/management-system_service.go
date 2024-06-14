@@ -20,7 +20,6 @@ import (
 
 	"github.com/QuanDN22/Server-Management-System/internal/management-system/domain"
 	"github.com/QuanDN22/Server-Management-System/pkg/middleware"
-	"github.com/QuanDN22/Server-Management-System/proto/auth"
 	"github.com/QuanDN22/Server-Management-System/proto/mail"
 
 	managementsystem "github.com/QuanDN22/Server-Management-System/proto/management-system"
@@ -626,25 +625,12 @@ func (ms *ManagementSystemGrpcServer) WorkDailyReport() {
 		gocron.DailyJob(
 			1,
 			gocron.NewAtTimes(
-				gocron.NewAtTime(14, 15, 0),
+				gocron.NewAtTime(16, 20, 0),
 			),
 		),
 		gocron.NewTask(
 			func() {
 				fmt.Println("Work daily send email")
-
-				// login to take token
-				login, err := ms.authClient.Login(context.Background(), &auth.LoginRequest{
-					Username: "admin2",
-					Password: "2",
-				})
-
-				if err != nil {
-					fmt.Println("Error login:", err)
-					return
-				}
-
-				fmt.Println("Token:", login.AccessToken)
 
 				// middleware
 				mw, err := middleware.NewMiddleware(ms.config.PathPublicKey)
@@ -653,8 +639,7 @@ func (ms *ManagementSystemGrpcServer) WorkDailyReport() {
 				}
 
 				// set token to context
-				token, err := mw.GetToken(login.AccessToken)
-				// token, err := mw.GetToken(ms.config.TokenInternal)
+				token, err := mw.GetToken(ms.config.TokenInternal)
 
 				if err != nil {
 					fmt.Println(("invalid token: " + err.Error()))

@@ -10,7 +10,7 @@ import (
 func main() {
 	fmt.Println("Hello, World! localhost:3000")
 	port := flag.String("p", "3000", "port to serve on")
-	directory := flag.String("d", ".", "the directory of static file to host")
+	directory := flag.String("d", "./static", "the directory of static file to host")
 	flag.Parse()
 
 	http.Handle("/", http.FileServer(http.Dir(*directory)))

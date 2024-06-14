@@ -4,17 +4,17 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/elastic/go-elasticsearch/v8/typedapi/core/search"
 	"github.com/elastic/go-elasticsearch/v8/typedapi/types"
-	"github.com/elastic/go-elasticsearch/v8/typedapi/types/enums/refresh"
 	"github.com/go-co-op/gocron/v2"
-	"github.com/segmentio/kafka-go"
 	"google.golang.org/protobuf/types/known/emptypb"
 
 	"github.com/QuanDN22/Server-Management-System/pkg/middleware"
-	"github.com/QuanDN22/Server-Management-System/proto/auth"
 	mt "github.com/QuanDN22/Server-Management-System/proto/monitor"
 )
 
@@ -24,6 +24,7 @@ func (m *MonitorService) GetUpTime(ctx context.Context, in *mt.UptimeRequest) (*
 
 	// var field = "server_ipv4"
 	var duration = "duration"
+	var size = 0
 
 	start_ := in.GetStart() + "+07:00"
 	end_ := in.GetEnd() + "+07:00"
@@ -47,6 +48,7 @@ func (m *MonitorService) GetUpTime(ctx context.Context, in *mt.UptimeRequest) (*
 					},
 				},
 			},
+			Size:&size,
 			Aggregations: map[string]types.Aggregations{
 				"total_duration": {
 					Sum: &types.SumAggregation{
@@ -96,39 +98,12 @@ func (m *MonitorService) WorkDailyMonitorServer(ctx context.Context) {
 	// add a job to the scheduler
 	j, err := s.NewJob(
 		gocron.DurationJob(
-			// time.Minute * time.Duration(m.config.MonitorDurationMinute),
-			time.Second*10,
+			time.Minute*time.Duration(m.config.MonitorDurationMinute),
 		),
 		gocron.NewTask(
 			func(ctx context.Context) {
 				go func(ctx context.Context) {
 					fmt.Println("WorkDailyMonitorServer called...")
-
-					// // middleware
-					// mw, err := middleware.NewMiddleware(m.config.PathPublicKey)
-					// if err != nil {
-					// 	fmt.Println("failed to create middleware", err)
-					// }
-
-					// // set token to context
-					// token, err := mw.GetToken(m.config.TokenInternal)
-					// if err != nil {
-					// 	fmt.Println(("invalid token: " + err.Error()))
-					// 	return
-					// }
-
-					// login to take token
-					login, err := m.authClient.Login(ctx, &auth.LoginRequest{
-						Username: "admin2",
-						Password: "2",
-					})
-
-					if err != nil {
-						fmt.Println("Error login:", err)
-						return
-					}
-
-					fmt.Println("Token:", login.AccessToken)
 
 					// middleware
 					mw, err := middleware.NewMiddleware(m.config.PathPublicKey)
@@ -137,7 +112,7 @@ func (m *MonitorService) WorkDailyMonitorServer(ctx context.Context) {
 					}
 
 					// set token to context
-					token, err := mw.GetToken(login.AccessToken)
+					token, err := mw.GetToken(m.config.TokenInternal)
 					if err != nil {
 						fmt.Println(("invalid token: " + err.Error()))
 						return
@@ -151,54 +126,16 @@ func (m *MonitorService) WorkDailyMonitorServer(ctx context.Context) {
 						fmt.Printf("Error in getting all server %v", err)
 					}
 
-					// ping to each server_ipv4
-					// if server is on, save in the elasticsearch
-					// send data to the management system via kafka to update the status of the server in the database
-					for _, server := range servers.GetServers() {
-						fmt.Println("server infomation: ", server.GetServer_IPv4(), server.GetServer_ID())
+					// ping to each server
+					m.pingToServers(ctx, servers)
 
-						// ping to server ipv4
-						ping_result, err := pingToServer(server.GetServer_IPv4())
+					// Kênh để nhận tín hiệu hệ điều hành
+					sigs := make(chan os.Signal, 1)
+					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 
-						if err != nil {
-							fmt.Println("Error in pinging to server")
-						}
-
-						server_status := "off"
-
-						// if server is on, save in the elasticsearch
-						if ping_result {
-							server_status = "on"
-
-							type Document struct {
-								Timestamp   time.Time `json:"timestamp"`
-								Server_ID   int64     `json:"server_id"`
-								Server_IPv4 string    `json:"server_ipv4"`
-								Duration    int       `json:"duration"`
-							}
-
-							fmt.Println(int(m.config.MonitorDurationMinute))
-
-							_, _ = m.elasticClient.Index("uptime-server-monitor").
-								Document(&Document{
-									Timestamp:   time.Now(),
-									Server_ID:   server.GetServer_ID(),
-									Server_IPv4: server.GetServer_IPv4(),
-									Duration:    m.config.MonitorDurationMinute, 
-								}).
-								Refresh(refresh.Waitfor).
-								Do(context.Background())
-						}
-
-						// send data to the management system to update the status of the server in the database
-						err = m.MonitorProducer.WriteMessages(ctx, kafka.Message{
-							Key:   []byte(fmt.Sprint(server.GetServer_ID())),
-							Value: []byte(fmt.Sprintf("%d,%s", server.GetServer_ID(), server_status)),
-						})
-						if err != nil {
-							panic("could not write message " + err.Error())
-						}
-					}
+					// Đợi tín hiệu ngắt (Ctrl+C)
+					<-sigs
+					fmt.Println("Received interrupt signal, stopping workers...")
 				}(ctx)
 			},
 			ctx,

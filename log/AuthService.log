@@ -303,3 +303,11 @@
 {"L":"INFO","T":"2024-06-13T11:08:39.817+0700","M":"database connected..."}
 {"L":"INFO","T":"2024-06-13T11:08:49.997+0700","M":"middleware created..."}
 {"L":"INFO","T":"2024-06-13T11:08:49.997+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-06-14T14:21:52.814+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-14T14:21:52.847+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-06-14T14:22:02.751+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-14T14:22:02.751+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-06-14T16:17:35.646+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-06-14T16:17:35.675+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-06-14T16:17:45.620+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-06-14T16:17:45.621+0700","M":"Auth gRPC server started","port":":5001"}

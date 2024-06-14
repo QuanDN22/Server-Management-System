@@ -15,7 +15,7 @@ type Config struct {
 	MonitorServerPort          string `mapstructure:"MONITOR_SERVER_PORT"`
 	MailServerPort             string `mapstructure:"MAIL_SERVER_PORT"`
 
-	TokenInternal string `mapsctructure:"TOKEN_INTERNAL"`
+	TokenInternal string `mapstructure:"TOKEN_INTERNAL"`
 
 	PGDatabaseHost     string `mapstructure:"PG_DATABASE_HOST"`
 	PGDatabaseUser     string `mapstructure:"PG_DATABASE_USER"`
@@ -36,7 +36,8 @@ type Config struct {
 	MonitorResultsTopic    string `mapstructure:"MONITOR_RESULTS_TOPIC"`
 	MonitorConsumerGroupID string `mapstructure:"MONITOR_CONSUMER_GROUP_ID"`
 
-	MonitorDurationMinute int `mapstructure:"MONITOR_DURATION_MINUTE"`
+	MonitorDurationMinute   int `mapstructure:"MONITOR_DURATION_MINUTE"`
+	MaxConurrentPingServers int `mapstructure:"MAX_CONCURRENT_PING_SERVERS"`
 
 	KafkaBrokerAddress          string `mapstructure:"KAFKA_BROKER_ADDRESS"`
 	KafkaTopic                  string `mapstructure:"KAFKA_TOPIC"`
