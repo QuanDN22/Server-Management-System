@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/QuanDN22/Server-Management-System/internal/consumer"
 	"github.com/QuanDN22/Server-Management-System/internal/management-system/domain"
 	"github.com/QuanDN22/Server-Management-System/internal/management-system/gRPCServer"
 	"github.com/QuanDN22/Server-Management-System/pkg/config"
+	"github.com/QuanDN22/Server-Management-System/pkg/kafka/consumer"
 	"github.com/QuanDN22/Server-Management-System/pkg/logger"
 	"github.com/QuanDN22/Server-Management-System/pkg/middleware"
 	"github.com/QuanDN22/Server-Management-System/pkg/postgres"

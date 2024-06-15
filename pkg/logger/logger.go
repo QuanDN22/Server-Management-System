@@ -21,11 +21,18 @@ import (
 
 // NewLogger creates a new zap logger with the provided configuration
 // func NewLogger(cfg Config) (*zap.Logger, error) {
-func NewLogger(LogFilename string, MaxSize int, MaxBackups int, MaxAge int, Compress bool, LogLevel zapcore.LevelEnabler) (*zap.Logger, error) {
-	var writer zapcore.WriteSyncer
+func NewLogger(
+	LogFilename string, 
+	MaxSize int, 
+	MaxBackups int, 
+	MaxAge int, 
+	Compress bool, 
+	LogLevel zapcore.LevelEnabler,
+) (*zap.Logger, error) {
+	// var writer zapcore.WriteSyncer
 
 	// Use lumberjack for log rotation
-	writer = zapcore.AddSync(io.MultiWriter(&lumberjack.Logger{
+	writer := zapcore.AddSync(io.MultiWriter(&lumberjack.Logger{
 		Filename:   LogFilename,
 		MaxSize:    MaxSize,
 		MaxBackups: MaxBackups,

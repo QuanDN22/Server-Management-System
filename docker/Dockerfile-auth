@@ -1,23 +1,31 @@
-# Step 1: Modules caching
-FROM golang:1.19.2-alpine3.16 as modules
-COPY go.mod go.sum /modules/
-WORKDIR /modules
+# syntax=docker/dockerfile:1
+
+# Start from golang:1.22-alpine base image
+FROM golang:1.22.1
+
+# Set destination for COPY
+WORKDIR /app
+
+# Download Go modules
+COPY go.mod go.sum ./
 RUN go mod download
 
-# Step 2: Builder
-FROM golang:1.19.2-alpine3.16 as builder
-COPY --from=modules /go/pkg /go/pkg
-COPY /cmd/auth .
-WORKDIR /app
+# Copy the source from the current directory
+# to the Working Directory inside the container
+COPY ./cmd/auth ./cmd/auth
+COPY ./internal/auth ./internal/auth
+COPY ./pkg ./pkg
+
+COPY ./proto/google ./proto/google
+COPY ./proto/protoc-gen-openapiv2 ./proto/protoc-gen-openapiv2
+COPY ./proto/auth ./proto/auth
+
+COPY ./auth.ed ./auth.ed.pub ./
+
+# Build the Go app
+RUN apt-get update
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
-    go build -tags migrate -o /bin/app ./cmd/product
+    go build -o ./bin ./cmd/auth/main.go
 
-# Step 3: Final
-FROM scratch
-
-EXPOSE 5001
-
-# GOPATH for scratch images is /
-COPY --from=builder /app/cmd/product/config.yml /
-COPY --from=builder /bin/app /app
-CMD ["/app"]
+# Command to run the executable
+CMD ["/app/bin"]

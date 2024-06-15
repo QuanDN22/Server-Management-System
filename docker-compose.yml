@@ -6,7 +6,6 @@ version: "2"
 services:
   database.auth:
     container_name: database.auth
-    # Official Postgres image from DockerHub (we use the last version)
     image: 'postgres:latest'
 
     # By default, a Postgres database is running on the 5432 port.
@@ -19,20 +18,23 @@ services:
     ports:
       - 5434:5432
     environment:
-      POSTGRES_USER: postgres # The PostgreSQL user (useful to connect to the database)
-      POSTGRES_PASSWORD: quan1234 # The PostgreSQL password (useful to connect to the database)
-      POSTGRES_DB: Server-Management-System-Auth-Server # The PostgreSQL default database (automatically created at first launch)
+      POSTGRES_USER: postgres 
+      POSTGRES_PASSWORD: quan1234 
+      POSTGRES_DB: Server-Management-System-Auth-Server 
+    volumes:
+      - ./data/postgres/auth:/var/lib/postgresql/data
 
   database.server:
     container_name: database.server
-    # Official Postgres image from DockerHub (we use the last version)
     image: 'postgres:latest'
     ports:
       - 5433:5432
     environment:
-      POSTGRES_USER: postgres # The PostgreSQL user (useful to connect to the database)
-      POSTGRES_PASSWORD: quan1234 # The PostgreSQL password (useful to connect to the database)
+      POSTGRES_USER: postgres 
+      POSTGRES_PASSWORD: quan1234 
       POSTGRES_DB: Server-Management-System-MS-Server # The PostgreSQL default database (automatically created at first launch)
+    volumes:
+      - ./data/postgres/server:/var/lib/postgresql/data
 
   kafka:
     container_name: kafka
@@ -40,7 +42,7 @@ services:
     ports:
       - "9092:9092"
     volumes:
-      - "kafka_data:/bitnami"
+      - ./data/kafka:/bitnami
     environment:
       # KRaft settings
       - KAFKA_CFG_NODE_ID=0
@@ -54,53 +56,16 @@ services:
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
       - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
 
-  # kafka.monitor:
-  #   container_name: kafka-monitor
-  #   image: docker.io/bitnami/kafka:3.5
-  #   ports:
-  #     - "9094:9092"
-  #   volumes:
-  #     - "kafka_data:/bitnami"
-  #   environment:
-  #     # KRaft settings
-  #     - KAFKA_CFG_NODE_ID=0
-  #     - KAFKA_CFG_PROCESS_ROLES=controller,broker
-  #     - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9092
-  #     # Listeners
-  #     - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
-  #     - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
-  #     - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
-  #     - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
-  #     - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
-
   elasticsearch:
     container_name: elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:8.13.1
-    # 8.x
     environment: 
       - xpack.security.enabled=false
       - discovery.type=single-node
-    # networks:
-    #   - elastic
     ports:
       - 9200:9200
-    # ulimits:
-    #   memlock:
-    #     soft: -1
-    #     hard: -1
-    #   nofile:
-    #     soft: 65536
-    #     hard: 65536
-    # cap_add:
-    #   - IPC_LOCK
     volumes:
-      - elasticsearch-data:/usr/share/elasticsearch/data
-    # deploy:    
-    #   resources:
-    #       limits:
-    #         cpus: '2.0'
-    #       reservations:
-    #         cpus: '1.0'
+      - ./data/elasticsearch:/usr/share/elasticsearch/data
 
   kibana:
     image: docker.elastic.co/kibana/kibana:8.13.1
@@ -110,31 +75,71 @@ services:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200    # address of elasticsearch docker container which kibana will connect
     ports:
       - 5601:5601
-    # networks:
-    #   - elastic
     depends_on:
       - elasticsearch         # kibana will start when elasticsearch has started
-    # deploy:    
-    #   resources:
-    #       limits:
-    #         cpus: '2.0'
-    #       reservations:
-    #         cpus: '1.0'
   
   redis:
     image: redis:latest
     container_name: redis
     ports:
-      - "6379:6379"
+      - 6379:6379
     volumes:
-      - redis:/data
-  
-volumes:
-  elasticsearch-data:
-  kafka_data:
-    driver: local
-  redis:
+      - ./data/redis:/data
 
-# networks:
-#   elastic:
-#     driver: bridge
+  # auth service 
+  auth-service:
+    container_name: auth-service
+    image: auth-service
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile-auth
+    depends_on:
+      - database.auth
+  
+  # management server service
+  management-system-service:
+    container_name: management-system-service
+    image: management-system-service
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile-management-system
+    depends_on:
+      - database.server
+      - kafka
+      - redis
+
+  # monitor service
+  monitor-service:
+    container_name: monitor-service
+    image: monitor-service
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile-monitor
+    depends_on:
+      - kafka
+      - elasticsearch
+
+  # mail service
+  mail-service:
+    container_name: mail-service
+    image: mail-service
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile-mail
+
+  # grpc-gateway
+  grpc-gateway:
+    container_name: grpc-gateway
+    image: grpc-gateway
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile-grpc-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - auth-service
+      - management-system-service
+
+volumes:
+  data:
+    driver: local

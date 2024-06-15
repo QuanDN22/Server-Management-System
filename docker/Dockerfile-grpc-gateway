@@ -1,0 +1,29 @@
+# syntax=docker/dockerfile:1
+
+# Start from golang:1.22-alpine base image
+FROM golang:1.22.1
+
+# Set destination for COPY
+WORKDIR /grpc-gateway
+
+# Download Go modules
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy the source from the current directory 
+# to the Working Directory inside the container
+COPY ./cmd/grpc-gateway ./cmd/grpc-gateway
+COPY ./pkg ./pkg
+
+COPY ./auth.ed ./auth.ed.pub ./
+
+# Build the Go app
+RUN apt-get update
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+    go build -o ./bin ./cmd/grpc-gateway/main.go
+
+# Expose port 8080 to the outside world
+EXPOSE 8080
+
+# Command to run the executable
+CMD ["/grpc-gateway/bin"]

@@ -86,14 +86,30 @@ func main() {
 	gwmux.HandlePath("POST", "/v1/api/servers/import", handleImportServerFile)
 
 	// export server
-	// "/v1/api/servers/export"
 	gwmux.HandlePath("GET", "/v1/api/servers/export", handleExportServerFile)
 
 	// view server
 	gwmux.HandlePath("GET", "/v1/api/servers/viewserver", handleViewServer)
 
-	// report
-	// gwmux.HandlePath("POST", "/v1/api/servers/report", handleReport)
+	// swagger file
+	// Register the file server handler
+	fileServer := http.FileServer(http.Dir("./static"))
+	gwmux.HandlePath("GET", "/swagger", func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+		// fmt.Println(cfg.TokenInternal)
+		// token, err := mw.GetToken(cfg.TokenInternal)
+		// if err != nil {
+		// 	w.WriteHeader(http.StatusUnauthorized)
+		// 	w.Write([]byte("invalid token: " + err.Error())) //nolint
+		// 	return
+		// }
+
+		// // add token to context
+		// ctx := middleware.ContextSetToken(r.Context(), token)
+
+		// call the next handler with the updated context
+		// fileServer.ServeHTTP(w, r.WithContext(ctx))
+		fileServer.ServeHTTP(w, r)
+	})
 
 	gwServer := &http.Server{
 		Addr:    cfg.GrpcGatewayPort,

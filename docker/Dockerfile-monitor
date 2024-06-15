@@ -1,0 +1,32 @@
+# syntax=docker/dockerfile:1
+
+# Start from golang:1.22-alpine base image
+FROM golang:1.22.1
+
+# Set destination for COPY
+WORKDIR /monitor-service
+
+# Download Go modules
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy the source from the current directory 
+# to the Working Directory inside the container
+COPY ./cmd/monitor ./cmd/monitor
+COPY ./internal/monitor ./internal/monitor
+COPY ./pkg ./pkg
+
+COPY ./proto/google ./proto/google
+COPY ./proto/protoc-gen-openapiv2 ./proto/protoc-gen-openapiv2
+COPY ./proto/monitor ./proto/monitor
+COPY ./proto/management-system ./proto/management-system
+
+COPY ./auth.ed ./auth.ed.pub ./
+
+# Build the Go app
+RUN apt-get update
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+    go build -o ./bin ./cmd/monitor/main.go
+
+# Command to run the executable
+CMD ["/monitor-service/bin"]
