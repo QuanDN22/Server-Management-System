@@ -17,7 +17,6 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	"github.com/QuanDN22/Server-Management-System/proto/auth"
 	managementsystem "github.com/QuanDN22/Server-Management-System/proto/management-system"
 )
 
@@ -117,21 +116,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// auth client
-	authConnect, err := grpc.Dial(
-		cfg.AuthServerPort,
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithUnaryInterceptor(mw.UnaryClientInterceptor),
-	)
-
-	if err != nil {
-		log.Fatalf("did not connect to auth server: %v", err)
-	}
-	defer authConnect.Close()
-	l.Info("auth client created...")
-
-	authClient := auth.NewAuthServiceClient(authConnect)
-
 	// managementsystem Client
 	managementsystemConnect, err := grpc.Dial(
 		cfg.ManagementSystemServerPort,
@@ -150,7 +134,7 @@ func main() {
 		grpc.UnaryInterceptor(mw.UnaryServerInterceptor),
 	)
 
-	monitorService := monitor.NewMonitorService(monitor_producer, managementsystemClient, authClient, l, cfg, grpcserver, es)
+	monitorService := monitor.NewMonitorService(monitor_producer, managementsystemClient, l, cfg, grpcserver, es)
 
 	monitorService.Start(ctx)
 }

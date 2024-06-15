@@ -11,7 +11,6 @@ import (
 
 	"github.com/QuanDN22/Server-Management-System/pkg/config"
 
-	"github.com/QuanDN22/Server-Management-System/proto/auth"
 	managementsystem "github.com/QuanDN22/Server-Management-System/proto/management-system"
 	mt "github.com/QuanDN22/Server-Management-System/proto/monitor"
 )
@@ -20,7 +19,6 @@ type MonitorService struct {
 	mt.UnimplementedMonitorServer
 	MonitorProducer  *kafka.Writer
 	managementClient managementsystem.ManagementSystemClient
-	authClient auth.AuthServiceClient
 	config           *config.Config
 	logger           *zap.Logger
 	gRPCServer       *grpc.Server
@@ -31,7 +29,6 @@ func NewMonitorService(
 	MonitorProducer *kafka.Writer,
 
 	managementClient managementsystem.ManagementSystemClient,
-	authClient auth.AuthServiceClient,
 
 	logger *zap.Logger,
 	config *config.Config,
@@ -42,7 +39,6 @@ func NewMonitorService(
 		MonitorProducer: MonitorProducer,
 
 		managementClient: managementClient,
-		authClient: authClient,
 		config:           config,
 		logger:           logger,
 		gRPCServer:       gRPCServer,
