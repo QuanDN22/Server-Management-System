@@ -15,6 +15,10 @@ RUN go mod download
 COPY ./cmd/grpc-gateway ./cmd/grpc-gateway
 COPY ./pkg ./pkg
 
+COPY ./proto/auth ./proto/auth
+COPY ./proto/management-system ./proto/management-system
+COPY ./internal/management-system ./internal/management-system
+
 COPY ./auth.ed ./auth.ed.pub ./
 
 # Build the Go app
