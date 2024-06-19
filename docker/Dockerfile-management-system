@@ -27,9 +27,12 @@ COPY ./auth.ed ./auth.ed.pub ./
 
 # Build the Go app
 RUN apt-get update
-RUN mkdir ./data
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
     go build -o ./bin ./cmd/management-system/main.go
+RUN mkdir data
+RUN cd data
+RUN touch data_export_example.xlsx     
+RUN cd ..
 
 # Command to run the executable
 CMD ["/management-system-service/bin"]
