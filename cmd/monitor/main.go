@@ -70,7 +70,9 @@ func main() {
 
 	// connect to elasticsearch
 	es, err := elasticsearch.NewTypedClient(elasticsearch.Config{
-		Addresses: []string{"http://127.0.0.1:9200"},
+		// Addresses: []string{"http://127.0.0.1:9200"},
+		Addresses: []string{"http://elasticsearch:9200"},
+		
 		// Logger:    &elastictransport.ColorLogger{Output: os.Stdout, EnableRequestBody: true, EnableResponseBody: true},
 	})
 

@@ -7,6 +7,7 @@ services:
   database.auth:
     container_name: database.auth
     image: 'postgres:latest'
+    restart: always
 
     # By default, a Postgres database is running on the 5432 port.
     # If we want to access the database from our computer (outside the container),
@@ -27,6 +28,7 @@ services:
   database.server:
     container_name: database.server
     image: 'postgres:latest'
+    restart: always
     ports:
       - 5433:5432
     environment:
@@ -90,6 +92,7 @@ services:
   auth-service:
     container_name: auth-service
     image: auth-service
+    restart: always
     build:
       context: .
       dockerfile: ./docker/Dockerfile-auth
@@ -100,6 +103,7 @@ services:
   management-system-service:
     container_name: management-system-service
     image: management-system-service
+    restart: always
     build:
       context: .
       dockerfile: ./docker/Dockerfile-management-system
@@ -112,6 +116,7 @@ services:
   monitor-service:
     container_name: monitor-service
     image: monitor-service
+    restart: always
     build:
       context: .
       dockerfile: ./docker/Dockerfile-monitor
