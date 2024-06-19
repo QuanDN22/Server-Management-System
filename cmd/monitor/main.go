@@ -4,12 +4,14 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/QuanDN22/Server-Management-System/internal/monitor"
 	"github.com/QuanDN22/Server-Management-System/pkg/config"
 	"github.com/QuanDN22/Server-Management-System/pkg/kafka/producer"
 	"github.com/QuanDN22/Server-Management-System/pkg/logger"
 	"github.com/QuanDN22/Server-Management-System/pkg/middleware"
+	"github.com/elastic/elastic-transport-go/v8/elastictransport"
 	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/elastic/go-elasticsearch/v8/typedapi/types"
 	"go.uber.org/zap"
@@ -62,7 +64,6 @@ func main() {
 
 	// middleware
 	mw, err := middleware.NewMiddleware(cfg.PathPublicKey)
-	// mw, err := middleware.NewMiddleware(os.Args[1])
 	if err != nil {
 		l.Error("failed to create middleware", zap.Error(err))
 	}
@@ -72,13 +73,15 @@ func main() {
 	es, err := elasticsearch.NewTypedClient(elasticsearch.Config{
 		// Addresses: []string{"http://127.0.0.1:9200"},
 		Addresses: []string{"http://elasticsearch:9200"},
-		
-		// Logger:    &elastictransport.ColorLogger{Output: os.Stdout, EnableRequestBody: true, EnableResponseBody: true},
+
+		Logger: &elastictransport.ColorLogger{Output: os.Stdout, EnableRequestBody: true, EnableResponseBody: true},
 	})
 
 	if err != nil {
 		log.Fatalf("Error getting response: %s", err)
 	}
+
+	l.Info("elasticsearch connected...")
 
 	res, err := es.Info().Do(context.Background())
 	if err != nil {
@@ -88,6 +91,8 @@ func main() {
 	if res.Tagline != "You Know, for Search" {
 		log.Fatalf("invalid tagline, got: %s", res.Tagline)
 	}
+
+	l.Info("elasticsearch info: ", zap.String("tagline", res.Tagline))
 
 	// create an index named uptime-server-monitor
 	// and provide a mapping for
@@ -114,6 +119,8 @@ func main() {
 		if !res.Acknowledged && res.Index != indexName {
 			log.Fatalf("unexpected error during index creation, got : %#v", res)
 		}
+
+		l.Info("index uptime-server-monitor created...")
 	} else if err != nil {
 		log.Fatal(err)
 	}
@@ -131,12 +138,19 @@ func main() {
 
 	managementsystemClient := managementsystem.NewManagementSystemClient(managementsystemConnect)
 
+	l.Info("management system client connected...")
+
 	// grpc server
 	grpcserver := grpc.NewServer(
 		grpc.UnaryInterceptor(mw.UnaryServerInterceptor),
 	)
 
+	l.Info("grpc server created...")
+
 	monitorService := monitor.NewMonitorService(monitor_producer, managementsystemClient, l, cfg, grpcserver, es)
 
+	l.Info("monitor service created...")
+
+	l.Info("monitor service starting...")
 	monitorService.Start(ctx)
 }

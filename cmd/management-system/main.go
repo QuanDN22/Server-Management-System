@@ -36,7 +36,7 @@ func main() {
 	}
 	log.Println("config parsed...")
 
-	// new logger
+	// logger
 	l, err := logger.NewLogger(
 		fmt.Sprintf("%s%s.log", cfg.LogFilename, cfg.ServiceName),
 		int(cfg.LogMaxSize),
@@ -53,7 +53,7 @@ func main() {
 
 	// database
 	db := postgres.NewPostgresDB(cfg.PGDatabaseHost, cfg.PGDatabaseUser, cfg.PGDatabasePassword, cfg.PGDatabaseDBName, cfg.PGDatabasePort)
-	// l.Info("database connected...")
+	l.Info("database connected...")
 	// // delete table if it doesn't exist
 	// err = db.Migrator().DropTable(&domain.Server{})
 	// if err != nil {
@@ -68,6 +68,8 @@ func main() {
 	} else {
 		log.Println("migrate servers datable successfully")
 	}
+
+	l.Info("database migrated...")
 
 	// users := []domain.Server{
 	// 	{Server_Name: "server#1", Server_IPv4: "192.168.1.1", Server_Status: "on"},
@@ -102,7 +104,6 @@ func main() {
 
 	// middleware
 	mw, err := middleware.NewMiddleware(cfg.PathPublicKey)
-	// mw, err := middleware.NewMiddleware(os.Args[1])
 	if err != nil {
 		l.Error("failed to create middleware", zap.Error(err))
 	}
@@ -174,6 +175,5 @@ func main() {
 		authClient,
 	)
 
-	// management_system_grpcserver := gRPCServer.NewManagementSystemGrpcServer(cfg, l, grpcserver, db, nil, nil, nil, nil)
 	management_system_grpcserver.Start(ctx, cancel)
 }

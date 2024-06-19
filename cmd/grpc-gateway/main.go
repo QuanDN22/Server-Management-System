@@ -39,7 +39,7 @@ func main() {
 	}
 	log.Println("config parsed...")
 
-	// new logger
+	// logger
 	// Create a logger with lumberjack integration
 	l, err := logger.NewLogger(
 		fmt.Sprintf("%s%s.log", cfg.LogFilename, cfg.ServiceName),
@@ -56,7 +56,6 @@ func main() {
 	l.Info("logger created...")
 
 	mw, err := middleware.NewMiddleware(cfg.PathPublicKey)
-	// mw, err := middleware.NewMiddleware(os.Args[1])
 	if err != nil {
 		l.Error("failed to create middleware", zap.Error(err))
 	}
@@ -71,15 +70,21 @@ func main() {
 		grpc.WithStreamInterceptor(mw.StreamClientInterceptor),
 	}
 
+	l.Info("registering gateway...")
+
 	err = authpb.RegisterAuthServiceHandlerFromEndpoint(ctx, gwmux, cfg.AuthServerPort, opts)
 	if err != nil {
 		log.Fatalln("Failed to register gateway:", err)
 	}
 
+	l.Info("Auth service register gateway done")
+
 	err = mspb.RegisterManagementSystemHandlerFromEndpoint(ctx, gwmux, cfg.ManagementSystemServerPort, opts)
 	if err != nil {
 		log.Fatalln("Failed to register gateway:", err)
 	}
+
+	l.Info("Management System service register gateway done")
 
 	// import server
 	// Attachment upload from http/s handled manually
@@ -90,26 +95,6 @@ func main() {
 
 	// view server
 	gwmux.HandlePath("GET", "/v1/api/servers/viewserver", handleViewServer)
-
-	// swagger file
-	// Register the file server handler
-	fileServer := http.FileServer(http.Dir("./static"))
-	gwmux.HandlePath("GET", "/swagger", func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
-		// fmt.Println(cfg.TokenInternal)
-		// token, err := mw.GetToken(cfg.TokenInternal)
-		// if err != nil {
-		// 	w.WriteHeader(http.StatusUnauthorized)
-		// 	w.Write([]byte("invalid token: " + err.Error())) //nolint
-		// 	return
-		// }
-
-		// // add token to context
-		// ctx := middleware.ContextSetToken(r.Context(), token)
-
-		// call the next handler with the updated context
-		// fileServer.ServeHTTP(w, r.WithContext(ctx))
-		fileServer.ServeHTTP(w, r)
-	})
 
 	gwServer := &http.Server{
 		Addr:    cfg.GrpcGatewayPort,

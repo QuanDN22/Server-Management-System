@@ -33,7 +33,7 @@ func main() {
 	}
 	log.Println("config parsed...")
 
-	// new logger
+	// logger
 	l, err := logger.NewLogger(
 		fmt.Sprintf("%s%s.log", cfg.LogFilename, cfg.ServiceName),
 		int(cfg.LogMaxSize),
@@ -55,13 +55,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// l.Info("issuer created...")
-	// token, err := i.IssueToken("admin", nil)
-	// if err != nil {
-	// 	cancel()
-	// 	log.Fatal(err)
-	// }
-	// l.Info("token created... " + token)
+	l.Info("issuer created...")
 
 	// database
 	db := postgres.NewPostgresDB(cfg.PGDatabaseHost, cfg.PGDatabaseUser, cfg.PGDatabasePassword, cfg.PGDatabaseDBName, cfg.PGDatabasePort)
@@ -80,6 +74,8 @@ func main() {
 	} else {
 		log.Println("migrate servers datable successfully")
 	}
+
+	l.Info("migrating database...")
 
 	users := []domain.User{
 		{UserName: "quan1", Password: "1", Email: "quan1@gmail.com", Role: "user"},
@@ -104,7 +100,6 @@ func main() {
 	}
 
 	mw, err := middleware.NewMiddleware(cfg.PathPublicKey)
-	// mw, err := middleware.NewMiddleware(os.Args[1])
 	if err != nil {
 		l.Error("failed to create middleware", zap.Error(err))
 	}
@@ -114,6 +109,14 @@ func main() {
 	grpcserver := grpc.NewServer(
 		grpc.UnaryInterceptor(mw.UnaryServerInterceptor),
 	)
+
+	l.Info("grpc server created...")
+
 	authgrpcserver := authgRPCServer.NewAuthGRPCServer(i, cfg, l, grpcserver, db)
+	
+	l.Info("auth grpc server created...")
+	
+	// Start the server
+	l.Info("auth grpc server started...")
 	authgrpcserver.Start(ctx, cancel)
 }

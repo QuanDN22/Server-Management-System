@@ -46,8 +46,9 @@ func (m *MonitorService) executePingToServer(ctx context.Context, server_id int6
 	defer wg.Done()
 
 	// ping to server ipv4
-	out, err := exec.Command("ping", server_ipv4).Output()
-
+	// out, err := exec.Command("ping", server_ipv4).Output()
+	cmd := exec.Command("ping", "-c", "4", server_ipv4)
+	out, err := cmd.Output()
 	if err != nil {
 		fmt.Printf("Error in pinging to server, %v", err)
 		<-buffer
@@ -57,7 +58,8 @@ func (m *MonitorService) executePingToServer(ctx context.Context, server_id int6
 	server_status := "off"
 
 	// if server is on, save in the elasticsearch
-	if strings.Contains(string(out), "bytes=") {
+	// if strings.Contains(string(out), "bytes=") {
+	if strings.Contains(string(out), "bytes") {
 		fmt.Println(string(out))
 
 		server_status = "on"

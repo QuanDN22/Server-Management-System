@@ -27,6 +27,8 @@ COPY ./auth.ed ./auth.ed.pub ./
 RUN apt-get update
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
     go build -o ./bin ./cmd/monitor/main.go
+RUN apt-get update -y
+RUN apt-get install -y iputils-ping
 
 # Command to run the executable
 CMD ["/monitor-service/bin"]
