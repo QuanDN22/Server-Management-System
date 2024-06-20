@@ -23,7 +23,7 @@ services:
       POSTGRES_PASSWORD: quan1234 
       POSTGRES_DB: Server-Management-System-Auth-Server 
     volumes:
-      - ./data/postgres/auth:/var/lib/postgresql/data
+      - ./volumes/postgres/auth:/var/lib/postgresql/data
 
   database.server:
     container_name: database.server
@@ -36,7 +36,7 @@ services:
       POSTGRES_PASSWORD: quan1234 
       POSTGRES_DB: Server-Management-System-MS-Server # The PostgreSQL default database (automatically created at first launch)
     volumes:
-      - ./data/postgres/server:/var/lib/postgresql/data
+      - ./volumes/postgres/server:/var/lib/postgresql/data
 
   kafka:
     container_name: kafka
@@ -44,7 +44,7 @@ services:
     ports:
       - "9092:9092"
     volumes:
-      - ./data/kafka:/bitnami
+      - ./volumes/kafka:/bitnami
     environment:
       # KRaft settings
       - KAFKA_CFG_NODE_ID=0
@@ -67,7 +67,7 @@ services:
     ports:
       - 9200:9200
     volumes:
-      - ./data/elasticsearch:/usr/share/elasticsearch/data
+      - ./volumes/elasticsearch:/usr/share/elasticsearch/data
 
   kibana:
     image: docker.elastic.co/kibana/kibana:8.13.1
@@ -86,7 +86,7 @@ services:
     ports:
       - 6379:6379
     volumes:
-      - ./data/redis:/data
+      - ./volumes/redis:/data
 
   # auth service 
   auth-service:

@@ -15,6 +15,7 @@ RUN go mod download
 COPY ./cmd/management-system ./cmd/management-system
 COPY ./internal/management-system ./internal/management-system
 COPY ./pkg ./pkg
+COPY ./data ./data
 
 COPY ./proto/google ./proto/google
 COPY ./proto/protoc-gen-openapiv2 ./proto/protoc-gen-openapiv2
@@ -29,10 +30,6 @@ COPY ./auth.ed ./auth.ed.pub ./
 RUN apt-get update
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
     go build -o ./bin ./cmd/management-system/main.go
-RUN mkdir data
-RUN cd data
-RUN touch data_export_example.xlsx     
-RUN cd ..
 
 # Command to run the executable
 CMD ["/management-system-service/bin"]
