@@ -10,7 +10,7 @@
 
 ### Bước 1: Build Docker Compose
 
-`docker-compose.yml`: docker-compose build
+`docker-compose build`
 
 ### Bước 2: Khởi động các container
 
@@ -22,7 +22,9 @@
 
 ### Bước 4
 
-Mở extension Swagger UI
-Copy và dán các đường link sau vào hai tab riêng biệt trong extension Swagger UI:
-Tab 1: `http://localhost:3000/server.swagger.json`
-Tab 2: `http://localhost:3000/openapiv2/auth/auth.swagger.json`
+1. Mở extension Swagger UI
+
+2. Copy và dán các đường link sau vào hai tab riêng biệt trong extension Swagger UI:
+
+- Tab 1: `http://localhost:3000/server.swagger.json`
+- Tab 2: `http://localhost:3000/openapiv2/auth/auth.swagger.json`
