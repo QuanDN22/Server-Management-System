@@ -21,6 +21,8 @@ COPY ./internal/management-system ./internal/management-system
 
 COPY ./auth.ed ./auth.ed.pub ./
 
+COPY ./data ./data
+
 # Build the Go app
 RUN apt-get update
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \

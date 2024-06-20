@@ -126,6 +126,10 @@ func (m *MonitorService) WorkDailyMonitorServer(ctx context.Context) {
 						fmt.Printf("Error in getting all server %v", err)
 					}
 
+					fmt.Println("numeber of servers: ", len(servers.Servers))
+
+					fmt.Println("start to ping to servers...")
+
 					// ping to each server
 					m.pingToServers(ctx, servers)
 

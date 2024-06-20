@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net"
+	"strconv"
 	"strings"
 
 	"github.com/redis/go-redis/v9"
@@ -12,14 +13,13 @@ import (
 	"google.golang.org/grpc"
 	"gorm.io/gorm"
 
-	"github.com/QuanDN22/Server-Management-System/proto/auth"
-	"github.com/QuanDN22/Server-Management-System/proto/mail"
 	"github.com/QuanDN22/Server-Management-System/internal/management-system/domain"
 	"github.com/QuanDN22/Server-Management-System/pkg/config"
+	"github.com/QuanDN22/Server-Management-System/proto/auth"
+	"github.com/QuanDN22/Server-Management-System/proto/mail"
 
-	mt "github.com/QuanDN22/Server-Management-System/proto/monitor"
 	managementsystem "github.com/QuanDN22/Server-Management-System/proto/management-system"
-
+	mt "github.com/QuanDN22/Server-Management-System/proto/monitor"
 )
 
 type ManagementSystemGrpcServer struct {
@@ -31,10 +31,10 @@ type ManagementSystemGrpcServer struct {
 	cache      *redis.Client
 
 	monitorConsumer *kafka.Reader
-	monitorClient mt.MonitorClient
+	monitorClient   mt.MonitorClient
 
-	mailClient    mail.MailClient
-	authClient    auth.AuthServiceClient
+	mailClient mail.MailClient
+	authClient auth.AuthServiceClient
 }
 
 func NewManagementSystemGrpcServer(
@@ -119,8 +119,15 @@ func (ms *ManagementSystemGrpcServer) Woker(ctx context.Context, msg kafka.Messa
 
 		value := strings.Split(s, ",")
 
-		server_id := value[0]
+		server_id, err := strconv.Atoi(value[0])
 		server_status := value[1]
+
+		if err != nil {
+			fmt.Println("error convert string to int")
+			return
+		}
+
+		fmt.Println("receive: ", server_id, server_status)
 
 		// save to database
 		var server domain.Server
@@ -132,5 +139,7 @@ func (ms *ManagementSystemGrpcServer) Woker(ctx context.Context, msg kafka.Messa
 
 		server.Server_Status = server_status
 		ms.db.Save(&server)
+
+		fmt.Println("server_id: ", server_id, " - server status updated")
 	}
 }

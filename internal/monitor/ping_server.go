@@ -45,21 +45,34 @@ func (m *MonitorService) executePingToServer(ctx context.Context, server_id int6
 	// defer wait group done
 	defer wg.Done()
 
+	server_status := "off"
+
 	// ping to server ipv4
 	// out, err := exec.Command("ping", server_ipv4).Output()
 	cmd := exec.Command("ping", "-c", "4", server_ipv4)
 	out, err := cmd.Output()
 	if err != nil {
 		fmt.Printf("Error in pinging to server, %v", err)
+		
+		// send data to the management system to update the status of the server in the database
+		err = m.MonitorProducer.WriteMessages(ctx, kafka.Message{
+			Key:   []byte(fmt.Sprint(server_id)),
+			Value: []byte(fmt.Sprintf("%d,%s", server_id, server_status)),
+		})
+		if err != nil {
+			<-buffer
+			fmt.Println("could not write message " + err.Error())
+			return
+		}
+
+		fmt.Println("send data to the management system success: ", server_id, server_status)
 		<-buffer
 		return
 	}
 
-	server_status := "off"
-
 	// if server is on, save in the elasticsearch
 	// if strings.Contains(string(out), "bytes=") {
-	if strings.Contains(string(out), "bytes") {
+	if strings.Contains(string(out), "icmp_seq") {
 		fmt.Println(string(out))
 
 		server_status = "on"
@@ -81,18 +94,20 @@ func (m *MonitorService) executePingToServer(ctx context.Context, server_id int6
 			}).
 			Refresh(refresh.Waitfor).
 			Do(context.Background())
-
-		// send data to the management system to update the status of the server in the database
-		err = m.MonitorProducer.WriteMessages(ctx, kafka.Message{
-			Key:   []byte(fmt.Sprint(server_id)),
-			Value: []byte(fmt.Sprintf("%d,%s", server_id, server_status)),
-		})
-		if err != nil {
-			<-buffer
-			fmt.Println("could not write message " + err.Error())
-			return
-		}
 	}
+
+	// send data to the management system to update the status of the server in the database
+	err = m.MonitorProducer.WriteMessages(ctx, kafka.Message{
+		Key:   []byte(fmt.Sprint(server_id)),
+		Value: []byte(fmt.Sprintf("%d,%s", server_id, server_status)),
+	})
+	if err != nil {
+		<-buffer
+		fmt.Println("could not write message " + err.Error())
+		return
+	}
+
+	fmt.Println("send data to the management system success: ", server_id, server_status)
 
 	// pop from buffer
 	<-buffer

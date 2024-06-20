@@ -15,7 +15,6 @@ RUN go mod download
 COPY ./cmd/management-system ./cmd/management-system
 COPY ./internal/management-system ./internal/management-system
 COPY ./pkg ./pkg
-COPY ./data ./data
 
 COPY ./proto/google ./proto/google
 COPY ./proto/protoc-gen-openapiv2 ./proto/protoc-gen-openapiv2
