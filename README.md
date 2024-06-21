@@ -2,7 +2,7 @@
 
 # System
 
-![system-image](https://github.com/QuanDN22/Server-Management-System/server-management-system.drawio.svg?raw=true./server-management-system.drawio.svg)
+![system-image](https://github.com/QuanDN22/Server-Management-System/server-management-system.drawio.svg?raw=true/server-management-system.drawio.svg)
 
 ## Yêu cầu
 
