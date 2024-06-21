@@ -2,7 +2,7 @@
 
 # System
 
-![Alt text](D:/Server-Management-System/server-management-system.drawio.svg)
+![Alt text](./server-management-system.drawio.svg)
 
 ## Yêu cầu
 
