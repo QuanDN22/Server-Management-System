@@ -1,8 +1,16 @@
 # Server-Management-System
 
-# System
+![system-image](server-management-system.drawio.svg)
 
-![system-image](https://github.com/QuanDN22/Server-Management-System/server-management-system.drawio.svg?raw=true/server-management-system.drawio.svg)
+## Services
+
+No. | Service | URI
+--- | --- | ---
+1 | grpc-gateway | [http://localhost:8080](http://localhost:8080)
+2 | auth service | [http://localhost:5001](http://localhost:5001)
+3 | management service | [http://localhost:5002](http://localhost:5002)
+4 | monitor service | [http://localhost:5003](http://localhost:5003)
+5 | mail service | [http://localhost:5004](http://localhost:5004)
 
 ## Yêu cầu
 
