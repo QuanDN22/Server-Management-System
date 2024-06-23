@@ -1,6 +1,6 @@
 # Server-Management-System
 
-![system-image](server-management-system.drawio.svg)
+![system-image](server-management-system.svg)
 
 ## Services
 
