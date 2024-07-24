@@ -14,7 +14,7 @@
       "name": "ManagementSystem"
     }
   ],
-  "host": "localhost:8080",
+  "host": "localhost:8000",
   "schemes": [
     "http",
     "https"

@@ -29,39 +29,39 @@ token := eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJhcGkiLCJleHAiOjE3MTY0MT
 
 # api of auth server
 login: 
-	curl -H "Content-Type: application/json" -X POST http://localhost:8080/v1/api/auth/login \
+	curl -H "Content-Type: application/json" -X POST http://localhost:8000/v1/api/auth/login \
 	-d "{"username":"admin", "password":"pass"}"
 
 # -d "{\"username\":\"admin\", \"password\":\"pass\"}"
 
 login-user:
-	curl -H "Content-Type: application/json" -X POST http://localhost:8080/v1/api/auth/login \
+	curl -H "Content-Type: application/json" -X POST http://localhost:8000/v1/api/auth/login \
 	-d "{\"username\":\"quan2\", \"password\":\"2\"}"
 
 ping-auth-server: 
 	curl -s -H "Authorization: Bearer ${token}" \
-	localhost:8080/v1/api/auth/ping
+	localhost:8000/v1/api/auth/ping
 
 signup:
-	curl -H "Content-Type: application/json" -X POST http://localhost:8080/v1/api/auth/signup \
+	curl -H "Content-Type: application/json" -X POST http://localhost:8000/v1/api/auth/signup \
 	-d "{\"username\":\"quan\", \"password\":\"0\", \"email\":\"quan0@gmail.com\"}"
 
 logout:
-	curl -H "Authorization: Bearer ${token}" -X POST http://localhost:8080/v1/api/logout
+	curl -H "Authorization: Bearer ${token}" -X POST http://localhost:8000/v1/api/logout
 
 delete: 
 	curl -s \
   	-H "Authorization: Bearer ${token}" \
   	-H "Content-Type: application/json" \
-  	DELETE http://localhost:8080/v1/api/delete-user \
+  	DELETE http://localhost:8000/v1/api/delete-user \
   	-d "{\"userId\":\"2\"}"
 
-# curl -s -H "Content-Type: application/json" "Authorization: Bearer ${token}" DELETE http://localhost:8080/v1/api/delete \
+# curl -s -H "Content-Type: application/json" "Authorization: Bearer ${token}" DELETE http://localhost:8000/v1/api/delete \
 	# -d "{\"user_id\":\"1\"}"
 
 
 import:
 	curl \
 	-H "Authorization: Bearer ${token}" \
-	-X POST -F "attachment=@./data/data_server_copy.xlsx" http://localhost:8080/v1/api/servers/import
+	-X POST -F "attachment=@./data/data_server_copy.xlsx" http://localhost:8000/v1/api/servers/import
 

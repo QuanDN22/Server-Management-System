@@ -4,8 +4,37 @@
 # version: '3.9'
 
 services:
-  database.auth:
-    container_name: database.auth
+  traefik:
+    image: "traefik:v3.1"
+    container_name: "traefik"
+    command:
+      # - "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.swarm=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.auth-service.address=:5001"
+      - "--entrypoints.management-system-service.address=:5002"
+      - "--entrypoints.monitor-service.address=:5003"
+      - "--entrypoints.mail-service.address=:5004"
+      - "--entrypoints.grpc-gateway.address=:8000"
+    ports:
+      - "80:80"
+      - "8080:8080"
+      - "8000:8000"
+    deploy:
+      labels:
+        - "traefik.http.services.app.loadbalancer.server.port=80"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    networks:
+      - traefik-public
+
+
+  database-auth:
+    container_name: database-auth
     image: 'postgres:latest'
     restart: always
 
@@ -24,9 +53,11 @@ services:
       POSTGRES_DB: Server-Management-System-Auth-Server 
     volumes:
       - ./volumes_data/postgres/auth:/var/lib/postgresql/data
+    networks:
+      - traefik-public
 
-  database.server:
-    container_name: database.server
+  database-server:
+    container_name: database-server
     image: 'postgres:latest'
     restart: always
     ports:
@@ -37,6 +68,8 @@ services:
       POSTGRES_DB: Server-Management-System-MS-Server # The PostgreSQL default database (automatically created at first launch)
     volumes:
       - ./volumes_data/postgres/server:/var/lib/postgresql/data
+    networks:
+      - traefik-public
 
   kafka:
     container_name: kafka
@@ -57,6 +90,8 @@ services:
       - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
       - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+    networks:
+      - traefik-public
 
   elasticsearch:
     container_name: elasticsearch
@@ -68,6 +103,8 @@ services:
       - 9200:9200
     volumes:
       - ./volumes_data/elasticsearch:/usr/share/elasticsearch/data
+    networks:
+      - traefik-public
 
   kibana:
     image: docker.elastic.co/kibana/kibana:8.13.1
@@ -79,6 +116,8 @@ services:
       - 5601:5601
     depends_on:
       - elasticsearch         # kibana will start when elasticsearch has started
+    networks:
+      - traefik-public
   
   redis:
     image: redis:latest
@@ -87,34 +126,56 @@ services:
       - 6379:6379
     volumes:
       - ./volumes_data/redis:/data
+    networks:
+      - traefik-public
 
   # auth service 
   auth-service:
-    container_name: auth-service
+    # container_name: auth-service
     image: auth-service
     restart: always
     build:
       context: .
       dockerfile: ./docker/Dockerfile-auth
     depends_on:
-      - database.auth
+      - database-auth
+    deploy:
+      replicas: 3
+      labels: 
+        - "traefik.enable=true"
+        - "traefik.tcp.routers.auth-service.rule=Host(`auth-service.localhost`)"
+        - "traefik.tcp.services.auth-service.loadbalancer.server.port=5001"
+        - "traefik.tcp.routers.auth-service.entrypoints=auth-service"
+    networks:
+      - traefik-public
+
   
   # management server service
   management-system-service:
-    container_name: management-system-service
+    # container_name: managementsystemservice
     image: management-system-service
     restart: always
     build:
       context: .
       dockerfile: ./docker/Dockerfile-management-system
     depends_on:
-      - database.server
+      - database-server
       - kafka
       - redis
+    deploy:
+      replicas: 3
+      labels: 
+        - "traefik.enable=true"
+        - "traefik.tcp.routers.management-system-service.rule=Host(`management-system-service.localhost`)"
+        - "traefik.tcp.services.management-system-service.loadbalancer.server.port=5002"
+        - "traefik.tcp.routers.management-system-service.entrypoints=management-system-service"
+    networks:
+      - traefik-public
+    
 
   # monitor service
   monitor-service:
-    container_name: monitor-service
+    # container_name: monitor-service
     image: monitor-service
     restart: always
     build:
@@ -123,30 +184,61 @@ services:
     depends_on:
       - kafka
       - elasticsearch
+    deploy:
+      replicas: 3
+      labels: 
+        - "traefik.enable=true"
+        - "traefik.tcp.routers.monitor-service.rule=Host(`monitor-service.localhost`)"
+        - "traefik.tcp.services.monitor-service.loadbalancer.server.port=5003"
+        - "traefik.tcp.routers.monitor-service.entrypoints=monitor-service"
+    networks:
+      - traefik-public
 
   # mail service
   mail-service:
-    container_name: mail-service
+    # container_name: mail-service
     image: mail-service
     restart: always
     build:
       context: .
       dockerfile: ./docker/Dockerfile-mail
+    deploy:
+      replicas: 3
+      labels: 
+        - "traefik.enable=true"
+        - "traefik.tcp.routers.mail-service.rule=Host(`mail-service.localhost`)"
+        - "traefik.tcp.services.mail-service.loadbalancer.server.port=5004"
+        - "traefik.tcp.routers.mail-service.entrypoints=mail-service"
+    networks:
+      - traefik-public
 
   # grpc-gateway
   grpc-gateway:
-    container_name: grpc-gateway
+    # container_name: grpc-gateway
     image: grpc-gateway
     restart: always
     build:
       context: .
       dockerfile: ./docker/Dockerfile-grpc-gateway
-    ports:
-      - "8080:8080"
+    # ports:
+      # - "8000:8000"
     depends_on:
       - auth-service
       - management-system-service
+    deploy:
+      replicas: 3
+      labels: 
+        - "traefik.enable=true"
+        - "traefik.http.routers.grpc-gateway.rule=Host(`grpc-gateway.localhost`)"
+        - "traefik.http.services.grpc-gateway.loadbalancer.server.port=8000"
+        - "traefik.http.routers.grpc-gateway.entrypoints=grpc-gateway"
+    networks:
+      - traefik-public
 
 volumes:
   data:
     driver: local
+
+networks:
+  traefik-public:
+    driver: overlay

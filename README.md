@@ -6,7 +6,7 @@
 
 No. | Service | URI
 --- | --- | ---
-1 | grpc-gateway | [http://localhost:8080](http://localhost:8080)
+1 | grpc-gateway | [http://localhost:8000](http://localhost:8000)
 2 | auth service | [http://localhost:5001](http://localhost:5001)
 3 | management service | [http://localhost:5002](http://localhost:5002)
 4 | monitor service | [http://localhost:5003](http://localhost:5003)
