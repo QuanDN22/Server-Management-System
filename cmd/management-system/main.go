@@ -144,7 +144,7 @@ func main() {
 
 	// auth client
 	authConnect, err := grpc.Dial(
-		cfg.AuthServerPort,
+		cfg.AuthServerGrpcPort,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithUnaryInterceptor(mw.UnaryClientInterceptor),
 	)

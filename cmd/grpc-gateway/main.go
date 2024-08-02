@@ -72,7 +72,7 @@ func main() {
 
 	l.Info("registering gateway...")
 
-	err = authpb.RegisterAuthServiceHandlerFromEndpoint(ctx, gwmux, cfg.AuthServerPort, opts)
+	err = authpb.RegisterAuthServiceHandlerFromEndpoint(ctx, gwmux, cfg.AuthServerGrpcPort, opts)
 	if err != nil {
 		log.Fatalln("Failed to register gateway:", err)
 	}

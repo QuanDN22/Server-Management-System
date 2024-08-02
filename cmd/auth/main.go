@@ -4,19 +4,23 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net/http"
 
+	authpb "github.com/QuanDN22/Server-Management-System/proto/auth"
 	"github.com/QuanDN22/Server-Management-System/internal/auth/domain"
-	authgRPCServer "github.com/QuanDN22/Server-Management-System/internal/auth/gRPCServer"
+	authServer "github.com/QuanDN22/Server-Management-System/internal/auth/authServer"
 	"github.com/QuanDN22/Server-Management-System/internal/auth/issuer"
 	"github.com/QuanDN22/Server-Management-System/pkg/config"
 	"github.com/QuanDN22/Server-Management-System/pkg/logger"
 	"github.com/QuanDN22/Server-Management-System/pkg/middleware"
 	"github.com/QuanDN22/Server-Management-System/pkg/postgres"
 	"github.com/QuanDN22/Server-Management-System/pkg/utils"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 func main() {
@@ -60,19 +64,21 @@ func main() {
 	// database
 	db := postgres.NewPostgresDB(cfg.PGDatabaseHost, cfg.PGDatabaseUser, cfg.PGDatabasePassword, cfg.PGDatabaseDBName, cfg.PGDatabasePort)
 	l.Info("database connected...")
-	// delete table if it doesn't exist
-	err = db.Migrator().DropTable(&domain.User{})
-	if err != nil {
-		log.Fatalf("Failed to drop table servers: %v", err)
-	} else {
-		log.Println("Dropped table servers")
-	}
+	// // delete table if it doesn't exist
+	// err = db.Migrator().DropTable(&domain.User{})
+	// if err != nil {
+	// 	log.Fatalf("Failed to drop table servers: %v", err)
+	// } else {
+	// 	log.Println("Dropped table servers")
+	// }
 	// Auto migrate the Server model
 	err = db.AutoMigrate(&domain.User{})
 	if err != nil {
-		log.Fatalf("Failed to migrate servers datable: %v", err)
+		// log.Fatalf("Failed to migrate servers datable: %v", err)
+		l.Info("failed to migrate servers datable")
 	} else {
-		log.Println("migrate servers datable successfully")
+		// log.Println("migrate servers datable successfully")
+		l.Info("migrate servers datable successfully")
 	}
 
 	l.Info("migrating database...")
@@ -105,18 +111,67 @@ func main() {
 	}
 	l.Info("middleware created...")
 
-	// grpc server
+	// gRPC server
 	grpcserver := grpc.NewServer(
 		grpc.UnaryInterceptor(mw.UnaryServerInterceptor),
 	)
 
 	l.Info("grpc server created...")
 
-	authgrpcserver := authgRPCServer.NewAuthGRPCServer(i, cfg, l, grpcserver, db)
-	
-	l.Info("auth grpc server created...")
-	
+	// Http server
+	// Create a client connection to the gRPC server we just created
+	// This is where the gRPC-gateway proxies the requests
+	gwmux := runtime.NewServeMux()
+	opts := []grpc.DialOption{
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithUnaryInterceptor(mw.UnaryClientInterceptor),
+		grpc.WithStreamInterceptor(mw.StreamClientInterceptor),
+	}
+
+	gwmux.HandlePath("GET", "/v1/api/auth/hello", handleHello)
+
+	err = authpb.RegisterAuthServiceHandlerFromEndpoint(ctx, gwmux, cfg.AuthServerGrpcPort, opts)
+	if err != nil {
+		log.Fatalln("Failed to register gateway:", err)
+	}
+
+	httpserver := &http.Server{
+		Addr:    cfg.AuthServerHttpPort,
+		Handler: mw.HandleHTTP(gwmux),
+	}
+
+	// Auth server
+	authserver := authServer.NewAuthServer(grpcserver, httpserver, i, cfg, l, db)
+	l.Info("auth server created...")
+
 	// Start the server
 	l.Info("auth grpc server started...")
-	authgrpcserver.Start(ctx, cancel)
+	authserver.Start(ctx, cancel)
+}
+
+
+func handleHello(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+	_, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	log.Println("creating auth service")
+
+	// config
+	cfg, err := config.NewConfig("./cmd/auth", ".env.auth")
+	if err != nil {
+		cancel()
+		log.Fatalf("failed get config %v", err)
+	}
+	log.Println("config parsed...")
+	// logger
+	l, _ := logger.NewLogger(
+		fmt.Sprintf("%s%s.log", cfg.LogFilename, cfg.ServiceName),
+		int(cfg.LogMaxSize),
+		int(cfg.LogMaxBackups),
+		int(cfg.LogMaxAge),
+		true,
+		zapcore.InfoLevel,
+	)
+	l.Info("hello world")
+	w.Write([]byte("hello world")) //nolint
 }

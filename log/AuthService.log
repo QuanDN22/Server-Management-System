@@ -311,3 +311,35 @@
 {"L":"INFO","T":"2024-06-14T16:17:35.675+0700","M":"database connected..."}
 {"L":"INFO","T":"2024-06-14T16:17:45.620+0700","M":"middleware created..."}
 {"L":"INFO","T":"2024-06-14T16:17:45.621+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-07-30T15:19:22.685+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-07-30T15:19:22.689+0700","M":"issuer created..."}
+{"L":"INFO","T":"2024-07-30T15:20:01.329+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-07-30T15:20:01.330+0700","M":"issuer created..."}
+{"L":"INFO","T":"2024-07-30T15:20:01.394+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-07-30T15:20:01.513+0700","M":"migrating database..."}
+{"L":"INFO","T":"2024-07-30T15:20:11.598+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-07-30T15:20:11.599+0700","M":"grpc server created..."}
+{"L":"INFO","T":"2024-07-30T15:20:11.600+0700","M":"auth server created..."}
+{"L":"INFO","T":"2024-07-30T15:20:11.601+0700","M":"auth grpc server started..."}
+{"L":"INFO","T":"2024-07-30T15:20:11.602+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-07-30T15:20:11.602+0700","M":"Serving http is running on %s","port":":6001"}
+{"L":"INFO","T":"2024-07-30T15:44:56.114+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-07-30T15:44:56.115+0700","M":"issuer created..."}
+{"L":"INFO","T":"2024-07-30T15:44:56.181+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-07-30T15:44:56.250+0700","M":"migrating database..."}
+{"L":"INFO","T":"2024-07-30T15:45:05.927+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-07-30T15:45:05.927+0700","M":"grpc server created..."}
+{"L":"INFO","T":"2024-07-30T15:45:05.928+0700","M":"auth server created..."}
+{"L":"INFO","T":"2024-07-30T15:45:05.930+0700","M":"auth grpc server started..."}
+{"L":"INFO","T":"2024-07-30T15:45:05.930+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-07-30T15:45:05.930+0700","M":"Serving http is running on %s","port":":6001"}
+{"L":"INFO","T":"2024-07-30T15:47:13.503+0700","M":"logger created..."}
+{"L":"INFO","T":"2024-07-30T15:47:13.506+0700","M":"issuer created..."}
+{"L":"INFO","T":"2024-07-30T15:47:13.558+0700","M":"database connected..."}
+{"L":"INFO","T":"2024-07-30T15:47:13.626+0700","M":"migrating database..."}
+{"L":"INFO","T":"2024-07-30T15:47:23.371+0700","M":"middleware created..."}
+{"L":"INFO","T":"2024-07-30T15:47:23.371+0700","M":"grpc server created..."}
+{"L":"INFO","T":"2024-07-30T15:47:23.372+0700","M":"auth server created..."}
+{"L":"INFO","T":"2024-07-30T15:47:23.374+0700","M":"auth grpc server started..."}
+{"L":"INFO","T":"2024-07-30T15:47:23.375+0700","M":"Auth gRPC server started","port":":5001"}
+{"L":"INFO","T":"2024-07-30T15:47:23.375+0700","M":"Serving http is running on %s","port":":6001"}

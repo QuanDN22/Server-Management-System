@@ -9,7 +9,8 @@ import (
 type Config struct {
 	ServiceName string `mapstructure:"SERVICE_NAME"`
 
-	AuthServerPort             string `mapstructure:"AUTH_SERVER_PORT"`
+	AuthServerGrpcPort             string `mapstructure:"AUTH_SERVER_GRPC_PORT"`
+	AuthServerHttpPort         string `mapstructure:"AUTH_SERVER_HTTP_PORT"`
 	ManagementSystemServerPort string `mapstructure:"MANAGEMENT_SYSTEM_SERVER_PORT"`
 	GrpcGatewayPort            string `mapstructure:"GRPC_GATEWAY_PORT"`
 	MonitorServerPort          string `mapstructure:"MONITOR_SERVER_PORT"`

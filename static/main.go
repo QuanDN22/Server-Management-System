@@ -8,8 +8,8 @@ import (
 )
 
 func main() {
-	fmt.Println("Hello, World! localhost:3000")
-	port := flag.String("p", "3000", "port to serve on")
+	fmt.Println("Hello, World! localhost:3002")
+	port := flag.String("p", "3002", "port to serve on")
 	directory := flag.String("d", "./static", "the directory of static file to host")
 	flag.Parse()
 

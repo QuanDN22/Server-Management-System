@@ -1,36 +1,38 @@
 # Copyright VMware, Inc.
 # SPDX-License-Identifier: APACHE-2.0
 
-# version: '3.9'
+version: '3.9'
 
 services:
   traefik:
-    image: "traefik:v3.1"
+    image: "traefik:v2.0"
     container_name: "traefik"
     command:
-      # - "--log.level=DEBUG"
+      - "--log.level=DEBUG"
       - "--api.insecure=true"
-      - "--providers.swarm=true"
-      - "--providers.docker=true"
+      # - "--providers.swarm=true"
+      - "--providers.docker.swarmMode=true"
+      # - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
-      - "--entryPoints.web.address=:80"
-      - "--entrypoints.websecure.address=:443"
-      - "--entrypoints.auth-service.address=:5001"
-      - "--entrypoints.management-system-service.address=:5002"
-      - "--entrypoints.monitor-service.address=:5003"
-      - "--entrypoints.mail-service.address=:5004"
-      - "--entrypoints.grpc-gateway.address=:8000"
+      # - "--providers.docker.endpoint=tcp://127.0.0.1:8081"
+      - "--entryPoints.web.address=:8081"
+      # - "--entrypoints.websecure.address=:443"
+      # - "traefik.docker.network=mynet"
+      
     ports:
-      - "80:80"
-      - "8080:8080"
-      - "8000:8000"
+      - 8081:8081
+      # - 443:443
+      - 8080:8080
     deploy:
-      labels:
-        - "traefik.http.services.app.loadbalancer.server.port=80"
+      placement:
+        constraints:
+          - node.role == manager
+    #   labels:
+    #     - "traefik.http.services.app.loadbalancer.server.port=8081"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
     networks:
-      - traefik-public
+      - mynet
 
 
   database-auth:
@@ -51,83 +53,92 @@ services:
       POSTGRES_USER: postgres 
       POSTGRES_PASSWORD: quan1234 
       POSTGRES_DB: Server-Management-System-Auth-Server 
-    volumes:
-      - ./volumes_data/postgres/auth:/var/lib/postgresql/data
+    deploy:
+      replicas: 1
+      labels:
+        - "traefik.enable=true"
+        # - "traefik.docker.network=mynet"
+        - "traefik.tcp.routers.database-auth.entrypoints=web"
+        # - "traefik.tcp.routers.database-auth.rule=PathPrefix(`/v1/api/auth`)"
+        - "traefik.tcp.routers.database-auth.rule=HostSNI(`*`)"
+        - "traefik.tcp.services.database-auth.loadbalancer.server.port=5432"
+    # volumes:
+    #   - ./volumes_data/postgres/auth:/var/lib/postgresql/data
     networks:
-      - traefik-public
+      - mynet
 
-  database-server:
-    container_name: database-server
-    image: 'postgres:latest'
-    restart: always
-    ports:
-      - 5433:5432
-    environment:
-      POSTGRES_USER: postgres 
-      POSTGRES_PASSWORD: quan1234 
-      POSTGRES_DB: Server-Management-System-MS-Server # The PostgreSQL default database (automatically created at first launch)
-    volumes:
-      - ./volumes_data/postgres/server:/var/lib/postgresql/data
-    networks:
-      - traefik-public
+  # database-server:
+  #   container_name: database-server
+  #   image: 'postgres:latest'
+  #   restart: always
+  #   ports:
+  #     - 5433:5432
+  #   environment:
+  #     POSTGRES_USER: postgres 
+  #     POSTGRES_PASSWORD: quan1234 
+  #     POSTGRES_DB: Server-Management-System-MS-Server # The PostgreSQL default database (automatically created at first launch)
+  #   volumes:
+  #     - ./volumes_data/postgres/server:/var/lib/postgresql/data
+    # networks:
+    #   - mynet
 
-  kafka:
-    container_name: kafka
-    image: docker.io/bitnami/kafka:3.5
-    ports:
-      - "9092:9092"
-    volumes:
-      - ./volumes_data/kafka:/bitnami
-    environment:
-      # KRaft settings
-      - KAFKA_CFG_NODE_ID=0
-      - KAFKA_CFG_PROCESS_ROLES=controller,broker
-      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
-      # Listeners
-      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
-      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
-      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
-      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
-      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
-    networks:
-      - traefik-public
+  # kafka:
+  #   container_name: kafka
+  #   image: docker.io/bitnami/kafka:3.5
+  #   ports:
+  #     - "9092:9092"
+  #   volumes:
+  #     - ./volumes_data/kafka:/bitnami
+  #   environment:
+  #     # KRaft settings
+  #     - KAFKA_CFG_NODE_ID=0
+  #     - KAFKA_CFG_PROCESS_ROLES=controller,broker
+  #     - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
+  #     # Listeners
+  #     - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+  #     - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+  #     - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+  #     - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+  #     - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+  #     - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+    # networks:
+    #   - mynet
 
-  elasticsearch:
-    container_name: elasticsearch
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.1
-    environment: 
-      - xpack.security.enabled=false
-      - discovery.type=single-node
-    ports:
-      - 9200:9200
-    volumes:
-      - ./volumes_data/elasticsearch:/usr/share/elasticsearch/data
-    networks:
-      - traefik-public
+  # elasticsearch:
+  #   container_name: elasticsearch
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:8.13.1
+  #   environment: 
+  #     - xpack.security.enabled=false
+  #     - discovery.type=single-node
+  #   ports:
+  #     - 9200:9200
+  #   volumes:
+  #     - ./volumes_data/elasticsearch:/usr/share/elasticsearch/data
+    # networks:
+    #   - mynet
 
-  kibana:
-    image: docker.elastic.co/kibana/kibana:8.13.1
-    container_name: kibana
-    environment:
-      # XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY: d1a66dfd-c4d3-4a0a-8290-2abcb83ab3aa
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200    # address of elasticsearch docker container which kibana will connect
-    ports:
-      - 5601:5601
-    depends_on:
-      - elasticsearch         # kibana will start when elasticsearch has started
-    networks:
-      - traefik-public
+  # kibana:
+  #   image: docker.elastic.co/kibana/kibana:8.13.1
+  #   container_name: kibana
+  #   environment:
+  #     # XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY: d1a66dfd-c4d3-4a0a-8290-2abcb83ab3aa
+  #     - ELASTICSEARCH_HOSTS=http://elasticsearch:9200    # address of elasticsearch docker container which kibana will connect
+  #   ports:
+  #     - 5601:5601
+  #   depends_on:
+  #     - elasticsearch         # kibana will start when elasticsearch has started
+    # networks:
+    #   - mynet
   
-  redis:
-    image: redis:latest
-    container_name: redis
-    ports:
-      - 6379:6379
-    volumes:
-      - ./volumes_data/redis:/data
-    networks:
-      - traefik-public
+  # redis:
+  #   image: redis:latest
+  #   container_name: redis
+  #   ports:
+  #     - 6379:6379
+  #   volumes:
+  #     - ./volumes_data/redis:/data
+    # networks:
+    #   - mynet
 
   # auth service 
   auth-service:
@@ -137,108 +148,122 @@ services:
     build:
       context: .
       dockerfile: ./docker/Dockerfile-auth
-    depends_on:
-      - database-auth
+    # depends_on:
+    #   - database-auth
+    ports:
+      - 6001:6001
+      # - :5001
     deploy:
-      replicas: 3
+      replicas: 1
       labels: 
         - "traefik.enable=true"
-        - "traefik.tcp.routers.auth-service.rule=Host(`auth-service.localhost`)"
+        # - "traefik.docker.network=mynet"
+        - "traefik.tcp.routers.auth-service.entrypoints=web"
+        - "traefik.tcp.routers.auth-service.rule=HostSNI(`*`)"
+        # - "traefik.tcp.routers.auth-service.rule=PathPrefix(`/v1/api/auth`)"
         - "traefik.tcp.services.auth-service.loadbalancer.server.port=5001"
-        - "traefik.tcp.routers.auth-service.entrypoints=auth-service"
+        - "traefik.tcp.routers.auth-service.service=auth-service"
+
+        - "traefik.http.routers.auth-service.entrypoints=web"
+        - "traefik.http.routers.auth-service.rule=Host(`auth-service`)"
+        - "traefik.http.routers.auth-service.rule=PathPrefix(`/v1/api/auth`)"
+        - "traefik.http.services.auth-service.loadbalancer.server.port=6001"
+        - "traefik.http.routers.auth-service.service=auth-service"
     networks:
-      - traefik-public
+      - mynet
 
   
   # management server service
-  management-system-service:
-    # container_name: managementsystemservice
-    image: management-system-service
-    restart: always
-    build:
-      context: .
-      dockerfile: ./docker/Dockerfile-management-system
-    depends_on:
-      - database-server
-      - kafka
-      - redis
-    deploy:
-      replicas: 3
-      labels: 
-        - "traefik.enable=true"
-        - "traefik.tcp.routers.management-system-service.rule=Host(`management-system-service.localhost`)"
-        - "traefik.tcp.services.management-system-service.loadbalancer.server.port=5002"
-        - "traefik.tcp.routers.management-system-service.entrypoints=management-system-service"
-    networks:
-      - traefik-public
+  # management-system-service:
+  #   # container_name: managementsystemservice
+  #   image: management-system-service
+  #   restart: always
+  #   build:
+  #     context: .
+  #     dockerfile: ./docker/Dockerfile-management-system
+  #   depends_on:
+  #     - database-server
+  #     - kafka
+  #     - redis
+  #   deploy:
+  #     replicas: 3
+  #     labels: 
+  #       - "traefik.enable=true"
+  #       - "traefik.tcp.routers.management-system-service.rule=Host(`management-system-service.localhost`)"
+  #       - "traefik.tcp.services.management-system-service.loadbalancer.server.port=5002"
+  #       - "traefik.tcp.routers.management-system-service.entrypoints=management-system-service"
+  #       - "traefik.http.services.management-system-service.loadbalancer.server.port=8002"
+  #       - "traefik.http.routers.management-system-service.entrypoints=management-system-service"
+    # networks:
+    #   - mynet
     
 
   # monitor service
-  monitor-service:
-    # container_name: monitor-service
-    image: monitor-service
-    restart: always
-    build:
-      context: .
-      dockerfile: ./docker/Dockerfile-monitor
-    depends_on:
-      - kafka
-      - elasticsearch
-    deploy:
-      replicas: 3
-      labels: 
-        - "traefik.enable=true"
-        - "traefik.tcp.routers.monitor-service.rule=Host(`monitor-service.localhost`)"
-        - "traefik.tcp.services.monitor-service.loadbalancer.server.port=5003"
-        - "traefik.tcp.routers.monitor-service.entrypoints=monitor-service"
-    networks:
-      - traefik-public
+  # monitor-service:
+  #   # container_name: monitor-service
+  #   image: monitor-service
+  #   restart: always
+  #   build:
+  #     context: .
+  #     dockerfile: ./docker/Dockerfile-monitor
+  #   depends_on:
+  #     - kafka
+  #     - elasticsearch
+  #   deploy:
+  #     replicas: 3
+  #     labels: 
+  #       - "traefik.enable=true"
+  #       - "traefik.tcp.routers.monitor-service.rule=Host(`monitor-service.localhost`)"
+  #       - "traefik.tcp.services.monitor-service.loadbalancer.server.port=5003"
+  #       - "traefik.tcp.routers.monitor-service.entrypoints=monitor-service"
+    # networks:
+    #   - mynet
 
   # mail service
-  mail-service:
-    # container_name: mail-service
-    image: mail-service
-    restart: always
-    build:
-      context: .
-      dockerfile: ./docker/Dockerfile-mail
-    deploy:
-      replicas: 3
-      labels: 
-        - "traefik.enable=true"
-        - "traefik.tcp.routers.mail-service.rule=Host(`mail-service.localhost`)"
-        - "traefik.tcp.services.mail-service.loadbalancer.server.port=5004"
-        - "traefik.tcp.routers.mail-service.entrypoints=mail-service"
-    networks:
-      - traefik-public
+  # mail-service:
+  #   # container_name: mail-service
+  #   image: mail-service
+  #   restart: always
+  #   build:
+  #     context: .
+  #     dockerfile: ./docker/Dockerfile-mail
+  #   deploy:
+  #     replicas: 3
+  #     labels: 
+  #       - "traefik.enable=true"
+  #       - "traefik.tcp.routers.mail-service.rule=Host(`mail-service.localhost`)"
+  #       - "traefik.tcp.services.mail-service.loadbalancer.server.port=5004"
+  #       - "traefik.tcp.routers.mail-service.entrypoints=mail-service"
+    # networks:
+    #   - mynet
 
   # grpc-gateway
-  grpc-gateway:
-    # container_name: grpc-gateway
-    image: grpc-gateway
-    restart: always
-    build:
-      context: .
-      dockerfile: ./docker/Dockerfile-grpc-gateway
-    # ports:
-      # - "8000:8000"
-    depends_on:
-      - auth-service
-      - management-system-service
-    deploy:
-      replicas: 3
-      labels: 
-        - "traefik.enable=true"
-        - "traefik.http.routers.grpc-gateway.rule=Host(`grpc-gateway.localhost`)"
-        - "traefik.http.services.grpc-gateway.loadbalancer.server.port=8000"
-        - "traefik.http.routers.grpc-gateway.entrypoints=grpc-gateway"
-    networks:
-      - traefik-public
+  # grpc-gateway:
+  #   # container_name: grpc-gateway
+  #   image: grpc-gateway
+  #   restart: always
+  #   build:
+  #     context: .
+  #     dockerfile: ./docker/Dockerfile-grpc-gateway
+  #   # ports:
+  #     # - "8000:8000"
+  #   depends_on:
+  #     - auth-service
+  #     - management-system-service
+  #   deploy:
+  #     replicas: 3
+  #     labels: 
+  #       - "traefik.enable=true"
+  #       - "traefik.http.routers.grpc-gateway.rule=Host(`grpc-gateway.localhost`)"
+  #       - "traefik.http.services.grpc-gateway.loadbalancer.server.port=8000"
+  #       - "traefik.http.routers.grpc-gateway.entrypoints=grpc-gateway"
+  #   networks:
+  #     - mynet
 
 volumes:
   data:
     driver: local
 
 networks:
-  traefik-public:
+  mynet:
     driver: overlay

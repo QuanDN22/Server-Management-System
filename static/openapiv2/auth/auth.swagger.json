@@ -14,7 +14,7 @@
       "name": "AuthService"
     }
   ],
-  "host": "localhost:8000",
+  "host": "localhost:8081",
   "schemes": [
     "http",
     "https"

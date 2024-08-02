@@ -23,7 +23,7 @@ func NewMiddleware(publicKeyPath string) (*Middleware, error) {
 
 func (mw *Middleware) HandleHTTP(next http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path == "/v1/api/auth/login" || r.URL.Path == "/v1/api/auth/signup" {
+		if r.URL.Path == "/v1/api/auth/login" || r.URL.Path == "/v1/api/auth/signup" || r.URL.Path == "/v1/api/auth/hello" {
 			fmt.Println("2. start /login")
 			next.ServeHTTP(w, r)
 

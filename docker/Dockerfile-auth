@@ -1,7 +1,8 @@
 # syntax=docker/dockerfile:1
 
+# stage 1: Build the Go application
 # Start from golang:1.22-alpine base image
-FROM golang:1.22.1
+FROM golang:1.22.1-alpine AS builder
 
 # Set destination for COPY
 WORKDIR /app
@@ -23,9 +24,22 @@ COPY ./proto/auth ./proto/auth
 COPY ./auth.ed ./auth.ed.pub ./
 
 # Build the Go app
-RUN apt-get update
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
     go build -o ./bin ./cmd/auth/main.go
+
+
+# stage 2: create a minimal image to run the Go application
+FROM alpine:3.18.3
+
+WORKDIR /app
+
+COPY --from=builder /app/cmd/auth ./cmd/auth
+
+COPY --from=builder /app/auth.ed ./auth.ed
+COPY --from=builder /app/auth.ed.pub ./auth.ed.pub
+
+# Copy the Pre-built binary file from the builder stage
+COPY --from=builder /app/bin ./bin
 
 # Command to run the executable
 CMD ["/app/bin"]
